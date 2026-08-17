@@ -6,26 +6,16 @@ Netlify.
 
 ## Before this goes live
 
-**1. One placeholder is left.**
+Settled: governing law is **Pennsylvania** (terms section 12), and the domain
+is **getlogr.com**, which is owned. Mail forwarding for `support@getlogr.com`
+and a read-through of the legal pages are with Cohen.
 
-```
-grep -rn "YOUR_STATE" .
-```
-
-`terms.html` section 12 needs the state or country whose law governs.
-
-**2. `support@getlogr.com` has to actually receive mail.** It is now the
-contact address on five pages. Set up forwarding on `getlogr.com` before the
-site is public, or every support route is a dead end.
-
-**3. The privacy policy's deletion section describes the fixed behaviour.**
-Section 6 says deletion removes the sign-in record and releases the email
-address. That is true only once the `delete_my_account()` work has landed in
-the app **and** the migration is applied to the live database. Do not paste the
-privacy URL into App Store Connect before then.
-
-**4. Read both legal pages.** They were drafted against what the app actually
-does, but they are legal documents and nobody has reviewed them as such.
+**The one hard blocker left: the privacy policy and `/account-deletion`
+describe deletion that removes the sign-in record and releases the email
+address.** That is true only once `delete_my_account()` has landed in the app
+**and** the migration is applied to the live database. Do not paste the privacy
+URL into App Store Connect before then, and do not make the site public with
+`/account-deletion` promising something the app does not yet do.
 
 ## User-generated content
 
