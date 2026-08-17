@@ -12,7 +12,7 @@ Netlify.
 grep -rn "YOUR_STATE" .
 ```
 
-`terms.html` section 11 needs the state or country whose law governs.
+`terms.html` section 12 needs the state or country whose law governs.
 
 **2. `support@getlogr.com` has to actually receive mail.** It is now the
 contact address on five pages. Set up forwarding on `getlogr.com` before the
@@ -26,6 +26,24 @@ privacy URL into App Store Connect before then.
 
 **4. Read both legal pages.** They were drafted against what the app actually
 does, but they are legal documents and nobody has reviewed them as such.
+
+## User-generated content
+
+Terms section 6, a section on the community guidelines, and two FAQ entries
+cover the four things Apple's Guideline 1.2 looks for in an app with a social
+feed: filtering, reporting, blocking, and published contact details. The app
+already does all four, so this is documentation rather than a promise.
+
+Two commitments in that text are real and operational, not boilerplate:
+
+- **"We aim to review every report within 24 hours."** Someone has to actually
+  read the `reports` table. It has no SELECT policy, so that means the Supabase
+  dashboard.
+- The disclosure is written to cover **video and other media we support in
+  future**, so it does not need rewriting the day video ships. What will need
+  revisiting then: the App Store age rating questionnaire, and whether photo
+  and video moderation needs more than the banned-phrase filter, which only
+  applies to message text.
 
 ## The waitlist form
 
@@ -63,7 +81,7 @@ privacy.html              -> App Store Connect "Privacy Policy URL"
 terms.html                -> App Store Connect EULA, if you use a custom one
 support.html              -> App Store Connect "Support URL"
 account-deletion.html     Apple looks for this; linked from the footer
-community-guidelines.html plain-language version of Terms section 5
+community-guidelines.html plain-language version of Terms sections 5 and 6
 cookies.html              says the site sets none, because it sets none
 thanks.html               waitlist confirmation
 404.html                  not found
@@ -73,9 +91,24 @@ netlify.toml              publish dir, security headers
 
 ## Design
 
-The look comes from the wireframe: warm paper (`#f5f4ef`), square corners,
-Arial, and tight display type. Tokens are at the top of `style.css`. Note this
-is deliberately **not** the app's own palette, which is cooler and rounded.
+**The site uses the app's own design tokens**, so the two read as one product:
+
+| | |
+|---|---|
+| Background | `#f9f9f9` |
+| Text | `#1a1a1a` |
+| Surface | `#ffffff` |
+| Muted | `#9ca3af` |
+| Borders | `#f0f0f0` |
+
+Shapes match too: cards are white at radius 16 with a 1px `#f0f0f0` border,
+buttons are `#1a1a1a` at radius 14, and the wordmark is 800 weight with
+**positive** 2px tracking, copied from `wordmark` in the app's FeedScreen. Keep
+these in step with `CLAUDE.md` in the app repo if the app's tokens ever move.
+
+The page STRUCTURE came from the wireframe (hero, proof bar, three feature
+sections, teams, story, FAQ, waitlist). Its warm-paper palette and square
+corners did not.
 
 The phone mockups in the hero and feature sections are built from CSS, not
 images. Replace them with real App Store screenshots when you have them: each
