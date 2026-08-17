@@ -58,12 +58,40 @@ is needed. Submissions land under **Forms** in the Netlify dashboard.
 
 ## Local preview
 
-Paths are absolute, so open it through a server rather than from the file
-system:
+```bash
+python3 serve.py
+```
+
+Then open http://localhost:8000. Zero dependencies.
+
+**Do not use `python3 -m http.server` here.** Every link on this site is written
+without the extension (`/privacy`, `/terms`), because Netlify resolves those
+itself. A plain static server 404s on all of them, so the entire site appears
+broken locally while being perfectly fine in production. `serve.py` exists only
+to add that one behaviour, plus a real 404 page.
+
+To check anything that depends on `netlify.toml` (the CSP, the other security
+headers, form handling), run the real thing instead:
 
 ```bash
-python3 -m http.server 8000
+npx netlify-cli dev
 ```
+
+That is a large first download and is worth it only before a deploy that
+touches headers or the form. **Run it after any change involving inline
+styles** (see below).
+
+### The CSP will silently break inline styles
+
+`netlify.toml` sets `style-src 'self'` with no `'unsafe-inline'`. In CSP that
+governs `style="..."` **attributes**, not just `<style>` blocks, so any inline
+style is dropped. This does not fail loudly: the element just renders unstyled.
+
+It has already happened once. The activity chart's seven bars carried
+`style="height:35%"` and would have rendered flat on Netlify while looking
+correct under every local server, because a local server sends no CSP header.
+The heights now live in `style.css` as `.bars i:nth-child(n)`. Keep new styles
+in the stylesheet, or the same class of bug comes back invisible.
 
 ## Deploy
 
@@ -72,6 +100,31 @@ the publish directory, an empty build command, and the security headers.
 
 Netlify serves `privacy.html` at `/privacy` with no extension, which is why the
 links have no `.html` in them.
+
+### Connecting it the first time
+
+1. Netlify → **Add new site** → **Import an existing project** → GitHub →
+   `logr-site`.
+2. Leave the build command **empty** and the publish directory as `.`.
+   `netlify.toml` already says this, so the defaults it offers should be right.
+3. Deploy. The site is live on a `*.netlify.app` name straight away.
+4. **Domain settings** → add `getlogr.com`, and point DNS at Netlify. HTTPS is
+   automatic once DNS resolves.
+5. **Forms** → the `waitlist` form appears after the first deploy. Add an email
+   notification there, or signups accumulate with nobody being told.
+
+### The domain is written into three files
+
+`getlogr.com` appears in the canonical and `og:` tags of every page, in
+`sitemap.xml`, and in `robots.txt`. If the domain changes:
+
+```bash
+grep -rln "getlogr.com" . --include="*.html" --include="*.xml" --include="*.txt"
+```
+
+Until DNS is pointed, those tags name a domain that does not resolve. That is
+harmless for a preview deploy and should not be left that way once the site is
+public, since it is what a shared link and a search result both read.
 
 ## Structure
 
@@ -87,7 +140,18 @@ thanks.html               waitlist confirmation
 404.html                  not found
 style.css                 the whole design system
 netlify.toml              publish dir, security headers
+serve.py                  local preview with Netlify's clean URLs
+robots.txt / sitemap.xml  crawling. Both name the domain
+favicon.svg               PLACEHOLDER mark, see below
+favicon-32.png            rendered from favicon.svg
+apple-touch-icon.png      rendered from favicon.svg
+og.png                    1200x630 link preview
 ```
+
+The favicon is a placeholder: a white `L` on the app's `#1a1a1a` at the card
+radius. The app icon itself is the full LOGR wordmark, which is illegible at
+16px, so it could not be reused directly. Swap `favicon.svg` if a real mark
+gets drawn, then re-render the two PNGs from it.
 
 ## Design
 

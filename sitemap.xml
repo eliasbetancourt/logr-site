@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- /thanks and /404 are deliberately absent: one is a form result, the other
+     is not a page. Update the domain here and in robots.txt together. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://getlogr.com/</loc>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://getlogr.com/privacy</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://getlogr.com/terms</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://getlogr.com/community-guidelines</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://getlogr.com/support</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://getlogr.com/account-deletion</loc>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://getlogr.com/cookies</loc>
+    <priority>0.4</priority>
+  </url>
+</urlset>

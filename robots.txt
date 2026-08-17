@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Form success page, reachable only after posting the waitlist form.
+Disallow: /thanks
+
+Sitemap: https://getlogr.com/sitemap.xml

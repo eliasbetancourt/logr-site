@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="LOGR">
+  <!-- Placeholder mark. The app icon is the full LOGR wordmark, which is
+       unreadable at 16px, so the tab icon is the initial on the app's #1a1a1a
+       at its card radius. Swap this file if a real mark is drawn. -->
+  <rect width="64" height="64" rx="14" fill="#1a1a1a"/>
+  <path d="M22 17h7.6v22.9H45V47H22z" fill="#ffffff"/>
+</svg>

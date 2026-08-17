@@ -288,6 +288,17 @@ img { max-width: 100%; display: block; }
 .bars { display: flex; align-items: end; gap: 7px; height: 82px; padding-top: 8px; }
 .bars i { flex: 1; display: block; background: var(--text); border-radius: 3px; }
 
+/* Bar heights are here rather than on a style attribute, which the CSP in
+   netlify.toml blocks (style-src 'self' governs attributes too, and allowing
+   them would mean 'unsafe-inline'). */
+.bars i:nth-child(1) { height: 35%; }
+.bars i:nth-child(2) { height: 60%; }
+.bars i:nth-child(3) { height: 42%; }
+.bars i:nth-child(4) { height: 78%; }
+.bars i:nth-child(5) { height: 55%; }
+.bars i:nth-child(6) { height: 88%; }
+.bars i:nth-child(7) { height: 70%; }
+
 .bottom-nav {
   position: absolute;
   bottom: 0; left: 0; right: 0;
