@@ -163,6 +163,16 @@ Two things changed specifically to widen that gap:
   imperatives. It is now a privacy claim, which is both further from them and a
   real difference: they run a consent banner, LOGR has no analytics SDK at all.
   The tagline still lives in the footer, where it belongs to us.
+
+  **Never write "no analytics" unqualified on this site.** The first draft of
+  that bar said `No ads. No analytics. No trackers of any kind.`, three
+  sentences above a feature section promising personal records and a training
+  calendar. On a workout app "analytics" reads as the training analysis, so the
+  line said we do not do the thing the app is for. The bar now says
+  **"The only thing LOGR tracks is your training"**, which turns the collision
+  into the message. Everywhere else the word carries a qualifier: `analytics
+  SDK`, `product analytics`, or `web analytics` on the site-only claims. The
+  privacy policy and the FAQ both name the two meanings and separate them.
 - **The consistency grid** is the page's signature and has no counterpart on
   their site. It is drawn from what the app actually records, `streak_days`
   crossed with workouts, so it advertises a real feature rather than decorating.
