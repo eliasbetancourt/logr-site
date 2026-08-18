@@ -143,6 +143,37 @@ radius. The app icon itself is the full LOGR wordmark, which is illegible at
 16px, so it could not be reused directly. Swap `favicon.svg` if a real mark
 gets drawn, then re-render the two PNGs from it.
 
+## Staying unlike Hevy
+
+Hevy is the closest competitor and the biggest workout tracker there is, so the
+site is deliberately built away from theirs. Theirs, as of August 2026:
+
+| | Hevy | LOGR |
+|---|---|---|
+| Accent | blue `#1d83ea` throughout | monochrome, no accent hue |
+| Buttons | 100px pills | 14px radius, the app's own |
+| Type | Arial | system stack, tabular numerals |
+| Cookies | consent banner, tracking | none, and the site says so |
+| Proof | "More than 15 million athletes" | nothing, because we have no users yet |
+
+Two things changed specifically to widen that gap:
+
+- **The proof bar was three imperatives** (`Log the work. / See the progress. /
+  Share the journey.`) which echoed Hevy's hero, a stack of three two-word
+  imperatives. It is now a privacy claim, which is both further from them and a
+  real difference: they run a consent banner, LOGR has no analytics SDK at all.
+  The tagline still lives in the footer, where it belongs to us.
+- **The consistency grid** is the page's signature and has no counterpart on
+  their site. It is drawn from what the app actually records, `streak_days`
+  crossed with workouts, so it advertises a real feature rather than decorating.
+  It is **monochrome on purpose**: the app tints these black, blue and green,
+  but blue is Hevy's entire identity and a density ramp reads better at 24px
+  anyway.
+
+Do not copy their copy, their section order, or their screenshots. The
+resemblance that is unavoidable is a phone mockup in the hero, which is the
+category convention rather than anyone's idea.
+
 ## Design
 
 **The site uses the app's own design tokens**, so the two read as one product:

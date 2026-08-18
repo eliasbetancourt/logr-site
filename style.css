@@ -34,6 +34,9 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
   line-height: 1.5;
+  /* This is a logging app, so figures line up in columns wherever they are
+     read together: the stat rows, the set tables, the volume pills. */
+  font-variant-numeric: tabular-nums;
 }
 
 a { color: inherit; text-decoration: none; }
@@ -315,11 +318,12 @@ img { max-width: 100%; display: block; }
 
 .proof-bar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 5vw;
+  gap: 14px 32px;
   min-height: 84px;
-  padding: 24px;
+  padding: 24px 6vw;
   background: var(--text);
   color: #ffffff;
   font-size: 15px;
@@ -333,6 +337,65 @@ img { max-width: 100%; display: block; }
   letter-spacing: 1.6px;
 }
 
+.proof-bar .text-link { margin-top: 0; font-size: 13px; }
+
+/* ── Consistency grid ─────────────────────────────────────────────────── */
+
+.streak { padding: 100px 8vw; background: var(--text); color: #ffffff; }
+
+.streak-head {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: end;
+  gap: 8vw;
+  margin-bottom: 54px;
+}
+
+.streak-head h2 { color: #ffffff; }
+.streak-head p { margin: 0; color: #d1d5db; font-size: 17px; line-height: 1.7; }
+
+/* 182 cells is wider than a phone. It scrolls in its own box rather than
+   letting the page scroll sideways. */
+.streak-scroll { overflow-x: auto; padding-bottom: 6px; }
+
+.streak-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(7, 1fr);
+  gap: 5px;
+  min-width: 760px;
+}
+
+.streak-grid i, .streak-legend i {
+  display: block;
+  aspect-ratio: 1;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Deliberately monochrome. The app tints these black, blue and green, but
+   blue is the competition's whole identity and a density ramp reads better
+   at this size anyway. */
+.streak-grid i.r, .streak-legend i.r { background: rgba(255, 255, 255, 0.3); }
+.streak-grid i.w, .streak-legend i.w { background: rgba(255, 255, 255, 0.66); }
+.streak-grid i.p, .streak-legend i.p { background: #ffffff; }
+
+.streak-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 22px;
+  margin-top: 34px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.streak-legend span { display: flex; align-items: center; gap: 8px; }
+.streak-legend i { width: 12px; }
+.streak-legend b { margin-left: auto; font-size: 11px; letter-spacing: 1.6px; }
+
 /* ── Feature sections ─────────────────────────────────────────────────── */
 
 .intro {
@@ -343,7 +406,8 @@ img { max-width: 100%; display: block; }
   padding: 100px 8vw 60px;
 }
 
-.intro h2, .feature h2, .teams h2, .story h2, .faq h2, .waitlist h2 {
+.intro h2, .feature h2, .teams h2, .story h2, .faq h2, .waitlist h2,
+.streak-head h2 {
   margin: 0;
   font-size: clamp(32px, 4vw, 52px);
   line-height: 1.08;
@@ -443,19 +507,6 @@ img { max-width: 100%; display: block; }
 .story-label { font-size: 11px; font-weight: 700; letter-spacing: 1.6px; color: var(--muted); }
 .story-copy { max-width: 780px; }
 .story-copy p { color: #d1d5db; font-size: 17px; line-height: 1.75; }
-
-/* ── Quote ────────────────────────────────────────────────────────────── */
-
-.quote-section { padding: 90px 8vw; text-align: center; }
-
-blockquote {
-  max-width: 900px;
-  margin: 0 auto;
-  font-size: clamp(28px, 3.6vw, 46px);
-  line-height: 1.2;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
 
 /* ── FAQ ──────────────────────────────────────────────────────────────── */
 
@@ -656,7 +707,8 @@ blockquote {
   .phone-back { left: 10%; }
   .phone-front { right: 10%; }
   .proof-bar { flex-wrap: wrap; gap: 20px; }
-  .intro, .feature, .story, .faq { grid-template-columns: 1fr; }
+  .intro, .feature, .story, .faq, .streak-head { grid-template-columns: 1fr; }
+  .streak-head { gap: 24px; margin-bottom: 40px; }
   .feature.reverse .screen-wrap { order: 0; }
   .team-grid { grid-template-columns: 1fr; }
   .site-footer { grid-template-columns: 2fr 1fr 1fr; }
@@ -678,7 +730,9 @@ blockquote {
   .phone-back { left: -2%; }
   .phone-front { right: -2%; }
   .proof-bar { justify-content: flex-start; gap: 14px; font-size: 14px; }
-  .intro, .feature, .teams, .story, .quote-section, .faq, .waitlist { padding: 70px 6vw; }
+  .intro, .feature, .teams, .story, .streak, .faq, .waitlist { padding: 70px 6vw; }
+  .streak-legend { gap: 12px 18px; font-size: 12px; }
+  .streak-legend b { margin-left: 0; }
   .screen-wrap { height: 500px; }
   .waitlist form { flex-direction: column; }
   .waitlist input { width: 100%; }
