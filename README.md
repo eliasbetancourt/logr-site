@@ -55,16 +55,39 @@ POST falls through to a static file server, which has no POST handler and says
 404. The redirect target is a red herring: `/thanks` is fine, and the request
 never gets that far.
 
-**Cause:** Netlify stopped detecting forms automatically. It is now opt-in per
-site, and this site has never had it on.
+**Cause:** form detection is opt-in per site, **and turning it on does nothing
+to a deploy that already happened.** Detection registers a form by scanning the
+published HTML at deploy time, so the switch only affects deploys that run
+after it. This site had a live deploy from before the switch, so no form was
+registered and every POST fell through.
 
-**Fix, all in the Netlify UI, no commit needed:**
+The second half is the part that actually bit, and it is the easy one to miss:
+the dashboard says "Form detection is enabled" while the live site still has no
+form behind it, so the setting and the behaviour disagree and the setting looks
+like it is lying.
+
+**Fix:**
 
 1. Project configuration → **Forms** → enable **form detection**.
-2. **Redeploy.** Detection runs at deploy time by scanning the published HTML,
-   so flipping the switch does not register the forms in a deploy that already
-   happened. Trigger deploy → *Clear cache and deploy site*.
-3. Re-run the three lines above. `POST /thanks` should become a 303.
+2. **Deploy again.** Any push does it, or Trigger deploy → *Clear cache and
+   deploy site*. This is not optional and is not a cache problem.
+
+**The one-command check**, which beats reading the dashboard, because it tests
+the thing users actually do:
+
+```sh
+# a registered form answers 200, an unknown name answers 404
+curl -s -o /dev/null -w '%{http_code}\n' -X POST https://getlogr.com/thanks \
+  --data-urlencode 'form-name=waitlist' --data-urlencode 'email=t@getlogr.com'
+curl -s -o /dev/null -w '%{http_code}\n' -X POST https://getlogr.com/thanks \
+  --data-urlencode 'form-name=does-not-exist' --data-urlencode 'email=t@getlogr.com'
+```
+
+**Run both lines, not just the first.** A 200 on its own proves only that
+something answered; it is the 404 on the bogus name that proves Netlify is
+matching on the form name rather than the path happening to be reachable. Note
+that a successful POST files a real submission, so use an obviously fake
+address and delete it afterwards.
 
 The markup needs nothing. `data-netlify="true"`, the hidden `form-name`, and
 the honeypot are all already correct in the deployed HTML, which is why this
