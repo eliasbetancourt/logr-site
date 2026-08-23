@@ -424,8 +424,12 @@
     <p>Join the LOGR waitlist for launch updates and early testing
     opportunities.</p>
 
+    <!-- Both spellings of the opt-in are present on purpose. Netlify's HTML
+         docs show a bare `netlify` attribute, their framework docs show
+         `data-netlify="true"`, and the parser accepts either. Carrying both
+         costs nothing and removes it as a suspect. -->
     <form name="waitlist" method="POST" action="/thanks"
-          data-netlify="true" data-netlify-honeypot="bot-field">
+          netlify data-netlify="true" data-netlify-honeypot="bot-field">
       <input type="hidden" name="form-name" value="waitlist">
       <p class="sr-only">
         <label>Leave this field empty: <input name="bot-field"></label>
