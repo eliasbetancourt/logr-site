@@ -35,6 +35,48 @@ Two commitments in that text are real and operational, not boilerplate:
   and video moderation needs more than the banned-phrase filter, which only
   applies to message text.
 
+## Form detection has to be switched on, and it is not code
+
+**Symptom:** submitting the waitlist form lands on
+`404 - No webpage was found for https://getlogr.com/thanks`.
+
+**It is not `thanks.html`.** Measured against the live site:
+
+```
+GET  /thanks -> 200      the page exists, pretty URLs work
+POST /thanks -> 404
+POST /       -> 404      even the root refuses the form POST
+```
+
+A POST carrying `form-name` should be intercepted by Netlify before it ever
+reaches the file server, and answered with a 303 to the action URL. Getting a
+404 on **both** paths means no form is registered for this site at all, so the
+POST falls through to a static file server, which has no POST handler and says
+404. The redirect target is a red herring: `/thanks` is fine, and the request
+never gets that far.
+
+**Cause:** Netlify stopped detecting forms automatically. It is now opt-in per
+site, and this site has never had it on.
+
+**Fix, all in the Netlify UI, no commit needed:**
+
+1. Project configuration → **Forms** → enable **form detection**.
+2. **Redeploy.** Detection runs at deploy time by scanning the published HTML,
+   so flipping the switch does not register the forms in a deploy that already
+   happened. Trigger deploy → *Clear cache and deploy site*.
+3. Re-run the three lines above. `POST /thanks` should become a 303.
+
+The markup needs nothing. `data-netlify="true"`, the hidden `form-name`, and
+the honeypot are all already correct in the deployed HTML, which is why this
+looks like a code bug and is not one. `form-action 'self'` in the CSP already
+allows the post, since it is same-origin.
+
+**This is the fourth time this project has shipped correct code against a
+service nobody switched on**, after the APNs push key, custom SMTP, and the SMS
+provider. The tell is always the same: every layer looks healthy and the
+feature delivers nothing. When something here does not work, check whether the
+service is enabled before reading the code.
+
 ## The waitlist form
 
 `index.html` carries a Netlify Forms signup (`name="waitlist"`). Netlify's
