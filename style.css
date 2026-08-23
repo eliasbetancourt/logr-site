@@ -615,6 +615,13 @@ img { max-width: 100%; display: block; }
 .prose a { color: var(--text); border-bottom: 1px solid var(--border); font-weight: 600; }
 .prose a:hover { border-bottom-color: var(--text); }
 
+/* .prose a and .button are equal specificity, and .prose a comes later, so
+   without this a .button link inside .prose (thanks.html's "Back to the
+   site") loses to it: black text on a black button, plus an underline the
+   button was never meant to carry. Scoped back to the button's own rule. */
+.prose a.button { color: var(--surface); border-bottom: 0; }
+.prose a.button:hover { border-bottom: 0; }
+
 .updated { margin: 0 0 36px !important; color: var(--muted); font-size: 14px; }
 
 .lede { font-size: 18px !important; color: var(--body) !important; margin-bottom: 30px !important; }
