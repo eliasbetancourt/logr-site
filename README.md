@@ -4,18 +4,77 @@ The marketing and legal site for the LOGR iOS app. Plain static HTML and CSS,
 no build step, no dependencies, and **no JavaScript at all**. Deployed on
 Netlify.
 
+## Copy rules
+
+**No em dashes.** This is the app repo's rule, in `CLAUDE.md` there, and it
+applies to everything here too: page copy, the legal pages, code comments, and
+commit messages. Not `—`, not `–`, not `&mdash;`, not `&ndash;`. Use a comma, a
+period, or a hyphen. It creeps back in one paragraph at a time, so check it:
+
+```sh
+# must print nothing
+grep -rn -e '—' -e '–' -e '&mdash;' -e '&ndash;' . \
+  --include="*.html" --include="*.css" --include="*.md"
+```
+
+**Direct and plain beats clever.** Say what the app does in the fewest words
+that are still true. If a sentence is doing persuasion instead of explaining,
+cut it.
+
+**Do not tell the reader about their own life.** Copy that describes the
+reader's setup in detail excludes everyone whose setup is different. A draft of
+the landing page opened by listing where the reader's training "lives now": a
+notes app, the team's spreadsheet, a coach's texts. Anyone without a team or a
+coach reads that and concludes the app is not for them. Name what the app holds
+and let people recognise their own case:
+
+| Instead of | Write |
+|---|---|
+| "your team's lifts and your coach's programming live in three places" | "however you train, it goes in the same place" |
+| "follow people a few steps ahead of you" | "follow people whose training you like" |
+| "you do not need a program or a plan to begin" | "no plan needed" |
+
+**Anything not built yet says so, in the sentence and in a label.** The coaches
+card carries `PLANNED, NOT BUILT YET` and says "Later:" in the sentence itself.
+Same for coach tools and video in the FAQ. The site has no users to disappoint
+yet, and this is why it can be trusted when it does.
+
+**Never write "analytics" unqualified.** On a workout app it reads as the
+training analysis, which is the thing the app is for. See *Staying unlike Hevy*
+for the full story.
+
 ## Before this goes live
 
 Settled: governing law is **Pennsylvania** (terms section 12), and the domain
 is **getlogr.com**, which is owned. Mail forwarding for `support@getlogr.com`
 and a read-through of the legal pages are with Cohen.
 
-**The one hard blocker left: the privacy policy and `/account-deletion`
-describe deletion that removes the sign-in record and releases the email
-address.** That is true only once `delete_my_account()` has landed in the app
-**and** the migration is applied to the live database. Do not paste the privacy
-URL into App Store Connect before then, and do not make the site public with
-`/account-deletion` promising something the app does not yet do.
+**The privacy policy and `/account-deletion` describe deletion that removes the
+sign-in record and releases the email address.** That is only true if
+`delete_my_account()` deletes the `auth.users` row, not just the profile row.
+
+**As of 2026-08-27 the live function appears to do exactly that**, and the
+evidence is a real destructive test rather than a reading of the code: the top
+of `supabase/demo_account_restore.sql` in the app repo records running
+`select public.delete_my_account();` against the live database on 2026-08-24
+and finding "auth user 0, profile 0, workouts 0, posts 0", with the cascade
+taking GoTrue's `identities` rows with it. Releasing the identity is what
+releases the address.
+
+**Two things to know before treating this as closed:**
+
+1. **The app repo contradicts itself, and the stale half is the dangerous
+   half.** `supabase/profile_settings.sql` still holds a `create or replace`
+   of `delete_my_account()` whose whole body is
+   `delete from public.profiles where id = auth.uid();`, and the docstring on
+   `deleteAccount()` in `lib/auth.js` still says the `auth.users` row "can only
+   be removed by a service-role call". Anyone re-running that migration file
+   would quietly revert the live function to the profiles-only version, and
+   **this site would go on promising something the app had stopped doing, with
+   nothing to signal it.** Fix the file and the docstring in the app repo.
+2. This was confirmed by reading the app repo, not by querying the database
+   from here. Re-run the destructive test on a throwaway account, or check the
+   live function body, before pasting the privacy URL into App Store Connect.
 
 ## User-generated content
 
@@ -111,6 +170,47 @@ is needed. Submissions land under **Forms** in the Netlify dashboard.
 - Free tier allows 100 submissions a month. Set up an email notification on the
   form so signups do not sit unread.
 
+### Reading the deployed HTML tells you whether detection ran
+
+Netlify **rewrites the form tag** when it registers a form: it strips the
+`netlify` and `data-netlify` opt-in attributes, drops
+`data-netlify-honeypot`, and normalises the quoting. So the source and the
+deployed page do not match, and that mismatch is the good outcome.
+
+```html
+<!-- what is in index.html -->
+<form name="waitlist" method="POST" action="/thanks"
+      netlify data-netlify="true" data-netlify-honeypot="bot-field">
+
+<!-- what https://getlogr.com/ served on 2026-08-27, opt-in attributes gone -->
+<form action='/thanks' method='POST' name='waitlist'>
+```
+
+Seeing the second form means the build bot found and processed the form on that
+deploy, which is the failure described under *Form detection has to be switched
+on* not happening. It is a read-only check and costs nothing:
+
+```sh
+curl -s https://getlogr.com/ | grep -A1 '<form'
+```
+
+It is strong evidence, not proof of a working POST. The two `curl -X POST`
+lines in that section are still the only test of what a real submitter gets,
+and they file a real submission, so run them with an obviously fake address and
+delete it from the dashboard afterwards.
+
+### The `role` field
+
+The form also carries an optional `<select name="role">`, so the four audiences
+on the page can be told apart on the list: `solo`, `team`, `coached`,
+`starting`, `coach`. It is optional on purpose. The email is the conversion and
+nothing should stand between it and the button.
+
+**Netlify learns a form's fields when it scans the deployed HTML, which means a
+new field is captured from the next deploy onward, not retroactively.** Early
+submissions will simply have no `role`. That is expected and is not worth
+chasing.
+
 ## Local preview
 
 ```bash
@@ -142,11 +242,16 @@ styles** (see below).
 governs `style="..."` **attributes**, not just `<style>` blocks, so any inline
 style is dropped. This does not fail loudly: the element just renders unstyled.
 
-It has already happened once. The activity chart's seven bars carried
+It has already happened once. The CSS activity chart's seven bars carried
 `style="height:35%"` and would have rendered flat on Netlify while looking
 correct under every local server, because a local server sends no CSP header.
-The heights now live in `style.css` as `.bars i:nth-child(n)`. Keep new styles
-in the stylesheet, or the same class of bug comes back invisible.
+The heights were moved into `style.css`, and that chart has since been replaced
+by the real screenshots, so the bug is gone along with the element that carried
+it. **The rule is not.** Keep new styles in the stylesheet, or the same class of
+bug comes back invisible.
+
+The screenshots do not reopen this: `img-src 'self' data:` already covers files
+served from this site, and they are styled entirely from `style.css`.
 
 ## Deploy
 
@@ -184,7 +289,8 @@ public, since it is what a shared link and a search result both read.
 ## Structure
 
 ```
-index.html                landing page: hero, features, teams, story, FAQ, waitlist
+index.html                landing page: hero, features, who it's for, story,
+                          FAQ, waitlist
 privacy.html              -> App Store Connect "Privacy Policy URL"
 terms.html                -> App Store Connect EULA, if you use a custom one
 support.html              -> App Store Connect "Support URL"
@@ -194,6 +300,7 @@ cookies.html              says the site sets none, because it sets none
 thanks.html               waitlist confirmation
 404.html                  not found
 style.css                 the whole design system
+screens/                  the eight app screenshots, see The screenshots below
 netlify.toml              publish dir, security headers
 serve.py                  local preview with Netlify's clean URLs
 robots.txt / sitemap.xml  crawling. Both name the domain
@@ -207,6 +314,33 @@ The favicon is a placeholder: a white `L` on the app's `#1a1a1a` at the card
 radius. The app icon itself is the full LOGR wordmark, which is illegible at
 16px, so it could not be reused directly. Swap `favicon.svg` if a real mark
 gets drawn, then re-render the two PNGs from it.
+
+## Who the page is written for
+
+The landing page says one thing: **all of your training belongs in the same
+log, whoever it came from.** Personal sessions, team training, and whatever a
+coach hands you, plus the people you do it with.
+
+- The hero states it in two sentences, and that is the only place it is stated
+  outright. There was briefly a "one place" section under the proof bar as
+  well, listing what fits in the log. It said the same thing as the who it's
+  for section directly below it, so it went. **The page makes this argument
+  once.** If a new section needs the same sentence to work, the section is the
+  problem.
+- The **who it's for section** (`#who`) is four short cards, and each audience
+  has to be able to see itself: athletes, teams, anyone starting out, coaches
+  and creators. The first three describe the app today. The fourth splits what
+  exists now (team chat, a following, sharing routines) from what does not
+  (training plans athletes follow and log in the app), and labels it.
+- Beginners are a real audience, not a footnote, and the argument for them is a
+  feature that already exists: follow whoever you like, save a routine from a
+  post, run it.
+
+Keep new copy pointed at that, and keep it short. Three ways this page has gone
+wrong before: the generic version, "track your workouts, share with friends",
+which is the competition's page; the overwritten version, which explained the
+reader's own training to them; and the repetitive version, which made the same
+point in two sections in a row. See *Copy rules* at the top.
 
 ## Staying unlike Hevy
 
@@ -270,6 +404,73 @@ The page STRUCTURE came from the wireframe (hero, proof bar, three feature
 sections, teams, story, FAQ, waitlist). Its warm-paper palette and square
 corners did not.
 
-The phone mockups in the hero and feature sections are built from CSS, not
-images. Replace them with real App Store screenshots when you have them: each
-one is a `.phone` block, and `.screen-wrap` is the frame it sits in.
+## The screenshots
+
+The phone mockups used to be drawn in CSS: a few hundred lines of fake posts,
+fake set tables and a fake seven-bar activity chart. They are **real
+screenshots** now, and all of that CSS is gone. What is left is the frame:
+`.shot-frame` is the black body, `.shot img` is the screen, `.shot figcaption`
+is the label under it.
+
+### The grouping is the point, and it comes from the file names
+
+Sources live in `~/Desktop/App Screens`, named `Pair <n><letter> <screen>.png`.
+**A pair stays together in one feature section.** That is the whole convention:
+the group number says which section, the letter says the order within it.
+
+| Source | On the site | Section |
+|---|---|---|
+| `Pair 1a Library Screen` | `pair-1a-library.jpg` | 02, See your progress |
+| `Pair 1b Chase Gallery` | `pair-1b-gallery.jpg` | 02, See your progress |
+| `Pair 2a Live Workout Screen` | `pair-2a-live-workout.jpg` | 01, Log every session |
+| `Pair 2b Workout Preview Screen` | `pair-2b-routine.jpg` | 01, Log every session |
+| `Pair 2c Workout Complete Notes Screen` | `pair-2c-complete.jpg` | 01, Log every session |
+| `Pair 3a Feed Screen` | `pair-3a-feed.jpg` | 03, Train together |
+| `Pair 3b Post Screen` | `pair-3b-post.jpg` | 03, Train together |
+| `Playlists Screen` | `playlists.jpg` | hero, behind |
+
+The web file names keep the group prefix so this table stays checkable against
+the folder. `Other/` is not used: one of the two is named "Old" and the other
+is an alternate take.
+
+Two placements are worth the note:
+
+- **Group 2 renders b, a, c**, not a, b, c. The section is the arc of a
+  session, so it reads routine, then live, then summary, which is the order the
+  app puts them in. It also lands `2a`, the strongest of the three, in the
+  middle slot.
+- **Playlists is the one screen with no pair**, so it gets no section. It sits
+  behind the front phone in the hero, where a background phone is texture
+  rather than a claim, and where its album art is the only colour in an
+  otherwise monochrome hero. It is also the reason the hero repeats only ONE
+  screenshot (`3a`) from the sections below.
+
+The captions under each phone are **the app's own tab and screen names**
+(Library, Gallery, Feed, Post), so a reader who installs the app finds the word
+they just read. Do not invent friendlier ones.
+
+### Regenerating them
+
+Sources are 1206x2622 (iPhone 16 Pro at 3x) and about 6 MB for the set. The web
+copies are 440px wide, which is 2x the widest they are ever displayed, and 568
+KB for all eight.
+
+```sh
+cd ~/logr-site
+sips --resampleWidth 440 -s format jpeg -s formatOptions 86 \
+  "$HOME/Desktop/App Screens/Pair 3a Feed Screen.png" --out screens/pair-3a-feed.jpg
+```
+
+**JPEG, not WebP, and that is a tooling limit rather than a preference.** This
+machine has no `cwebp`, no ImageMagick, and its `ffmpeg` has no WebP encoder;
+`sips` reads WebP but cannot write it. WebP would be roughly a third smaller,
+so install `webp` and reconvert if the page ever needs the weight back.
+
+Everything below the hero carries `loading="lazy"`, so a first paint downloads
+the two hero images and nothing else. Every `<img>` also carries `width` and
+`height`, and `.shot img` sets the matching `aspect-ratio`, so the boxes are
+reserved before the files land and the page does not jump while they load.
+
+**Do not resize these by eye.** The aspect ratio is written into the CSS as
+`440 / 956`. A source at a different device size needs that number changed too,
+or every screenshot letterboxes inside its frame.

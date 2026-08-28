@@ -56,6 +56,24 @@ img { max-width: 100%; display: block; }
   border: 0;
 }
 
+/* Parked off-screen rather than hidden, so it is reachable by tab but never
+   painted until it has focus. The page opens on a sticky header and a hero,
+   which is a lot of nav to walk through on a keyboard. */
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: -9999px;
+  z-index: 30;
+  padding: 12px 18px;
+  background: var(--text);
+  color: var(--surface);
+  border-radius: 0 0 var(--radius-btn) 0;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.skip-link:focus { left: 0; }
+
 /* ── Header ───────────────────────────────────────────────────────────── */
 
 .site-header {
@@ -174,145 +192,70 @@ img { max-width: 100%; display: block; }
   font-weight: 600;
 }
 
-/* ── Phone mockups, drawn in the app's own colours ────────────────────── */
+/* ── Screenshots ──────────────────────────────────────────────────────── */
 
+/* These used to be phone UIs drawn in CSS, a few hundred lines of fake posts
+   and fake set tables. They are real screenshots now, so the frame is all the
+   CSS that is left: a black body at the app's own text colour, and the image
+   inside it. Sources live in screens/ and are documented in README.md.
+
+   Every image carries width and height attributes and an aspect-ratio here,
+   so the box is reserved before the file arrives and nothing on the page
+   jumps as they load. */
+
+.shot { margin: 0; min-width: 0; }
+
+.shot-frame {
+  display: block;
+  padding: 7px;
+  background: var(--text);
+  border-radius: 28px;
+  box-shadow: 0 14px 34px rgba(26, 26, 26, 0.13);
+}
+
+.shot img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 440 / 956;
+  border-radius: 22px;
+}
+
+/* The app's own word for the screen, so the caption names something the
+   reader will find when they get there. */
+.shot figcaption {
+  margin-top: 14px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: var(--muted);
+}
+
+/* Hero: the one place a phone is rotated. Everything below is flat. */
 .hero-phones { position: relative; height: 600px; }
 
-.phone {
-  position: relative;
-  width: 262px;
-  height: 534px;
-  padding: 10px;
-  background: var(--text);
-  border-radius: 42px;
-  box-shadow: 0 18px 40px rgba(26, 26, 26, 0.14);
-}
+/* Both are placed from the centre and pushed apart by a fixed number of
+   pixels, rather than pinned to the left and right edges. The column they sit
+   in is wider than the pair, so edge pinning opened a gap between two phones
+   that tilt away from each other, which reads as two phones falling over
+   rather than one stack. The offsets are what set the overlap. */
+.hero-phones .shot { position: absolute; left: 50%; }
+.shot-back { width: 224px; top: 36px; transform: translateX(-226px) rotate(-7deg); }
+.shot-front { z-index: 2; width: 246px; top: 0; transform: translateX(-24px) rotate(6deg); }
 
-.phone-speaker {
-  position: absolute;
-  top: 20px; left: 50%;
-  transform: translateX(-50%);
-  z-index: 2;
-  width: 72px; height: 16px;
-  background: var(--text);
-  border-radius: 20px;
-}
-
-.phone-ui {
-  position: relative;
-  height: 100%;
-  padding: 40px 12px 14px;
-  background: var(--bg);
-  border-radius: 34px;
-  overflow: hidden;
-}
-
-.phone-back { position: absolute; top: 32px; left: 4%; transform: rotate(-7deg); }
-.phone-front { position: absolute; top: 0; right: 3%; transform: rotate(6deg); }
-
-.ui-top, .ui-title, .timer { display: flex; justify-content: space-between; }
-.ui-top { font-size: 8px; color: var(--muted); }
-.ui-title { margin: 16px 0; font-size: 18px; font-weight: 800; letter-spacing: -0.01em; }
-
-.post { display: flex; align-items: center; gap: 8px; margin: 12px 0 8px; font-size: 10px; }
-.post b { font-weight: 700; }
-
-.post small,
-.profile-head small,
-.routine-card small { display: block; margin-top: 2px; color: var(--muted); }
-
-.avatar { width: 26px; height: 26px; background: var(--border); border-radius: 50%; }
-.avatar.large { width: 44px; height: 44px; }
-
-.post-card, .routine-card, .chart {
-  padding: 11px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  font-size: 10px;
-}
-
-.post-card.short { height: 70px; }
-.stats { display: flex; gap: 8px; margin-top: 18px; color: var(--muted); }
-
-.post-actions { padding: 9px 2px; color: var(--muted); font-size: 10px; }
-
-.timer { margin-bottom: 14px; font-size: 16px; font-weight: 800; }
-
-.timer span {
-  padding: 5px 10px;
-  background: var(--text);
-  color: var(--surface);
-  border-radius: 8px;
-  font-size: 9px;
-  font-weight: 700;
-}
-
-.exercise {
-  margin-bottom: 8px;
-  padding: 10px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  font-size: 9px;
-}
-
-.exercise > b { font-size: 11px; font-weight: 700; }
-
-.exercise div {
-  display: grid;
-  grid-template-columns: 0.5fr 1.5fr 1fr 0.8fr;
-  gap: 3px;
-  margin-top: 8px;
-  text-align: center;
-}
-
-.exercise div:first-of-type { color: var(--muted); font-size: 7px; letter-spacing: 0.5px; }
-
-.profile-head { display: flex; align-items: center; gap: 10px; margin: 8px 0 14px; }
-
-.profile-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  padding: 12px 0;
-  margin-bottom: 12px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  text-align: center;
-  font-size: 7px;
-  color: var(--muted);
-}
-
-.profile-stats b { display: block; font-size: 14px; color: var(--text); }
-
-.chart { height: 130px; margin-bottom: 10px; color: var(--muted); }
-
-.bars { display: flex; align-items: end; gap: 7px; height: 82px; padding-top: 8px; }
-.bars i { flex: 1; display: block; background: var(--text); border-radius: 3px; }
-
-/* Bar heights are here rather than on a style attribute, which the CSP in
-   netlify.toml blocks (style-src 'self' governs attributes too, and allowing
-   them would mean 'unsafe-inline'). */
-.bars i:nth-child(1) { height: 35%; }
-.bars i:nth-child(2) { height: 60%; }
-.bars i:nth-child(3) { height: 42%; }
-.bars i:nth-child(4) { height: 78%; }
-.bars i:nth-child(5) { height: 55%; }
-.bars i:nth-child(6) { height: 88%; }
-.bars i:nth-child(7) { height: 70%; }
-
-.bottom-nav {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
+/* Feature sections: a level row, no overlap and no tilt. Sizing is left to
+   flex rather than a class per count, so a group of three shrinks to fit the
+   same card a group of two sits comfortably in. */
+.shot-group {
   display: flex;
-  align-items: center;
-  justify-content: space-around;
-  height: 42px;
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-  color: var(--muted);
+  align-items: flex-start;
+  justify-content: center;
+  gap: 14px;
+  width: 100%;
+  min-width: 0;
 }
+
+.shot-group .shot { flex: 1 1 0; max-width: 208px; }
 
 /* ── Proof bar ────────────────────────────────────────────────────────── */
 
@@ -427,16 +370,25 @@ img { max-width: 100%; display: block; }
 
 .feature.reverse .screen-wrap { order: 2; }
 
+/* Padding rather than a fixed height: a row of two screenshots and a row of
+   three are different heights, and the card should sit on whichever it got.
+
+   min-width: 0 is load-bearing on phones. A grid item defaults to min-width
+   auto, which sizes the 1fr track to the item's min-content, and the row of
+   three screenshots is 504px wide even though .shot-group is meant to scroll
+   inside its own box below 560px. Without this the track won the argument: the
+   card, the copy beside it and the whole page grew to 557px, so every phone
+   scrolled sideways by 180px. */
 .screen-wrap {
-  display: grid;
-  place-items: center;
-  height: 620px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  padding: 44px 26px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 20px;
 }
-
-.screen-wrap .phone { transform: none; }
 
 .feature-copy { max-width: 520px; }
 
@@ -460,22 +412,27 @@ img { max-width: 100%; display: block; }
   color: var(--body);
 }
 
-/* ── Teams ────────────────────────────────────────────────────────────── */
+/* ── Who it's for ─────────────────────────────────────────────────────── */
 
 .teams { padding: 100px 7vw; background: var(--surface); text-align: center; }
 
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 14px;
   margin-top: 50px;
   text-align: left;
 }
 
+/* A flex column, so the PLANNED label can sit on the bottom edge of a card
+   whose neighbours are all different lengths. It used to be absolutely
+   positioned against a fixed min-height, which only worked while every card
+   held one short paragraph. */
 .team-grid article {
-  position: relative;
-  min-height: 230px;
-  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  min-height: 250px;
+  padding: 26px;
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-card);
@@ -489,9 +446,28 @@ img { max-width: 100%; display: block; }
   color: var(--muted);
 }
 
-.team-grid h3 { margin: 40px 0 12px; font-size: 22px; font-weight: 800; letter-spacing: -0.01em; }
+.team-grid h3 { margin: 36px 0 12px; font-size: 21px; font-weight: 800; letter-spacing: -0.01em; }
 .team-grid p { margin: 0; color: var(--body); line-height: 1.6; font-size: 15px; }
-.team-grid small { position: absolute; bottom: 20px; }
+
+/* What the card is promising rather than describing. Set apart from the
+   sentence above it, which is the part that exists today. */
+.team-grid .next {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.team-grid small { margin-top: auto; padding-top: 20px; }
+
+.teams-foot {
+  max-width: 620px;
+  margin: 44px auto 0;
+  color: var(--body);
+  font-size: 16px;
+  line-height: 1.7;
+}
 
 /* ── Story ────────────────────────────────────────────────────────────── */
 
@@ -550,10 +526,25 @@ img { max-width: 100%; display: block; }
 .waitlist { padding: 100px 6vw; background: var(--surface); text-align: center; }
 .waitlist p { color: var(--body); font-size: 17px; }
 
-.waitlist form { display: flex; gap: 10px; max-width: 540px; margin: 30px auto 14px; }
+/* Email and button on row one, the optional question on row two. Placement is
+   explicit because auto-placement would put the question beside the email
+   instead of under it, and because the DOM order is the tab order we want:
+   fill both fields, then submit. */
+.waitlist form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  max-width: 540px;
+  margin: 30px auto 14px;
+  text-align: left;
+}
 
-.waitlist input {
-  flex: 1;
+.waitlist input[type="email"] { grid-area: 1 / 1; }
+.waitlist form .button { grid-area: 1 / 2; }
+.waitlist .field { grid-area: 2 / 1 / 3 / 3; }
+
+.waitlist input,
+.waitlist select {
   min-width: 0;
   padding: 15px 16px;
   background: var(--bg);
@@ -565,7 +556,27 @@ img { max-width: 100%; display: block; }
 }
 
 .waitlist input::placeholder { color: var(--muted); }
-.waitlist input:focus { outline: 2px solid var(--text); outline-offset: -2px; }
+
+.waitlist input:focus,
+.waitlist select:focus { outline: 2px solid var(--text); outline-offset: -2px; }
+
+/* Secondary to the email by design: smaller, quieter, and skippable. */
+.waitlist .field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+
+.waitlist .field label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--body);
+  white-space: nowrap;
+}
+
+.waitlist .field label span { color: var(--muted); font-weight: 600; }
+.waitlist .field select { flex: 1; padding: 11px 12px; font-size: 14px; }
 .waitlist small { color: var(--muted); font-size: 13px; }
 .waitlist small a { text-decoration: underline; }
 
@@ -698,6 +709,14 @@ img { max-width: 100%; display: block; }
 
 /* ── Responsive ───────────────────────────────────────────────────────── */
 
+/* Four audience cards need more room than three did. They go 2x2 well before
+   the rest of the page breaks, and drop to one column at 560 with everything
+   else. */
+@media (max-width: 1100px) {
+  .team-grid { grid-template-columns: repeat(2, 1fr); }
+  .team-grid article { min-height: 0; }
+}
+
 @media (max-width: 900px) {
   /* Logo and CTA share row 1, nav drops to row 2. Without the explicit
      rows, auto-placement pushes the CTA onto a third row of its own. */
@@ -711,13 +730,13 @@ img { max-width: 100%; display: block; }
   .header-cta { grid-row: 1; grid-column: 2; }
   .hero { grid-template-columns: 1fr; padding-top: 56px; }
   .hero-phones { height: 560px; margin-top: 50px; }
-  .phone-back { left: 10%; }
-  .phone-front { right: 10%; }
+  /* One column, so the card is the full width of the page and the screenshots
+     can be larger than they are beside a paragraph. */
+  .shot-group .shot { max-width: 236px; }
   .proof-bar { flex-wrap: wrap; gap: 20px; }
   .intro, .feature, .story, .faq, .streak-head { grid-template-columns: 1fr; }
   .streak-head { gap: 24px; margin-bottom: 40px; }
   .feature.reverse .screen-wrap { order: 0; }
-  .team-grid { grid-template-columns: 1fr; }
   .site-footer { grid-template-columns: 2fr 1fr 1fr; }
   .story { gap: 36px; }
   .intro { gap: 24px; }
@@ -731,18 +750,34 @@ img { max-width: 100%; display: block; }
   .hero-copy > p { font-size: 16px; }
   .hero-actions { flex-direction: column; align-items: flex-start; gap: 18px; }
   .trust-row { flex-direction: column; gap: 8px; }
-  .hero-phones { height: 450px; }
-  .phone { width: 208px; height: 424px; border-radius: 34px; }
-  .phone-ui { padding: 34px 9px 10px; border-radius: 27px; }
-  .phone-back { left: -2%; }
-  .phone-front { right: -2%; }
+  .hero-phones { height: 420px; }
+  .shot-back { width: 168px; top: 26px; transform: translateX(-170px) rotate(-7deg); }
+  .shot-front { width: 186px; transform: translateX(-18px) rotate(6deg); }
+  .shot-frame { padding: 5px; border-radius: 22px; }
+  .shot img { border-radius: 18px; }
+  .shot figcaption { margin-top: 10px; }
+
+  /* A row of three at this width would be about 110px per phone, which is not
+     worth looking at. They keep a readable size and the row scrolls in its own
+     box instead, the same way the consistency grid does. A row of two still
+     fits, so it never scrolls. */
+  .screen-wrap { padding: 30px 14px; }
+  .shot-group { justify-content: flex-start; overflow-x: auto; gap: 12px; }
+  .shot-group .shot { flex: 0 0 auto; width: 160px; max-width: none; }
   .proof-bar { justify-content: flex-start; gap: 14px; font-size: 14px; }
   .intro, .feature, .teams, .story, .streak, .faq, .waitlist { padding: 70px 6vw; }
+  .team-grid { grid-template-columns: 1fr; }
   .streak-legend { gap: 12px 18px; font-size: 12px; }
   .streak-legend b { margin-left: 0; }
-  .screen-wrap { height: 500px; }
-  .waitlist form { flex-direction: column; }
-  .waitlist input { width: 100%; }
+
+  /* One column, and the explicit row/column placement goes with it: DOM order
+     is already email, question, button. */
+  .waitlist form { grid-template-columns: 1fr; }
+  .waitlist input[type="email"],
+  .waitlist form .button,
+  .waitlist .field { grid-area: auto; }
+  .waitlist .field { flex-direction: column; align-items: stretch; gap: 7px; }
+  .waitlist .field label { white-space: normal; }
   .site-footer { grid-template-columns: 1fr 1fr; gap: 32px; }
   .prose { padding-top: 44px; }
 }
