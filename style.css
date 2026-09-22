@@ -129,6 +129,44 @@ img { max-width: 100%; display: block; }
 .button:hover { opacity: 0.88; }
 .button.small { padding: 11px 18px; font-size: 13px; }
 
+/* ── App Store badge ──────────────────────────────────────────────────────
+   The classic black "Download on the App Store" badge, built from real markup
+   instead of an image so it stays crisp and themeable without breaking the
+   no-JS, self-hosted CSP. Two sizes: default (hero) and .small (header). */
+
+.app-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 18px 11px 14px;
+  background: #000000;
+  border-radius: var(--radius-btn);
+}
+
+.app-badge:hover { opacity: 0.88; }
+
+.app-badge-icon {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  fill: #ffffff;
+}
+
+.app-badge-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+  color: #ffffff;
+}
+
+.app-badge-eyebrow { font-size: 10px; font-weight: 500; letter-spacing: 0.02em; }
+.app-badge-store { margin-top: 1px; font-size: 19px; font-weight: 600; letter-spacing: -0.01em; }
+
+.app-badge.small { padding: 7px 14px 7px 10px; gap: 8px; border-radius: 10px; }
+.app-badge.small .app-badge-icon { width: 18px; height: 18px; }
+.app-badge.small .app-badge-eyebrow { font-size: 8px; }
+.app-badge.small .app-badge-store { font-size: 14px; }
+
 .text-link {
   font-size: 14px;
   font-weight: 700;
@@ -162,7 +200,7 @@ img { max-width: 100%; display: block; }
 .hero h1 {
   margin: 0 0 24px;
   max-width: 780px;
-  font-size: clamp(46px, 6vw, 82px);
+  font-size: clamp(42px, 5vw, 68px);
   line-height: 1.02;
   font-weight: 900;
   letter-spacing: -0.02em;
@@ -220,18 +258,7 @@ img { max-width: 100%; display: block; }
   border-radius: 22px;
 }
 
-/* The app's own word for the screen, so the caption names something the
-   reader will find when they get there. */
-.shot figcaption {
-  margin-top: 14px;
-  text-align: center;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1.2px;
-  color: var(--muted);
-}
-
-/* Hero: the one place a phone is rotated. Everything below is flat. */
+/* The hero pair, the only screenshots on the site. */
 .hero-phones { position: relative; height: 600px; }
 
 /* Both are placed from the centre and pushed apart by a fixed number of
@@ -242,20 +269,6 @@ img { max-width: 100%; display: block; }
 .hero-phones .shot { position: absolute; left: 50%; }
 .shot-back { width: 224px; top: 36px; transform: translateX(-226px) rotate(-7deg); }
 .shot-front { z-index: 2; width: 246px; top: 0; transform: translateX(-24px) rotate(6deg); }
-
-/* Feature sections: a level row, no overlap and no tilt. Sizing is left to
-   flex rather than a class per count, so a group of three shrinks to fit the
-   same card a group of two sits comfortably in. */
-.shot-group {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 14px;
-  width: 100%;
-  min-width: 0;
-}
-
-.shot-group .shot { flex: 1 1 0; max-width: 208px; }
 
 /* ── Proof bar ────────────────────────────────────────────────────────── */
 
@@ -339,77 +352,14 @@ img { max-width: 100%; display: block; }
 .streak-legend i { width: 12px; }
 .streak-legend b { margin-left: auto; font-size: 11px; letter-spacing: 1.6px; }
 
-/* ── Feature sections ─────────────────────────────────────────────────── */
+/* ── Section headings ────────────────────────────────────────────────── */
 
-.intro {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: end;
-  gap: 8vw;
-  padding: 100px 8vw 60px;
-}
-
-.intro h2, .feature h2, .teams h2, .story h2, .faq h2, .waitlist h2,
-.streak-head h2 {
+.teams h2, .story h2, .faq h2, .waitlist h2, .streak-head h2 {
   margin: 0;
   font-size: clamp(32px, 4vw, 52px);
   line-height: 1.08;
   font-weight: 900;
   letter-spacing: -0.02em;
-}
-
-.intro p, .feature-copy > p { color: var(--body); font-size: 17px; line-height: 1.7; }
-
-.feature {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: center;
-  gap: 8vw;
-  padding: 70px 8vw 100px;
-}
-
-.feature.reverse .screen-wrap { order: 2; }
-
-/* Padding rather than a fixed height: a row of two screenshots and a row of
-   three are different heights, and the card should sit on whichever it got.
-
-   min-width: 0 is load-bearing on phones. A grid item defaults to min-width
-   auto, which sizes the 1fr track to the item's min-content, and the row of
-   three screenshots is 504px wide even though .shot-group is meant to scroll
-   inside its own box below 560px. Without this the track won the argument: the
-   card, the copy beside it and the whole page grew to 557px, so every phone
-   scrolled sideways by 180px. */
-.screen-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 0;
-  padding: 44px 26px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-}
-
-.feature-copy { max-width: 520px; }
-
-.feature-number {
-  display: block;
-  margin-bottom: 32px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--border);
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--muted);
-  letter-spacing: 1.2px;
-}
-
-.feature-copy ul { margin: 26px 0 0; padding: 0; list-style: none; }
-
-.feature-copy li {
-  padding: 13px 0;
-  border-top: 1px solid var(--border);
-  font-size: 14.5px;
-  color: var(--body);
 }
 
 /* ── Who it's for ─────────────────────────────────────────────────────── */
@@ -521,7 +471,10 @@ img { max-width: 100%; display: block; }
 .faq details[open] summary .plus { transform: rotate(45deg); }
 .plus { display: inline-block; color: var(--muted); transition: transform 0.15s ease; }
 
-/* ── Waitlist ─────────────────────────────────────────────────────────── */
+/* ── Waitlist / regional availability ────────────────────────────────────
+   Class name kept as "waitlist" even though the copy now covers regions the
+   App Store rollout hasn't reached yet, since the layout is identical and
+   nothing else on the site still links to #waitlist as a signup. */
 
 .waitlist { padding: 100px 6vw; background: var(--surface); text-align: center; }
 .waitlist p { color: var(--body); font-size: 17px; }
@@ -576,7 +529,8 @@ img { max-width: 100%; display: block; }
 }
 
 .waitlist .field label span { color: var(--muted); font-weight: 600; }
-.waitlist .field select { flex: 1; padding: 11px 12px; font-size: 14px; }
+.waitlist .field select,
+.waitlist .field input[type="text"] { flex: 1; padding: 11px 12px; font-size: 14px; }
 .waitlist small { color: var(--muted); font-size: 13px; }
 .waitlist small a { text-decoration: underline; }
 
@@ -730,23 +684,17 @@ img { max-width: 100%; display: block; }
   .header-cta { grid-row: 1; grid-column: 2; }
   .hero { grid-template-columns: 1fr; padding-top: 56px; }
   .hero-phones { height: 560px; margin-top: 50px; }
-  /* One column, so the card is the full width of the page and the screenshots
-     can be larger than they are beside a paragraph. */
-  .shot-group .shot { max-width: 236px; }
   .proof-bar { flex-wrap: wrap; gap: 20px; }
-  .intro, .feature, .story, .faq, .streak-head { grid-template-columns: 1fr; }
+  .story, .faq, .streak-head { grid-template-columns: 1fr; }
   .streak-head { gap: 24px; margin-bottom: 40px; }
-  .feature.reverse .screen-wrap { order: 0; }
   .site-footer { grid-template-columns: 2fr 1fr 1fr; }
   .story { gap: 36px; }
-  .intro { gap: 24px; }
-  .feature { gap: 40px; }
   .faq { gap: 40px; }
 }
 
 @media (max-width: 560px) {
   .hero { min-height: 0; padding-inline: 6vw; }
-  .hero h1 { font-size: 42px; }
+  .hero h1 { font-size: clamp(30px, 9.6vw, 36px); }
   .hero-copy > p { font-size: 16px; }
   .hero-actions { flex-direction: column; align-items: flex-start; gap: 18px; }
   .trust-row { flex-direction: column; gap: 8px; }
@@ -755,17 +703,8 @@ img { max-width: 100%; display: block; }
   .shot-front { width: 186px; transform: translateX(-18px) rotate(6deg); }
   .shot-frame { padding: 5px; border-radius: 22px; }
   .shot img { border-radius: 18px; }
-  .shot figcaption { margin-top: 10px; }
-
-  /* A row of three at this width would be about 110px per phone, which is not
-     worth looking at. They keep a readable size and the row scrolls in its own
-     box instead, the same way the consistency grid does. A row of two still
-     fits, so it never scrolls. */
-  .screen-wrap { padding: 30px 14px; }
-  .shot-group { justify-content: flex-start; overflow-x: auto; gap: 12px; }
-  .shot-group .shot { flex: 0 0 auto; width: 160px; max-width: none; }
   .proof-bar { justify-content: flex-start; gap: 14px; font-size: 14px; }
-  .intro, .feature, .teams, .story, .streak, .faq, .waitlist { padding: 70px 6vw; }
+  .teams, .story, .streak, .faq, .waitlist { padding: 70px 6vw; }
   .team-grid { grid-template-columns: 1fr; }
   .streak-legend { gap: 12px 18px; font-size: 12px; }
   .streak-legend b { margin-left: 0; }
