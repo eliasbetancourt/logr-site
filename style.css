@@ -587,6 +587,12 @@ img { max-width: 100%; display: block; }
 .prose a.button { color: var(--surface); border-bottom: 0; }
 .prose a.button:hover { border-bottom: 0; }
 
+/* The same carve-out for the App Store badge, which sits inside .prose on
+   the page behind a shared link (netlify/edge-functions/app-link.js). */
+.prose a.app-badge,
+.prose a.app-badge:hover { border-bottom: 0; }
+.prose .app-link-store { margin: 0 0 26px; }
+
 .updated { margin: 0 0 36px !important; color: var(--muted); font-size: 14px; }
 
 .lede { font-size: 18px !important; color: var(--body) !important; margin-bottom: 30px !important; }

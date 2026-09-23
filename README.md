@@ -1,8 +1,12 @@
 # logr-site
 
 The marketing and legal site for the LOGR iOS app. Plain static HTML and CSS,
-no build step, no dependencies, and **no JavaScript at all**. Deployed on
+no build step, no dependencies, and **no JavaScript in any page**. Deployed on
 Netlify.
+
+The one piece of code is an edge function that runs on Netlify's servers and
+draws the page behind a link shared from the app. It sends no script to the
+browser. See *Links shared from the app*.
 
 ## Copy rules
 
@@ -14,7 +18,7 @@ period, or a hyphen. It creeps back in one paragraph at a time, so check it:
 ```sh
 # must print nothing
 grep -rn -e '—' -e '–' -e '&mdash;' -e '&ndash;' . \
-  --include="*.html" --include="*.css" --include="*.md"
+  --include="*.html" --include="*.css" --include="*.md" --include="*.js"
 ```
 
 **Direct and plain beats clever.** Say what the app does in the fewest words
@@ -273,14 +277,18 @@ links have no `.html` in them.
 5. **Forms** → the `waitlist` form appears after the first deploy. Add an email
    notification there, or signups accumulate with nobody being told.
 
-### The domain is written into three files
+### The domain is written into four files
 
 `getlogr.com` appears in the canonical and `og:` tags of every page, in
-`sitemap.xml`, and in `robots.txt`. If the domain changes:
+`sitemap.xml`, in `robots.txt`, and in `netlify/edge-functions/app-link.js`.
+If the domain changes:
 
 ```bash
-grep -rln "getlogr.com" . --include="*.html" --include="*.xml" --include="*.txt"
+grep -rln "getlogr.com" . --include="*.html" --include="*.xml" --include="*.txt" --include="*.js"
 ```
+
+The app has it too: `LINKS.website` in `lib/appInfo.js` and
+`ios.associatedDomains` in `app.json`, which needs a new build to change.
 
 Until DNS is pointed, those tags name a domain that does not resolve. That is
 harmless for a preview deploy and should not be left that way once the site is
@@ -302,6 +310,10 @@ thanks.html               waitlist confirmation
 style.css                 the whole design system
 screens/                  the eight app screenshots, see The screenshots below
 netlify.toml              publish dir, security headers
+netlify/edge-functions/app-link.js
+                          the page behind a link shared from the app
+.well-known/apple-app-site-association
+                          which links iOS opens in the app, see below
 serve.py                  local preview with Netlify's clean URLs
 robots.txt / sitemap.xml  crawling. Both name the domain
 favicon.svg               PLACEHOLDER mark, see below
@@ -314,6 +326,79 @@ The favicon is a placeholder: a white `L` on the app's `#1a1a1a` at the card
 radius. The app icon itself is the full LOGR wordmark, which is illegible at
 16px, so it could not be reused directly. Swap `favicon.svg` if a real mark
 gets drawn, then re-render the two PNGs from it.
+
+## Links shared from the app
+
+Every share in the app sends one of three links, built in `lib/appInfo.js`
+there:
+
+| Link | Shared from |
+|---|---|
+| `getlogr.com/post/<uuid>` | a post in the feed or on its own screen, a session in History |
+| `getlogr.com/routine/<uuid>` | My Routines |
+| `getlogr.com/@<username>` | a profile, a badge, an invite |
+
+**With LOGR installed, the link opens the app on that post, routine or
+profile.** That is a Universal Link, and it takes two halves, one per repo:
+
+- The app claims the domain: `ios.associatedDomains` in `app.json` is
+  `applinks:getlogr.com`. That is an entitlement, so **only a new native build
+  carries it**. A build from before it opens every link in Safari no matter
+  what this site serves.
+- The site agrees: `.well-known/apple-app-site-association` names the app
+  (`234GLLDCQN.com.eliasbetancourt.LOGR`, Team ID then bundle id) and the
+  three paths. The Team ID was read off the Apple Development certificate on
+  the Mac this was written on. Check it against *Membership details* in the
+  Apple Developer account if links still open Safari on a new build.
+
+**Without the app, the same link opens a page here** that says what was
+shared and sends them to the App Store. `netlify/edge-functions/app-link.js`
+draws it on Netlify's servers, per link. That is the only reason it is code
+and not a static page: its *Already have LOGR?* link is `logr://post/<uuid>`,
+which has to carry the id from the URL, and no page here runs a script to
+build it. That link is for in-app browsers (Instagram, Snapchat, TikTok),
+which load every link themselves and never hand a Universal Link to the app.
+The page also carries Apple's Smart App Banner, which in Safari reads *Open*
+when the app is installed and passes the link along.
+
+A path that is not one of the three shapes, or a handle the app would never
+have allowed, falls through to the 404 page.
+
+### The paths live in four places
+
+`ROUTES` and `config.path` in `app-link.js`, the `components` in the
+association file, and `parseDeepLink()` in the app's `lib/deepLinks.js`. A new
+kind of link changes all four, plus a new app build.
+
+### The headers are set twice, on purpose
+
+`netlify.toml`'s headers are only promised for static files, so `app-link.js`
+sets the same CSP and security headers on its own pages. Change one, change
+both.
+
+### Checking it once deployed
+
+```sh
+# must be 200, JSON, and no redirect. Apple follows no redirects for this file
+curl -sI https://getlogr.com/.well-known/apple-app-site-association
+# what Apple's CDN holds, which is what devices actually read
+curl -s https://app-site-association.cdn-apple.com/a/v1/getlogr.com
+# the fallback page
+curl -s https://getlogr.com/@logrdemo | grep '<h1>'
+```
+
+Apple's CDN caches the association file for up to a day or two, so a change
+to it reaches phones that slowly. Two iOS behaviours look like bugs and are
+not:
+
+- **Typing or pasting a link into Safari never opens the app.** A tap on a
+  link does. Test from Messages or Notes.
+- **Tapping the `getlogr.com` breadcrumb in the corner, after a link opened
+  the app, tells iOS to prefer Safari** for this domain from then on. Long-press
+  a link and choose *Open in LOGR* to switch it back.
+
+To try the page locally, `netlify dev` runs the edge function. `serve.py`
+does not.
 
 ## Who the page is written for
 

@@ -1,12 +1,18 @@
 # Static site, no build step. Netlify serves privacy.html at /privacy
 # automatically, so no redirects are needed for the clean URLs.
+#
+# The one piece of code is netlify/edge-functions/app-link.js, which Netlify
+# finds by its folder and runs on the server. It draws the page behind a link
+# shared from the app (/post/..., /routine/..., /@...). See README.md.
 
 [build]
   publish = "."
   command = ""
 
-# There is no JavaScript on this site, so script-src stays 'none'. The waitlist
+# No page on this site runs JavaScript, so script-src stays 'none'. The waitlist
 # posts to Netlify Forms on this same origin, which is what form-action allows.
+# app-link.js sets these same headers on its own pages, since these are only
+# promised for static files. Change one, change both.
 [[headers]]
   for = "/*"
   [headers.values]
@@ -15,3 +21,11 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "geolocation=(), camera=(), microphone=(), interest-cohort=()"
     Content-Security-Policy = "default-src 'self'; style-src 'self'; img-src 'self' data:; script-src 'none'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'"
+
+# Tells iOS which links open the app instead of Safari. Apple reads it as
+# JSON, and the file has no extension to say so. It must answer 200 at exactly
+# this path with no redirect, or Universal Links silently never switch on.
+[[headers]]
+  for = "/.well-known/apple-app-site-association"
+  [headers.values]
+    Content-Type = "application/json"
