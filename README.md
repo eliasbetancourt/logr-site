@@ -329,7 +329,7 @@ gets drawn, then re-render the two PNGs from it.
 
 ## Links shared from the app
 
-Every share in the app sends one of three links, built in `lib/appInfo.js`
+Every share in the app sends one of four links, built in `lib/appInfo.js`
 there:
 
 | Link | Shared from |
@@ -337,6 +337,7 @@ there:
 | `getlogr.com/post/<uuid>` | a post in the feed or on its own screen, a session in History |
 | `getlogr.com/routine/<uuid>` | My Routines |
 | `getlogr.com/@<username>` | a profile, a badge, an invite |
+| `getlogr.com/join/<code>` | Invite Teammates on a team, community or group chat |
 
 **With LOGR installed, the link opens the app on that post, routine or
 profile.** That is a Universal Link, and it takes two halves, one per repo:
@@ -347,7 +348,7 @@ profile.** That is a Universal Link, and it takes two halves, one per repo:
   what this site serves.
 - The site agrees: `.well-known/apple-app-site-association` names the app
   (`234GLLDCQN.com.eliasbetancourt.LOGR`, Team ID then bundle id) and the
-  three paths. The Team ID was read off the Apple Development certificate on
+  four paths. The Team ID was read off the Apple Development certificate on
   the Mac this was written on. Check it against *Membership details* in the
   Apple Developer account if links still open Safari on a new build.
 
@@ -361,14 +362,35 @@ which load every link themselves and never hand a Universal Link to the app.
 The page also carries Apple's Smart App Banner, which in Safari reads *Open*
 when the app is installed and passes the link along.
 
-A path that is not one of the three shapes, or a handle the app would never
+A path that is not one of the four shapes, or a handle the app would never
 have allowed, falls through to the 404 page.
+
+### The invite page reads the database, and needs two variables
+
+`/join/<code>` is the one page that looks something up: it calls
+`invite_link_card()` (the app repo's `supabase/space_invite_links.sql`, the
+only function the public key may call) so a link dropped in a team's group
+chat previews as *Join Harvard M Soccer on LOGR* with who sent it and how many
+are in, instead of a generic invite. It needs these in Netlify, under *Site
+configuration, Environment variables*:
+
+| Variable | Value |
+|---|---|
+| `SUPABASE_URL` | `https://wzijnstensrrjdcsdpij.supabase.co` |
+| `SUPABASE_ANON_KEY` | the app's `EXPO_PUBLIC_SUPABASE_ANON_KEY` (public by design, it ships inside the app) |
+
+Without them, or when the lookup takes longer than 2.5 seconds, the page is
+drawn generic ("You're invited on LOGR") and still works. The page also
+prints the code itself, since a link does not survive an App Store install:
+someone who installs from it can tap the link again, or type the code in the
+app.
 
 ### The paths live in four places
 
 `ROUTES` and `config.path` in `app-link.js`, the `components` in the
 association file, and `parseDeepLink()` in the app's `lib/deepLinks.js`. A new
-kind of link changes all four, plus a new app build.
+kind of link changes all four, plus a new app build. Apple's CDN can take a
+day or two to pick up a changed association file.
 
 ### The headers are set twice, on purpose
 

@@ -592,6 +592,7 @@ img { max-width: 100%; display: block; }
 .prose a.app-badge,
 .prose a.app-badge:hover { border-bottom: 0; }
 .prose .app-link-store { margin: 0 0 26px; }
+.prose .app-link-code { color: var(--muted); font-size: 14px; margin-top: 18px; }
 
 .updated { margin: 0 0 36px !important; color: var(--muted); font-size: 14px; }
 

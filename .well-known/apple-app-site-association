@@ -6,7 +6,8 @@
         "components": [
           { "/": "/post/*", "comment": "A post, shared from the feed or the post's own screen" },
           { "/": "/routine/*", "comment": "A routine, shared from My Routines" },
-          { "/": "/@*", "comment": "A profile, shared from it, from a badge, or in an invite" }
+          { "/": "/@*", "comment": "A profile, shared from it, from a badge, or in an invite" },
+          { "/": "/join/*", "comment": "An invite to a team, community or group chat" }
         ]
       }
     ]

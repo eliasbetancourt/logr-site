@@ -1,6 +1,6 @@
 // The page behind every link the app shares: getlogr.com/post/<id>,
-// /routine/<id> and /@<handle>. The app builds them in lib/appInfo.js and
-// routes them in lib/deepLinks.js (both in the app repo).
+// /routine/<id>, /@<handle> and /join/<invite code>. The app builds them in
+// lib/appInfo.js and routes them in lib/deepLinks.js (both in the app repo).
 //
 // With LOGR installed, iOS normally never asks for this page. The link is a
 // Universal Link, claimed by /.well-known/apple-app-site-association, and it
@@ -18,8 +18,16 @@
 // runs JavaScript to build it. The HTML this returns still has no script in
 // it, so the CSP's script-src 'none' holds.
 //
-// The three paths are written in FOUR places that must agree: ROUTES below,
+// The four paths are written in FOUR places that must agree: ROUTES below,
 // `config.path` at the bottom, the association file, and the app's parser.
+//
+// A /join/ link is the one page that reads the database: it asks
+// invite_link_card() (the app repo's supabase/space_invite_links.sql, the one
+// function anon may call) for the team's real name and size, so a link dropped
+// in a team's group chat previews as "Join Harvard M Soccer on LOGR" rather
+// than as a generic invite. It needs SUPABASE_URL and SUPABASE_ANON_KEY in the
+// site's Netlify environment variables; without them, or if the lookup is slow
+// or fails, the page is drawn generic and still works.
 
 const SITE = 'https://getlogr.com';
 const APP_STORE_ID = '6795712216';
@@ -32,11 +40,22 @@ const APP_STORE = `https://apps.apple.com/app/id${APP_STORE_ID}`;
 // server retries a missing `/@` as, from being drawn as somebody's profile.
 // Anything else is not a link the app made, and falls through to the 404.
 const HANDLE_MAX = 30;
+// An invite code is 8 letters and digits (the app's normalizeInviteCode).
 const ROUTES = [
   { kind: 'post', re: /^\/post\/([0-9a-f-]{36})\/?$/i },
   { kind: 'routine', re: /^\/routine\/([0-9a-f-]{36})\/?$/i },
   { kind: 'profile', re: /^\/@([a-z0-9_]+(?:\.[a-z0-9_]+)*)\/?$/i },
+  { kind: 'join', re: /^\/join\/([a-z0-9]{8})\/?$/i },
 ];
+
+// How long a /join/ page waits on the database before drawing itself generic.
+// A link preview bot gives up after a few seconds, and a slow card is worse
+// than a plain one.
+const CARD_TIMEOUT_MS = 2500;
+
+// A crowd only helps once it is a crowd. The app's lib/shareCopy.js uses the
+// same number.
+const SOCIAL_PROOF_MIN = 3;
 
 // Copied from the [[headers]] block in netlify.toml, which is only promised
 // for static files. Keep the two in step.
@@ -48,6 +67,77 @@ const SECURITY_HEADERS = {
   'Content-Security-Policy':
     "default-src 'self'; style-src 'self'; img-src 'self' data:; script-src 'none'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'",
 };
+
+// " on LOGR", unless the name already says it ("Join LOGR on LOGR").
+function onLogr(name) {
+  return /logr/i.test(String(name || '')) ? '' : ' on LOGR';
+}
+
+/**
+ * What the database says about an invite code, or null when it cannot say:
+ * no credentials in this environment, too slow, or unreachable. `{ ok: false }`
+ * is a real answer (the link has been turned off, run out, or its space is
+ * gone), and draws a different page from null.
+ */
+async function inviteCard(code) {
+  const url = Netlify.env.get('SUPABASE_URL');
+  const key = Netlify.env.get('SUPABASE_ANON_KEY');
+  if (!url || !key) return null;
+  const abort = new AbortController();
+  const timer = setTimeout(() => abort.abort(), CARD_TIMEOUT_MS);
+  try {
+    const res = await fetch(`${url}/rest/v1/rpc/invite_link_card`, {
+      method: 'POST',
+      headers: { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ p_code: code }),
+      signal: abort.signal,
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (_) {
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// An invite. With the card: the space's name, who sent it and how many are in,
+// which is the whole reason to tap. Without it: the same page, generic.
+function joinCopy(code, card) {
+  const appPath = `join/${code}`;
+  if (card && card.ok === false) {
+    return {
+      title: 'This invite has expired',
+      heading: 'This invite link no longer works',
+      lede: 'Ask whoever sent it for a new one. LOGR is free on the App Store in the meantime.',
+      appPath,
+      openLabel: 'Open LOGR',
+    };
+  }
+  const name = card?.ok ? String(card.name || '').trim() : '';
+  const type = card?.ok ? card.type : null;
+  const n = Number(card?.member_count) || 0;
+  const noun = type === 'team' ? 'team' : type === 'community' ? 'community' : 'group';
+  const inviter = card?.inviter_username ? `@${card.inviter_username} invited you. ` : '';
+  const crowd = n >= SOCIAL_PROOF_MIN
+    ? `${n} ${type === 'team' ? 'teammates' : 'athletes'} are already logging their training in there. `
+    : '';
+  const next = card?.grants === 'request'
+    ? 'Get LOGR free on the App Store, then tap this link again to ask to join.'
+    : 'Get LOGR free on the App Store, then tap this link again to jump straight in.';
+  return {
+    title: name ? `Join ${name}${onLogr(name)}` : `You're invited to a ${type ? noun : 'team'} on LOGR`,
+    heading: name
+      ? (type === 'team' ? `Join the rest of ${name}` : `Join ${name}${onLogr(name)}`)
+      : "You're invited on LOGR",
+    lede: `${inviter}${crowd}${next}`,
+    appPath,
+    openLabel: name ? `Open ${name} in the app` : 'Open the invite in the app',
+    // Typed by hand in the app (Messages, Browse, Have a code) if the link
+    // does not make it through the install.
+    code,
+  };
+}
 
 // Say what the link is and what the app does with it. Nothing about who sent
 // it: the page cannot know, and the same link may sit in a public story.
@@ -107,7 +197,7 @@ function badge(small) {
 
 // Header and footer are the same markup every other page on the site carries
 // (see 404.html). A change to either there belongs here too.
-function render({ url, title, heading, lede, appUrl, openLabel }) {
+function render({ url, title, heading, lede, appUrl, openLabel, code }) {
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -152,6 +242,7 @@ function render({ url, title, heading, lede, appUrl, openLabel }) {
   <p class="lede">${esc(lede)}</p>
   <p class="app-link-store">${badge(false)}</p>
   <p class="app-link-open">Already have LOGR? <a href="${esc(appUrl)}">${esc(openLabel)}</a>.</p>
+  ${code ? `<p class="app-link-code">Invite code <strong>${esc(code)}</strong>. In the app, open Messages, tap Browse, then Have a code.</p>` : ''}
 </main>
 
 <footer class="site-footer" id="footer">
@@ -196,9 +287,12 @@ export default async (request, context) => {
     if (!match) continue;
     if (kind === 'profile' && match[1].length > HANDLE_MAX) break;
     // Stored ids and handles are lowercase, so the page and the app link use
-    // that form whatever case the URL arrived in.
-    const key = match[1].toLowerCase();
-    const copy = copyFor(kind, key);
+    // that form whatever case the URL arrived in. An invite code is the other
+    // way round: minted in capitals.
+    const key = kind === 'join' ? match[1].toUpperCase() : match[1].toLowerCase();
+    const copy = kind === 'join'
+      ? joinCopy(key, request.method === 'HEAD' ? null : await inviteCard(key))
+      : copyFor(kind, key);
     const html = render({
       ...copy,
       url: `${SITE}/${copy.appPath}`,
@@ -214,7 +308,7 @@ export default async (request, context) => {
 };
 
 export const config = {
-  path: ['/post/*', '/routine/*', '/@*'],
+  path: ['/post/*', '/routine/*', '/@*', '/join/*'],
   // If this function ever throws, serve what the site would have without it
   // (the 404 page) rather than Netlify's error page.
   onError: 'bypass',
