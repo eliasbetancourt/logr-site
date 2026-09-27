@@ -8,10 +8,12 @@
 // cases that are left:
 //
 //   - No app. The page says what was shared and sends them to the App Store.
-//   - The app, inside an in-app browser (Instagram, Snapchat, TikTok). Those
-//     load every link themselves and never hand a Universal Link to the app
-//     it belongs to, so the page carries a logr:// link that does the same
-//     job by hand. The app reads both forms.
+//   - The app, inside an in-app browser (Instagram, Snapchat, TikTok), or a
+//     link typed or PASTED into Safari's address bar. iOS never hands either
+//     of those to the app (Apple's rule: a Universal Link opens the app only
+//     when it is TAPPED from another site or app), so the page leads with a
+//     big Open in LOGR button, a logr:// link that does the same job in one
+//     tap, and the App Store second. The app reads both forms.
 //
 // It is rendered here instead of as a static page for one reason: that logr://
 // link has to carry the id or handle from the URL, and no page on this site
@@ -240,8 +242,9 @@ function render({ url, title, heading, lede, appUrl, openLabel, code }) {
 <main class="prose app-link">
   <h1>${esc(heading)}</h1>
   <p class="lede">${esc(lede)}</p>
+  <p class="app-link-primary"><a class="button" href="${esc(appUrl)}">${esc(openLabel)}</a></p>
+  <p class="app-link-open">Don't have LOGR yet?</p>
   <p class="app-link-store">${badge(false)}</p>
-  <p class="app-link-open">Already have LOGR? <a href="${esc(appUrl)}">${esc(openLabel)}</a>.</p>
   ${code ? `<p class="app-link-code">Invite code <strong>${esc(code)}</strong>. In the app, open Messages, tap Browse, then Have a code.</p>` : ''}
 </main>
 
