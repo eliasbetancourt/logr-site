@@ -306,6 +306,9 @@ account-deletion.html     Apple looks for this; linked from the footer
 community-guidelines.html plain-language version of Terms sections 5 and 6
 cookies.html              says the site sets none, because it sets none
 thanks.html               waitlist confirmation
+tiktok.html               where TikTok's Share Kit hands back after a share
+                          from the app; the association file claims /tiktok
+                          so it opens the app, this page is the fallback
 404.html                  not found
 style.css                 the whole design system
 screens/                  the eight app screenshots, see The screenshots below
