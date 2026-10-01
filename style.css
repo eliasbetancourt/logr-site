@@ -5,7 +5,15 @@
      borders #f0f0f0, error #ef4444, success #22c55e.
    Cards are white, radius 16, 1px #f0f0f0. Buttons are #1a1a1a, radius 14.
    The wordmark is 800 weight with POSITIVE tracking, matching FeedScreen.
-   There is no JavaScript on this site. */
+   There is no JavaScript on this site, and the CSP drops inline styles, so
+   every rule lives here.
+
+   Written phone first in spirit: most people meet LOGR on a phone, from a link
+   or a search, so the phone view is the first impression. Below 760px the
+   header is one row, the hero's phones show on the first screen, the
+   audience cards swipe sideways, the consistency grid fits without scrolling,
+   and tables on the legal pages turn into stacked cards. See README.md,
+   Design. */
 
 :root {
   --bg: #f9f9f9;
@@ -13,11 +21,23 @@
   --surface: #ffffff;
   --muted: #9ca3af;
   --border: #f0f0f0;
+  /* The app's stronger hairline, for an edge that has to show on white. */
+  --line: #e5e7eb;
   --error: #ef4444;
   --success: #22c55e;
   --body: #4b5563;
   --radius-card: 16px;
   --radius-btn: 14px;
+  --gutter: 6vw;
+  --header-h: 68px;
+  --shadow-card: 0 1px 2px rgba(26, 26, 26, 0.04), 0 8px 24px rgba(26, 26, 26, 0.05);
+  --shadow-phone: 0 26px 60px rgba(26, 26, 26, 0.2), 0 6px 16px rgba(26, 26, 26, 0.08);
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  color-scheme: light;
+}
+
+@media (max-width: 760px) {
+  :root { --gutter: 20px; --header-h: 58px; }
 }
 
 * { box-sizing: border-box; }
@@ -34,17 +54,24 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
   line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
   /* This is a logging app, so figures line up in columns wherever they are
      read together: the stat rows, the set tables, the volume pills. */
   font-variant-numeric: tabular-nums;
 }
 
+h1, h2, h3 { text-wrap: balance; }
+p, li { text-wrap: pretty; }
+
 a { color: inherit; text-decoration: none; }
 img { max-width: 100%; display: block; }
 
+:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+
 /* The header is sticky, so an anchor jump would otherwise land with the
    target's first line hidden underneath it. */
-[id] { scroll-margin-top: 84px; }
+[id] { scroll-margin-top: calc(var(--header-h) + 16px); }
 
 .sr-only {
   position: absolute;
@@ -76,6 +103,9 @@ img { max-width: 100%; display: block; }
 
 /* ── Header ───────────────────────────────────────────────────────────── */
 
+/* Frosted where the browser can blur (Safari and Chrome both can), so the
+   page reads as passing under it rather than showing through it. Without
+   blur the bar stays nearly opaque, which is what it always was. */
 .site-header {
   position: sticky;
   top: 0;
@@ -83,13 +113,22 @@ img { max-width: 100%; display: block; }
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  height: 68px;
-  padding: 0 5vw;
+  height: var(--header-h);
+  padding: 0 max(var(--gutter), env(safe-area-inset-right)) 0 max(var(--gutter), env(safe-area-inset-left));
   background: rgba(249, 249, 249, 0.94);
   border-bottom: 1px solid var(--border);
 }
 
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .site-header {
+    background: rgba(249, 249, 249, 0.88);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+  }
+}
+
 .logo {
+  justify-self: start;
   font-size: 22px;
   font-weight: 800;
   letter-spacing: 2px;
@@ -104,6 +143,7 @@ img { max-width: 100%; display: block; }
   color: var(--muted);
 }
 
+.site-nav a { transition: color 0.15s ease; }
 .site-nav a:hover,
 .site-nav a[aria-current="page"] { color: var(--text); }
 
@@ -124,9 +164,12 @@ img { max-width: 100%; display: block; }
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
+  transition: transform 0.15s var(--ease), opacity 0.15s ease;
 }
 
 .button:hover { opacity: 0.88; }
+/* A phone has no hover, so a press answers instead. */
+.button:active { transform: scale(0.97); }
 .button.small { padding: 11px 18px; font-size: 13px; }
 
 /* ── App Store badge ──────────────────────────────────────────────────────
@@ -141,9 +184,11 @@ img { max-width: 100%; display: block; }
   padding: 11px 18px 11px 14px;
   background: #000000;
   border-radius: var(--radius-btn);
+  transition: transform 0.15s var(--ease), opacity 0.15s ease;
 }
 
 .app-badge:hover { opacity: 0.88; }
+.app-badge:active { transform: scale(0.97); }
 
 .app-badge-icon {
   width: 26px;
@@ -188,14 +233,26 @@ img { max-width: 100%; display: block; }
 
 /* ── Hero ─────────────────────────────────────────────────────────────── */
 
+/* Copy and trust row on the left, the phones on the right, the left column
+   centred against the phones. On a phone it is one column in reading order:
+   the copy, the phones, then the trust row, so the screenshots start on the
+   first screen instead of after three lines of small print. */
 .hero {
   display: grid;
   grid-template-columns: 1.05fr 0.95fr;
+  grid-template-rows: 1fr auto auto 1fr;
+  grid-template-areas:
+    ".     phones"
+    "copy  phones"
+    "trust phones"
+    ".     phones";
   align-items: center;
   min-height: 660px;
   padding: 80px 7vw 60px;
   overflow: hidden;
 }
+
+.hero-copy { grid-area: copy; }
 
 .hero h1 {
   margin: 0 0 24px;
@@ -217,18 +274,39 @@ img { max-width: 100%; display: block; }
 
 .hero-actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 24px;
+  gap: 18px 24px;
   margin: 32px 0;
 }
 
 .trust-row {
+  grid-area: trust;
   display: flex;
-  gap: 24px;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
   font-size: 13px;
   color: var(--muted);
   font-weight: 600;
 }
+
+.trust-row li { display: flex; align-items: center; gap: 6px; }
+
+/* A quiet entrance, once, on load. It moves with `translate`, which adds to
+   the phones' own `transform` instead of replacing it. Off for anyone who
+   asks for less motion (the end of this file). */
+@keyframes rise {
+  from { opacity: 0; translate: 0 18px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+.hero-copy { animation: rise 0.6s var(--ease) both; }
+.hero-phones .shot { animation: rise 0.8s var(--ease) both; }
+.hero-phones .shot-front { animation-delay: 0.08s; }
+.trust-row { animation: rise 0.6s var(--ease) 0.12s both; }
 
 /* ── Screenshots ──────────────────────────────────────────────────────── */
 
@@ -248,7 +326,7 @@ img { max-width: 100%; display: block; }
   padding: 7px;
   background: var(--text);
   border-radius: 28px;
-  box-shadow: 0 14px 34px rgba(26, 26, 26, 0.13);
+  box-shadow: var(--shadow-phone);
 }
 
 .shot img {
@@ -258,17 +336,46 @@ img { max-width: 100%; display: block; }
   border-radius: 22px;
 }
 
-/* The hero pair, the only screenshots on the site. */
-.hero-phones { position: relative; height: 600px; }
+/* The hero pair, the only screenshots on the site. Sized from one number,
+   the front phone's width, so the pair keeps its shape at every size: the
+   back phone is 0.91 of it, sits 0.146 of it lower, and the two are pushed
+   apart from the centre by their own widths. The column is wider than the
+   pair, so the offsets, not the edges, set the overlap. */
+.hero-phones {
+  --front: 246px;
+  grid-area: phones;
+  position: relative;
+  height: calc(var(--front) * 2.42);
+}
 
-/* Both are placed from the centre and pushed apart by a fixed number of
-   pixels, rather than pinned to the left and right edges. The column they sit
-   in is wider than the pair, so edge pinning opened a gap between two phones
-   that tilt away from each other, which reads as two phones falling over
-   rather than one stack. The offsets are what set the overlap. */
+/* A dot grid behind the phones, fading out from the middle: the consistency
+   grid's own texture, in the page background's grey. */
+.hero-phones::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(var(--front) * 3.2);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(rgba(26, 26, 26, 0.16) 1.3px, transparent 1.7px) 0 0 / 18px 18px;
+  -webkit-mask-image: radial-gradient(closest-side, #000000 35%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000000 35%, transparent 100%);
+  pointer-events: none;
+}
+
 .hero-phones .shot { position: absolute; left: 50%; }
-.shot-back { width: 224px; top: 36px; transform: translateX(-226px) rotate(-7deg); }
-.shot-front { z-index: 2; width: 246px; top: 0; transform: translateX(-24px) rotate(6deg); }
+.shot-back {
+  width: calc(var(--front) * 0.91);
+  top: calc(var(--front) * 0.146);
+  transform: translateX(-101%) rotate(-7deg);
+}
+.shot-front {
+  z-index: 2;
+  width: var(--front);
+  top: 0;
+  transform: translateX(-10%) rotate(6deg);
+}
 
 /* ── Proof bar ────────────────────────────────────────────────────────── */
 
@@ -310,14 +417,16 @@ img { max-width: 100%; display: block; }
 .streak-head h2 { color: #ffffff; }
 .streak-head p { margin: 0; color: #d1d5db; font-size: 17px; line-height: 1.7; }
 
-/* 182 cells is wider than a phone. It scrolls in its own box rather than
-   letting the page scroll sideways. */
 .streak-scroll { overflow-x: auto; padding-bottom: 6px; }
 
+/* 26 columns of 7. On a phone they shrink to fit the width (about 10px a
+   cell), which reads as the shape of a season at a glance, so nothing has to
+   scroll sideways. */
 .streak-grid {
   display: grid;
   grid-auto-flow: column;
   grid-template-rows: repeat(7, 1fr);
+  grid-auto-columns: minmax(0, 1fr);
   gap: 5px;
   min-width: 760px;
 }
@@ -452,13 +561,17 @@ img { max-width: 100%; display: block; }
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-card);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
+
+.faq details[open] { border-color: var(--line); box-shadow: var(--shadow-card); }
 
 .faq summary {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 16px;
-  padding: 20px 0;
+  padding: 19px 0;
   font-weight: 700;
   font-size: 15.5px;
   list-style: none;
@@ -467,9 +580,33 @@ img { max-width: 100%; display: block; }
 
 .faq summary::-webkit-details-marker { display: none; }
 .faq details p { margin: 0; padding: 0 20px 20px 0; color: var(--body); line-height: 1.7; font-size: 15px; }
-.faq details p a { border-bottom: 1px solid var(--border); }
-.faq details[open] summary .plus { transform: rotate(45deg); }
-.plus { display: inline-block; color: var(--muted); transition: transform 0.15s ease; }
+.faq details p + p { margin-top: -6px; }
+.faq details p a { border-bottom: 1px solid var(--line); font-weight: 600; color: var(--text); }
+/* The + in a soft square, so the row reads as tappable on a phone, where
+   there is no hover to say so. Only the glyph turns into an x when the row
+   opens; the square stays square. The markup's own + is kept for anyone
+   reading the text, and drawn again here so it can rotate on its own. */
+.plus {
+  display: grid;
+  place-items: center;
+  flex: 0 0 28px;
+  height: 28px;
+  border-radius: 9px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0;
+}
+
+.plus::before {
+  content: "+";
+  display: block;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1;
+  transition: transform 0.2s var(--ease);
+}
+
+details[open] > summary .plus::before { transform: rotate(45deg); }
 
 /* ── Waitlist / regional availability ────────────────────────────────────
    Class name kept as "waitlist" even though the copy now covers regions the
@@ -504,7 +641,8 @@ img { max-width: 100%; display: block; }
   border: 1px solid var(--border);
   border-radius: var(--radius-btn);
   font: inherit;
-  font-size: 15px;
+  /* 16px, not 15: iOS zooms the page into any field with smaller text. */
+  font-size: 16px;
   color: var(--text);
 }
 
@@ -530,7 +668,7 @@ img { max-width: 100%; display: block; }
 
 .waitlist .field label span { color: var(--muted); font-weight: 600; }
 .waitlist .field select,
-.waitlist .field input[type="text"] { flex: 1; padding: 11px 12px; font-size: 14px; }
+.waitlist .field input[type="text"] { flex: 1; padding: 11px 12px; font-size: 16px; }
 .waitlist small { color: var(--muted); font-size: 13px; }
 .waitlist small a { text-decoration: underline; }
 
@@ -540,7 +678,7 @@ img { max-width: 100%; display: block; }
   display: grid;
   grid-template-columns: 2fr repeat(4, 1fr);
   gap: 40px;
-  padding: 60px 6vw;
+  padding: 60px 6vw calc(60px + env(safe-area-inset-bottom));
   background: var(--text);
   color: #ffffff;
 }
@@ -548,6 +686,7 @@ img { max-width: 100%; display: block; }
 .site-footer > div { display: flex; flex-direction: column; gap: 12px; }
 .site-footer p, .site-footer small, .site-footer a { color: var(--muted); font-size: 13px; }
 .site-footer p { margin: 0; }
+.site-footer a { transition: color 0.15s ease; }
 .site-footer a:hover { color: #ffffff; }
 .site-footer b { margin-bottom: 6px; font-size: 12px; color: #ffffff; letter-spacing: 0.4px; }
 .footer-logo { margin-bottom: 10px; color: #ffffff; }
@@ -576,8 +715,8 @@ img { max-width: 100%; display: block; }
 .prose p { margin: 0 0 14px; }
 .prose ul { margin: 0 0 16px; padding-left: 20px; }
 .prose li { margin-bottom: 8px; }
-.prose li strong, .prose p strong { color: var(--text); }
-.prose a { color: var(--text); border-bottom: 1px solid var(--border); font-weight: 600; }
+.prose li strong, .prose p strong, .prose td strong { color: var(--text); }
+.prose a { color: var(--text); border-bottom: 1px solid var(--line); font-weight: 600; }
 .prose a:hover { border-bottom-color: var(--text); }
 
 /* .prose a and .button are equal specificity, and .prose a comes later, so
@@ -624,7 +763,54 @@ img { max-width: 100%; display: block; }
 }
 
 .card h3 { margin-top: 0; }
-.card p:last-child { margin-bottom: 0; }
+.card p:last-child,
+.card ul:last-child { margin-bottom: 0; }
+
+/* Cards side by side where there is room (Teen accounts' two age groups),
+   stacked on a phone. */
+.card-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 0 0 20px;
+}
+
+.card-pair .card { margin: 0; }
+.card-pair .card h3 { margin-bottom: 4px; font-size: 18px; font-weight: 800; }
+.card-pair .card .card-sub { margin: 0 0 12px; color: var(--muted); font-size: 13px; font-weight: 700; letter-spacing: 1px; }
+
+/* "On this page" for the long legal pages. A <details> needs no script, and
+   it stays out of the way until opened. Its links are in-page anchors. */
+.toc {
+  margin: 0 0 34px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+}
+
+.toc summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  list-style: none;
+  cursor: pointer;
+}
+
+.toc summary::-webkit-details-marker { display: none; }
+
+.prose .toc ol {
+  margin: 0;
+  padding: 2px 18px 16px 40px;
+  border-top: 1px solid var(--border);
+}
+
+.prose .toc li { margin: 0; padding: 7px 0 0; font-size: 15px; line-height: 1.5; color: var(--muted); }
+.prose .toc a { border-bottom: 0; color: var(--body); font-weight: 600; }
+.prose .toc a:hover { color: var(--text); }
 
 .prose table { width: 100%; border-collapse: collapse; margin: 0 0 20px; font-size: 15px; }
 
@@ -675,26 +861,58 @@ img { max-width: 100%; display: block; }
 /* ── Responsive ───────────────────────────────────────────────────────── */
 
 /* Four audience cards need more room than three did. They go 2x2 well before
-   the rest of the page breaks, and drop to one column at 560 with everything
-   else. */
+   the rest of the page breaks. */
 @media (max-width: 1100px) {
   .team-grid { grid-template-columns: repeat(2, 1fr); }
   .team-grid article { min-height: 0; }
 }
 
 @media (max-width: 900px) {
-  /* Logo and CTA share row 1, nav drops to row 2. Without the explicit
-     rows, auto-placement pushes the CTA onto a third row of its own. */
-  .site-header {
-    height: auto;
-    grid-template-columns: 1fr auto;
-    gap: 10px 16px;
-    padding: 14px 5vw;
+  .site-nav { gap: 20px; font-size: 13px; }
+
+  /* One column in reading order: copy, phones, trust row. */
+  .hero {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    grid-template-areas: "copy" "phones" "trust";
+    min-height: 0;
+    padding: 56px var(--gutter) 56px;
   }
-  .site-nav { grid-row: 2; grid-column: 1 / -1; gap: 20px; flex-wrap: wrap; font-size: 13px; }
-  .header-cta { grid-row: 1; grid-column: 2; }
-  .hero { grid-template-columns: 1fr; padding-top: 56px; }
-  .hero-phones { height: 560px; margin-top: 50px; }
+  .hero-phones { margin-top: 44px; }
+  /* One grouped card, three rows: the shape of the app's own Settings
+     lists, rather than three loose tags. */
+  .trust-row {
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+    max-width: 440px;
+    justify-self: center;
+    margin-top: 30px;
+    padding: 2px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+  }
+  .trust-row li {
+    gap: 12px;
+    padding: 13px 0;
+    border-top: 1px solid var(--border);
+    color: var(--text);
+    font-size: 14.5px;
+  }
+  .trust-row li:first-child { border-top: 0; }
+  .trust-row li span {
+    display: grid;
+    place-items: center;
+    flex: 0 0 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--text);
+    color: #ffffff;
+    font-size: 12px;
+  }
+
   .proof-bar { flex-wrap: wrap; gap: 20px; }
   .story, .faq, .streak-head { grid-template-columns: 1fr; }
   .streak-head { gap: 24px; margin-bottom: 40px; }
@@ -703,22 +921,76 @@ img { max-width: 100%; display: block; }
   .faq { gap: 40px; }
 }
 
-@media (max-width: 560px) {
-  .hero { min-height: 0; padding-inline: 6vw; }
-  .hero h1 { font-size: clamp(30px, 9.6vw, 36px); }
-  .hero-copy > p { font-size: 16px; }
-  .hero-actions { flex-direction: column; align-items: flex-start; gap: 18px; }
-  .trust-row { flex-direction: column; gap: 8px; }
-  .hero-phones { height: 420px; }
-  .shot-back { width: 168px; top: 26px; transform: translateX(-170px) rotate(-7deg); }
-  .shot-front { width: 186px; transform: translateX(-18px) rotate(6deg); }
+/* The phone. */
+@media (max-width: 760px) {
+  /* One row: the logo and a compact App Store button. The section links are
+     in the footer, one scroll away, and a second row of grey links under the
+     logo cost an eighth of the screen on every page. */
+  .site-header { grid-template-columns: 1fr auto; }
+  .site-nav { display: none; }
+  .logo { font-size: 20px; }
+  .header-cta.app-badge { padding: 8px 13px 8px 11px; gap: 6px; border-radius: 11px; }
+  .header-cta .app-badge-eyebrow { display: none; }
+  .header-cta .app-badge-store { margin-top: 0; font-size: 14px; }
+  .header-cta .app-badge-icon { width: 15px; height: 15px; }
+  .header-cta.button { padding: 10px 14px; font-size: 13px; }
+
+  .hero { padding: 34px var(--gutter) 44px; }
+  .hero h1 { margin-bottom: 18px; font-size: clamp(31px, 10.2vw, 44px); letter-spacing: -0.03em; }
+  .hero-copy > p { margin: 0; font-size: 16.5px; line-height: 1.6; }
+  .hero-actions { margin: 26px 0 0; }
+  .eyebrow { margin-bottom: 12px; }
+
+  /* The pair at phone size, kept inside the screen edges with room for the
+     tilt. */
+  .hero-phones { --front: clamp(150px, 45vw, 220px); height: calc(var(--front) * 2.3); margin-top: 38px; }
+  .trust-row { margin-top: 20px; }
   .shot-frame { padding: 5px; border-radius: 22px; }
   .shot img { border-radius: 18px; }
-  .proof-bar { justify-content: flex-start; gap: 14px; font-size: 14px; }
-  .teams, .story, .streak, .faq, .waitlist { padding: 70px 6vw; }
-  .team-grid { grid-template-columns: 1fr; }
+
+  .proof-bar {
+    flex-direction: column;
+    gap: 8px;
+    padding: 30px var(--gutter);
+    text-align: center;
+    font-size: 15px;
+  }
+
+  .teams, .story, .streak, .faq, .waitlist { padding: 64px var(--gutter); }
+
+  .streak-scroll { overflow: visible; padding-bottom: 0; }
+  .streak-grid { min-width: 0; gap: 3px; }
+  .streak-grid i { border-radius: 2px; }
   .streak-legend { gap: 12px 18px; font-size: 12px; }
   .streak-legend b { margin-left: 0; }
+
+  /* The four audiences swipe sideways, each card snapping to the gutter with
+     the next one showing at the edge, instead of a column four screens tall.
+     The row runs edge to edge; its padding puts the first card on the
+     gutter. */
+  .team-grid {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: 82%;
+    gap: 12px;
+    margin: 36px calc(-1 * var(--gutter)) 0;
+    padding: 0 var(--gutter) 4px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 0 var(--gutter);
+    scrollbar-width: none;
+  }
+  .team-grid::-webkit-scrollbar { display: none; }
+  .team-grid article { min-height: 236px; padding: 22px; scroll-snap-align: start; }
+  .team-grid h3 { margin-top: 26px; font-size: 20px; }
+  .teams-foot { margin-top: 28px; font-size: 15px; }
+
+  .story { gap: 20px; }
+  .faq { gap: 28px; }
+  .faq details { padding: 0 16px; }
+  .faq summary { padding: 17px 0; font-size: 15.5px; }
+  .faq details p { padding-right: 4px; }
 
   /* One column, and the explicit row/column placement goes with it: DOM order
      is already email, question, button. */
@@ -726,8 +998,68 @@ img { max-width: 100%; display: block; }
   .waitlist input[type="email"],
   .waitlist form .button,
   .waitlist .field { grid-area: auto; }
+  .waitlist form .button { padding: 16px 24px; font-size: 15px; }
   .waitlist .field { flex-direction: column; align-items: stretch; gap: 7px; }
   .waitlist .field label { white-space: normal; }
-  .site-footer { grid-template-columns: 1fr 1fr; gap: 32px; }
-  .prose { padding-top: 44px; }
+
+  .site-footer {
+    grid-template-columns: 1fr 1fr;
+    gap: 30px 20px;
+    padding: 48px var(--gutter) calc(44px + env(safe-area-inset-bottom));
+  }
+  .site-footer > div:first-child { grid-column: 1 / -1; }
+  .site-footer > div { gap: 10px; }
+  .site-footer a { padding: 2px 0; font-size: 14px; }
+
+  .prose { padding: 32px var(--gutter) 72px; }
+  .prose h1 { font-size: clamp(30px, 9vw, 36px); }
+  .prose h2 { margin-top: 38px; font-size: 20px; }
+  .updated { margin-bottom: 26px !important; }
+  .lede { font-size: 17px !important; }
+  .note, .card { padding: 18px; }
+  .card-pair { grid-template-columns: 1fr; gap: 12px; }
+
+  /* A table with data-label cells becomes one card per row, each cell under
+     its own small heading, instead of three columns squeezed to a word a
+     line. The header row is kept for screen readers, off screen. */
+  .table-scroll { overflow: visible; }
+  .prose table.stack,
+  .prose table.stack tbody,
+  .prose table.stack tr,
+  .prose table.stack td { display: block; width: auto; }
+  .prose table.stack thead {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+  .prose table.stack tr {
+    margin: 0 0 12px;
+    padding: 16px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+  }
+  .prose table.stack td { padding: 0; border: 0; font-size: 15.5px; }
+  .prose table.stack td + td { margin-top: 10px; }
+  .prose table.stack td:first-child { font-size: 17px; }
+  .prose table.stack td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 2px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.01ms !important;
+  }
 }

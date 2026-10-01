@@ -80,6 +80,20 @@ releases the address.
    from here. Re-run the destructive test on a throwaway account, or check the
    live function body, before pasting the privacy URL into App Store Connect.
 
+## The age copy ships with the app build that has age limits
+
+Terms section 1, Privacy sections 1, 3, 6 and 8, the community guidelines,
+support, account deletion, the home page FAQ and the whole of `/teens`
+describe the app's age limits: a birthday on every account, no one under 13,
+the 13 to 15 and 16 to 17 rules, Apple's age range where the law requires an
+age check, and a parent's Screen Time limit. The rules are in the app repo's
+`docs/FEATURE_RULES.md` ("Age limits"). **Deploy these pages together with the
+App Store build that carries them, not before**: until it is live, the pages
+describe an app people cannot download yet. Bump the "Last updated" dates to
+the day they go live. They were written from the app's behaviour, not by a
+lawyer; the app repo's `docs/AGE_LIMITS_LEGAL.md` lists what a lawyer should
+read.
+
 ## User-generated content
 
 Terms section 6, a section on the community guidelines, and two FAQ entries
@@ -303,6 +317,9 @@ privacy.html              -> App Store Connect "Privacy Policy URL"
 terms.html                -> App Store Connect EULA, if you use a custom one
 support.html              -> App Store Connect "Support URL"
 account-deletion.html     Apple looks for this; linked from the footer
+teens.html                Teen accounts: the age rules in plain words, for
+                          teens and parents. Terms section 1 is the binding
+                          version, and the two change together
 community-guidelines.html plain-language version of Terms sections 5 and 6
 cookies.html              says the site sets none, because it sets none
 thanks.html               waitlist confirmation
@@ -495,6 +512,50 @@ category convention rather than anyone's idea.
 
 ## Design
 
+### Phone first
+
+Most people meet LOGR on a phone, from a shared link or a search, so the phone
+view is the first impression and is designed as one, not as the desktop
+squeezed. Check every change at 375px and 320px wide as well as on desktop.
+Below 760px:
+
+- **The header is one row**: the logo and a compact App Store button. The
+  section links are hidden there (they are all in the footer), because a
+  second row of links cost an eighth of the screen on every page. Above
+  760px it is the three-part header it always was. It is frosted
+  (`backdrop-filter`), with a nearly opaque fallback where blur is missing.
+- **The hero is one column in reading order**: copy, phones, trust row. The
+  trust row is AFTER the phones in the markup for that reason, and the grid
+  areas put it back under the copy on a wide screen. The phones are sized from
+  one number, `--front`, so the pair keeps its shape and stays inside the
+  screen edge at any width, and they start on the first screen. The dot grid
+  behind them is `.hero-phones::before`.
+- **The trust row is one grouped card** with three rows, the shape of the app's
+  own Settings lists.
+- **The consistency grid shrinks to fit** (about 10px a cell) instead of
+  scrolling sideways.
+- **The four audience cards swipe sideways** (`scroll-snap`), the next one
+  peeking at the edge, instead of a column four screens tall.
+- **Legal pages**: a table with `class="stack"` and a `data-label` on each
+  cell turns into one card per row, each cell under its own small heading (the
+  privacy table, the teen accounts table). The long pages open with an "On
+  this page" list, a `<details class="toc">` of links to `id`s on every `h2`;
+  `[id]` already carries the sticky header's height as `scroll-margin-top`.
+- Every page's viewport tag has `viewport-fit=cover`, and the header and
+  footer pad by `env(safe-area-inset-*)`, so nothing sits under a notch in
+  landscape or the home indicator.
+- Fields are 16px, because iOS zooms into a field with smaller text.
+- The hero rises in once on load, and every animation and transition is off
+  for anyone who asks for reduced motion.
+
+None of it needs JavaScript, and none of it is an inline style.
+
+The header and footer are the same markup in every page **and** in
+`netlify/edge-functions/app-link.js`. A change to either is a change to all of
+them.
+
+### Tokens
+
 **The site uses the app's own design tokens**, so the two read as one product:
 
 | | |
@@ -515,6 +576,12 @@ sections, teams, story, FAQ, waitlist). Its warm-paper palette and square
 corners did not.
 
 ## The screenshots
+
+**Today the home page shows two of the eight**, both in the hero:
+`pair-2a-live-workout.jpg` behind and `pair-3a-feed.jpg` in front. The
+feature sections the rest were made for were cut from the page
+(`a538eb5`); the files stay in `screens/` so they can come back. What follows
+is how they were grouped while they were all on the page.
 
 The phone mockups used to be drawn in CSS: a few hundred lines of fake posts,
 fake set tables and a fake seven-bar activity chart. They are **real

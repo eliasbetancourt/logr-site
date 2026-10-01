@@ -204,7 +204,7 @@ function render({ url, title, heading, lede, appUrl, openLabel, code }) {
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(lede)}">
 <meta name="robots" content="noindex">
@@ -264,6 +264,7 @@ function render({ url, title, heading, lede, appUrl, openLabel, code }) {
     <b>Support</b>
     <a href="/support">Contact</a>
     <a href="/account-deletion">Account Deletion</a>
+    <a href="/teens">Teen Accounts</a>
     <a href="/community-guidelines">Community Guidelines</a>
   </div>
   <div>
