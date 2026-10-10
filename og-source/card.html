@@ -1,0 +1,123 @@
+<!doctype html>
+<!--
+  The source of og.png, the picture under every link to this site: the
+  preview a shared post, routine, profile or invite shows in Messages,
+  Instagram and the rest. Rendered once to a 1200x630 PNG, never served as a
+  page (the CSP would drop this <style> block anyway). README.md, "The link
+  preview", has the one command that renders it.
+
+  Dark on purpose: a link arrives inside a light grey bubble, and a light card
+  disappears into it. For the light version, take class="dark" off <body>.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  :root {
+    --bg: #f9f9f9;
+    --text: #1a1a1a;
+    --muted: #9ca3af;
+    --dots: rgba(26, 26, 26, 0.14);
+    --frame: #1a1a1a;
+    --badge: #000000;
+    --badge-text: #ffffff;
+  }
+  body.dark {
+    --bg: #1a1a1a;
+    --text: #ffffff;
+    --muted: #6b7280;
+    --dots: rgba(255, 255, 255, 0.10);
+    --frame: #000000;
+    --badge: #ffffff;
+    --badge-text: #000000;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    position: relative;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* The site's hero, word for word, and its App Store badge, scaled up. */
+  .copy {
+    position: absolute;
+    left: 84px;
+    top: 0;
+    bottom: 0;
+    width: 560px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .wordmark { font-size: 30px; font-weight: 800; letter-spacing: 4px; }
+  h1 {
+    margin-top: 34px;
+    font-size: 64px;
+    font-weight: 800;
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+  }
+  h1 em { font-style: normal; color: var(--muted); }
+  .badge {
+    margin-top: 44px;
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 15px 28px 15px 22px;
+    background: var(--badge);
+    border-radius: 18px;
+    color: var(--badge-text);
+  }
+  .badge svg { width: 36px; height: 36px; fill: currentColor; }
+  .badge-text { display: flex; flex-direction: column; line-height: 1.1; }
+  .badge-eyebrow { font-size: 14px; font-weight: 500; letter-spacing: 0.02em; }
+  .badge-store { margin-top: 2px; font-size: 27px; font-weight: 600; letter-spacing: -0.01em; }
+
+  /* The hero's two phones and dot grid, running off the bottom edge. */
+  .phones { position: absolute; left: 628px; top: 0; width: 560px; height: 630px; }
+  .phones::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 760px;
+    height: 760px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(var(--dots) 1.6px, transparent 2px) 0 0 / 22px 22px;
+    -webkit-mask-image: radial-gradient(closest-side, #000000 30%, transparent 100%);
+  }
+  .shot {
+    position: absolute;
+    padding: 9px;
+    background: var(--frame);
+    border-radius: 44px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.18), 0 8px 18px rgba(0, 0, 0, 0.10);
+  }
+  body.dark .shot { box-shadow: 0 0 0 1.5px #3a3a3a, 0 30px 60px rgba(0, 0, 0, 0.5); }
+  .shot img { display: block; width: 100%; border-radius: 36px; }
+  .back { width: 268px; left: 36px; top: 96px; transform: rotate(-7deg); }
+  .front { width: 296px; left: 226px; top: 52px; transform: rotate(6deg); z-index: 2; }
+</style>
+</head>
+<body class="dark">
+  <div class="copy">
+    <div class="wordmark">LOGR</div>
+    <h1>Create routines.<br>Log workouts.<br>Share with <em>friends.</em></h1>
+    <div class="badge">
+      <svg viewBox="0 0 384 512" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+      <span class="badge-text">
+        <span class="badge-eyebrow">Download on the</span>
+        <span class="badge-store">App Store</span>
+      </span>
+    </div>
+  </div>
+  <div class="phones">
+    <div class="shot back"><img src="../screens/pair-2a-live-workout.jpg" alt=""></div>
+    <div class="shot front"><img src="../screens/pair-3a-feed.jpg" alt=""></div>
+  </div>
+</body>
+</html>

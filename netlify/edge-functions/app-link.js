@@ -221,7 +221,7 @@ function render({ url, title, heading, lede, appUrl, openLabel, code }) {
 <meta property="og:image" content="${SITE}/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="LOGR. Training is better together.">
+<meta property="og:image:alt" content="LOGR. Create routines, log workouts, share with friends.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#f9f9f9">
 <link rel="stylesheet" href="/style.css">

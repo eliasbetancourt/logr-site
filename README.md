@@ -339,13 +339,45 @@ robots.txt / sitemap.xml  crawling. Both name the domain
 favicon.svg               PLACEHOLDER mark, see below
 favicon-32.png            rendered from favicon.svg
 apple-touch-icon.png      rendered from favicon.svg
-og.png                    1200x630 link preview
+og.png                    1200x630 link preview, see The link preview below
+og-source/card.html       what og.png is rendered from
 ```
 
 The favicon is a placeholder: a white `L` on the app's `#1a1a1a` at the card
 radius. The app icon itself is the full LOGR wordmark, which is illegible at
 16px, so it could not be reused directly. Swap `favicon.svg` if a real mark
 gets drawn, then re-render the two PNGs from it.
+
+## The link preview
+
+`og.png` is the picture under every link to this site, the shared post,
+routine, profile and invite links included: the card a link turns into in
+Messages, Instagram, Slack and the rest. One picture for every page, named in
+each page's `og:image` and in `app-link.js`.
+
+It is the site's hero squeezed into 1200x630: the wordmark, the headline word
+for word, the App Store badge, and the hero's two phones and dot grid running
+off the bottom edge. **It is dark on purpose**: a link arrives inside a light
+grey bubble, and a light card disappears into it. The light version is the
+same file without `class="dark"` on `<body>`.
+
+It is rendered, not drawn by hand. `og-source/card.html` uses the real
+screenshots in `screens/`, so a new screenshot there is a new preview after one
+command:
+
+```sh
+cd ~/logr-site
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new \
+  --hide-scrollbars --force-device-scale-factor=1 --window-size=1200,630 \
+  --screenshot="$PWD/og.png" "file://$PWD/og-source/card.html"
+```
+
+Change the headline here when the hero's changes, and the `og:image:alt` on
+every page with it:
+
+```sh
+grep -rn 'og:image:alt' . --include="*.html" --include="*.js"
+```
 
 ## Links shared from the app
 
