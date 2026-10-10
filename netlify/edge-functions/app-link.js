@@ -55,6 +55,17 @@ const ROUTES = [
 // than a plain one.
 const CARD_TIMEOUT_MS = 2500;
 
+// The picture under each kind of link, rendered from og-source/ (README, "The
+// link preview"). An expired invite gets the site's own, since its card would
+// say "You're invited" over a title that says the invite has expired.
+const PREVIEWS = {
+  site: { image: 'og.png', alt: 'LOGR. Create routines, log workouts, share with friends.' },
+  post: { image: 'og/post.png', alt: 'LOGR. See the whole session.' },
+  routine: { image: 'og/routine.png', alt: 'LOGR. Save it, start it, log it.' },
+  profile: { image: 'og/profile.png', alt: 'LOGR. Follow their training.' },
+  join: { image: 'og/join.png', alt: "LOGR. You're invited." },
+};
+
 // A crowd only helps once it is a crowd. The app's lib/shareCopy.js uses the
 // same number.
 const SOCIAL_PROOF_MIN = 3;
@@ -114,6 +125,7 @@ function joinCopy(code, card) {
       lede: 'Ask whoever sent it for a new one. LOGR is free on the App Store in the meantime.',
       appPath,
       openLabel: 'Open LOGR',
+      preview: PREVIEWS.site,
     };
   }
   const name = card?.ok ? String(card.name || '').trim() : '';
@@ -135,6 +147,7 @@ function joinCopy(code, card) {
     lede: `${inviter}${crowd}${next}`,
     appPath,
     openLabel: name ? `Open ${name} in the app` : 'Open the invite in the app',
+    preview: PREVIEWS.join,
     // Typed by hand in the app (Messages, Browse, Have a code) if the link
     // does not make it through the install.
     code,
@@ -151,6 +164,7 @@ function copyFor(kind, key) {
       lede: 'Get LOGR free on the App Store to follow them and see their training.',
       appPath: `@${key}`,
       openLabel: 'Open their profile in the app',
+      preview: PREVIEWS.profile,
     };
   }
   if (kind === 'routine') {
@@ -160,6 +174,7 @@ function copyFor(kind, key) {
       lede: 'Get LOGR free on the App Store to see every exercise and start it as a workout.',
       appPath: `routine/${key}`,
       openLabel: 'Open this routine in the app',
+      preview: PREVIEWS.routine,
     };
   }
   return {
@@ -168,6 +183,7 @@ function copyFor(kind, key) {
     lede: 'Get LOGR free on the App Store to see the whole session.',
     appPath: `post/${key}`,
     openLabel: 'Open this workout in the app',
+    preview: PREVIEWS.post,
   };
 }
 
@@ -199,7 +215,7 @@ function badge(small) {
 
 // Header and footer are the same markup every other page on the site carries
 // (see 404.html). A change to either there belongs here too.
-function render({ url, title, heading, lede, appUrl, openLabel, code }) {
+function render({ url, title, heading, lede, appUrl, openLabel, code, preview }) {
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -218,10 +234,10 @@ function render({ url, title, heading, lede, appUrl, openLabel, code }) {
 <meta property="og:url" content="${esc(url)}">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(lede)}">
-<meta property="og:image" content="${SITE}/og.png">
+<meta property="og:image" content="${SITE}/${preview.image}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="LOGR. Create routines, log workouts, share with friends.">
+<meta property="og:image:alt" content="${esc(preview.alt)}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#f9f9f9">
 <link rel="stylesheet" href="/style.css">

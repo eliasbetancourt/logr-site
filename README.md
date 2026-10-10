@@ -328,7 +328,7 @@ tiktok.html               where TikTok's Share Kit hands back after a share
                           so it opens the app, this page is the fallback
 404.html                  not found
 style.css                 the whole design system
-screens/                  the eight app screenshots, see The screenshots below
+screens/                  the app screenshots, see The screenshots below
 netlify.toml              publish dir, security headers
 netlify/edge-functions/app-link.js
                           the page behind a link shared from the app
@@ -339,8 +339,10 @@ robots.txt / sitemap.xml  crawling. Both name the domain
 favicon.svg               PLACEHOLDER mark, see below
 favicon-32.png            rendered from favicon.svg
 apple-touch-icon.png      rendered from favicon.svg
-og.png                    1200x630 link preview, see The link preview below
-og-source/card.html       what og.png is rendered from
+og.png                    1200x630 link preview for the site's own pages
+og/                       one link preview per kind of shared link
+og-source/                what og.png and og/ are rendered from, see The
+                          link preview below
 ```
 
 The favicon is a placeholder: a white `L` on the app's `#1a1a1a` at the card
@@ -350,34 +352,51 @@ gets drawn, then re-render the two PNGs from it.
 
 ## The link preview
 
-`og.png` is the picture under every link to this site, the shared post,
-routine, profile and invite links included: the card a link turns into in
-Messages, Instagram, Slack and the rest. One picture for every page, named in
-each page's `og:image` and in `app-link.js`.
+A link turns into a card in Messages, Instagram, Slack and the rest, and the
+picture on that card is one of five PNGs, all 1200x630:
 
-It is the site's hero squeezed into 1200x630: the wordmark, the headline word
-for word, the App Store badge, and the hero's two phones and dot grid running
-off the bottom edge. **It is dark on purpose**: a link arrives inside a light
-grey bubble, and a light card disappears into it. The light version is the
-same file without `class="dark"` on `<body>`.
+| Picture | Under | Headline |
+|---|---|---|
+| `og.png` | every page of the site itself | Create routines. Log workouts. Share with friends. |
+| `og/post.png` | `/post/<id>` | See the whole session. |
+| `og/routine.png` | `/routine/<id>` | Save it. Start it. Log it. |
+| `og/profile.png` | `/@<handle>`, badge and Achievements links too | Follow their training. |
+| `og/join.png` | `/join/<code>` | You're invited. |
 
-It is rendered, not drawn by hand. `og-source/card.html` uses the real
-screenshots in `screens/`, so a new screenshot there is a new preview after one
-command:
+The static pages name `og.png` in their `og:image`. A shared link's page
+names its own, from `PREVIEWS` in `app-link.js`; an **expired invite** gets
+`og.png`, since "You're invited" would sit over a title saying it expired.
+The title and the domain under the picture still come from the page.
+
+Each card is the site's hero squeezed into the frame: the wordmark with the
+kind of link beside it, a headline, the App Store badge, and two real
+screenshots from `screens/` running off the bottom edge on the hero's dot
+grid. The site's card is the live workout and the feed; a post is the feed
+and a post; a routine is a live workout and the routine; a profile is a
+Library and a Gallery; an invite is the feed and the friends leaderboard (no
+team screen has been taken yet, so swap one in when it is). **They are dark on
+purpose**: a link arrives inside a light grey bubble, and a light card
+disappears into it. The light version is the same page without `class="dark"`
+on `<body>`.
+
+They are rendered, never drawn by hand. `og-source/` holds one page per card
+and the one stylesheet they share, `card.css`; `render.sh` renders all five
+with headless Chrome:
 
 ```sh
-cd ~/logr-site
-"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new \
-  --hide-scrollbars --force-device-scale-factor=1 --window-size=1200,630 \
-  --screenshot="$PWD/og.png" "file://$PWD/og-source/card.html"
+~/logr-site/og-source/render.sh
 ```
 
-Change the headline here when the hero's changes, and the `og:image:alt` on
-every page with it:
+Change a card's headline in its page, its `og:image:alt` with it (`PREVIEWS`
+for the four link cards, every static page for `og.png`), and render again:
 
 ```sh
 grep -rn 'og:image:alt' . --include="*.html" --include="*.js"
 ```
+
+Messages builds a preview on the sender's phone when the link is sent, so a
+new card shows on links sent after the deploy, never on ones already in a
+chat.
 
 ## Links shared from the app
 
@@ -612,8 +631,10 @@ corners did not.
 **Today the home page shows two of the eight**, both in the hero:
 `pair-2a-live-workout.jpg` behind and `pair-3a-feed.jpg` in front. The
 feature sections the rest were made for were cut from the page
-(`a538eb5`); the files stay in `screens/` so they can come back. What follows
-is how they were grouped while they were all on the page.
+(`a538eb5`); the files stay in `screens/` so they can come back, and the
+link previews draw seven of them plus `leaderboard.jpg` (see *The link
+preview*), so **a new screenshot here means re-rendering those too**. What
+follows is how the eight were grouped while they were all on the page.
 
 The phone mockups used to be drawn in CSS: a few hundred lines of fake posts,
 fake set tables and a fake seven-bar activity chart. They are **real
@@ -637,6 +658,7 @@ the group number says which section, the letter says the order within it.
 | `Pair 3a Feed Screen` | `pair-3a-feed.jpg` | 03, Train together |
 | `Pair 3b Post Screen` | `pair-3b-post.jpg` | 03, Train together |
 | `Playlists Screen` | `playlists.jpg` | hero, behind |
+| `Simulator Screenshot - iPhone 16 Pro - 2026-09-29 at 23.29.35` | `leaderboard.jpg` | the invite link preview only |
 
 The web file names keep the group prefix so this table stays checkable against
 the folder. `Other/` is not used: one of the two is named "Old" and the other
