@@ -1,2 +1,6 @@
 # Local Netlify folder
 .netlify
+
+# Local values for `netlify dev` (README, Local preview). The live ones are
+# in Netlify, under Site configuration, Environment variables.
+.env

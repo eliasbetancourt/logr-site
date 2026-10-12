@@ -1,9 +1,10 @@
 # Static site, no build step. Netlify serves privacy.html at /privacy
 # automatically, so no redirects are needed for the clean URLs.
 #
-# The one piece of code is netlify/edge-functions/app-link.js, which Netlify
-# finds by its folder and runs on the server. It draws the page behind a link
-# shared from the app (/post/..., /routine/..., /@...). See README.md.
+# The only code is in netlify/edge-functions/, which Netlify finds by its
+# folder and runs on the server. app-link.js draws the page behind a link
+# shared from the app (/post/..., /routine/..., /@...), and live-totals.js
+# writes the running total into the home page. See README.md.
 
 [build]
   publish = "."
@@ -11,8 +12,9 @@
 
 # No page on this site runs JavaScript, so script-src stays 'none'. The waitlist
 # posts to Netlify Forms on this same origin, which is what form-action allows.
-# app-link.js sets these same headers on its own pages, since these are only
-# promised for static files. Change one, change both.
+# The edge functions set these same headers on the pages they return, since
+# these are only promised for static files: netlify/edge-functions/lib/
+# headers.js. Change one, change both.
 [[headers]]
   for = "/*"
   [headers.values]

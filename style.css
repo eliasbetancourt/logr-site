@@ -377,6 +377,69 @@ img { max-width: 100%; display: block; }
   transform: translateX(-10%) rotate(6deg);
 }
 
+/* ── Running total ────────────────────────────────────────────────────────
+   One figure, the size of a scoreboard, and the line that says what it is.
+   The numbers are written in on the server (netlify/edge-functions/
+   live-totals.js) from a <template> in index.html, so this band is on the
+   page only when there is a real number to put in it. The figure scales with
+   the screen and is sized so nine digits still fit a 320px phone. */
+
+.tally {
+  padding: 64px var(--gutter) 68px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.tally .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+/* The dot that says the count is live: the same black as the text, with a
+   ring that fades outward. Monochrome like everything else here. */
+.tally .eyebrow i {
+  position: relative;
+  flex: 0 0 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text);
+}
+
+.tally .eyebrow i::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--text);
+  animation: tally-pulse 2.2s ease-out infinite;
+}
+
+@keyframes tally-pulse {
+  from { opacity: 0.45; transform: scale(1); }
+  70%, to { opacity: 0; transform: scale(3.4); }
+}
+
+.tally-figure {
+  margin: 0;
+  font-size: clamp(34px, 12vw, 112px);
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+.tally-figure span {
+  font-size: 0.3em;
+  font-weight: 800;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+
+.tally-note { margin: 18px 0 0; color: var(--body); font-size: 16px; line-height: 1.6; }
+.tally-note b { color: var(--text); font-weight: 700; }
+
 /* ── Proof bar ────────────────────────────────────────────────────────── */
 
 .proof-bar {
@@ -1062,4 +1125,7 @@ details[open] > summary .plus::before { transform: rotate(45deg); }
     animation-delay: 0s !important;
     transition-duration: 0.01ms !important;
   }
+  /* The one animation that repeats. Shortened like the rest it would only
+     flicker, so the ring is taken away and the dot stays. */
+  .tally .eyebrow i::after { animation: none; opacity: 0; }
 }

@@ -102,6 +102,23 @@
       </ul>
     </section>
 
+    <!-- ── Running total ─────────────────────────────────────────────────
+       Not drawn as it stands: a <template> is inert, so opened as a file, or
+       under serve.py, the page has no such band. On Netlify,
+       netlify/edge-functions/live-totals.js reads the two numbers from the
+       database as the page is requested, writes them over {volume} and
+       {workouts}, and puts what is inside the template in its place. When it
+       cannot read them the template is left alone and the page goes out
+       without the band. Never type a number in here: the only honest one is
+       the one counted as the page loads. -->
+    <template id="live-totals">
+      <section class="tally" aria-labelledby="tally-label">
+        <div class="eyebrow" id="tally-label"><i aria-hidden="true"></i>TOTAL VOLUME LIFTED ON LOGR</div>
+        <p class="tally-figure">{volume} <span>lbs</span></p>
+        <p class="tally-note"><b>{workouts}</b> workouts logged. Counted live, as this page loaded.</p>
+      </section>
+    </template>
+
     <!-- ── Proof bar ─────────────────────────────────────────────────── -->
     <section class="proof-bar" aria-label="How LOGR treats your data">
       <span>PRIVACY BY DEFAULT</span>

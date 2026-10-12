@@ -4,9 +4,10 @@ The marketing and legal site for the LOGR iOS app. Plain static HTML and CSS,
 no build step, no dependencies, and **no JavaScript in any page**. Deployed on
 Netlify.
 
-The one piece of code is an edge function that runs on Netlify's servers and
-draws the page behind a link shared from the app. It sends no script to the
-browser. See *Links shared from the app*.
+The only code is two edge functions that run on Netlify's servers. One draws
+the page behind a link shared from the app (*Links shared from the app*). The
+other writes the running total into the home page (*The running total*).
+Neither sends a script to the browser.
 
 ## Copy rules
 
@@ -244,7 +245,8 @@ broken locally while being perfectly fine in production. `serve.py` exists only
 to add that one behaviour, plus a real 404 page.
 
 To check anything that depends on `netlify.toml` (the CSP, the other security
-headers, form handling), run the real thing instead:
+headers, form handling) or on an edge function (the running total, the pages
+behind shared links), run the real thing instead:
 
 ```bash
 npx netlify-cli dev
@@ -311,8 +313,8 @@ public, since it is what a shared link and a search result both read.
 ## Structure
 
 ```
-index.html                landing page: hero, features, who it's for, story,
-                          FAQ, waitlist
+index.html                landing page: hero, the running total, who it's
+                          for, story, FAQ, waitlist
 privacy.html              -> App Store Connect "Privacy Policy URL"
 terms.html                -> App Store Connect EULA, if you use a custom one
 support.html              -> App Store Connect "Support URL"
@@ -332,6 +334,12 @@ screens/                  the app screenshots, see The screenshots below
 netlify.toml              publish dir, security headers
 netlify/edge-functions/app-link.js
                           the page behind a link shared from the app
+netlify/edge-functions/live-totals.js
+                          writes the running total into the home page, see
+                          The running total below
+netlify/edge-functions/lib/headers.js
+                          the security headers both of those set; a folder,
+                          so Netlify does not run it as a function
 .well-known/apple-app-site-association
                           which links iOS opens in the app, see below
 serve.py                  local preview with Netlify's clean URLs
@@ -439,8 +447,8 @@ have allowed, falls through to the 404 page.
 ### The invite page reads the database, and needs two variables
 
 `/join/<code>` is the one page that looks something up: it calls
-`invite_link_card()` (the app repo's `supabase/space_invite_links.sql`, the
-only function the public key may call) so a link dropped in a team's group
+`invite_link_card()` (the app repo's `supabase/space_invite_links.sql`,
+callable with the public key) so a link dropped in a team's group
 chat previews as *Join Harvard M Soccer on LOGR* with who sent it and how many
 are in, instead of a generic invite. It needs these in Netlify, under *Site
 configuration, Environment variables*:
@@ -465,9 +473,10 @@ day or two to pick up a changed association file.
 
 ### The headers are set twice, on purpose
 
-`netlify.toml`'s headers are only promised for static files, so `app-link.js`
-sets the same CSP and security headers on its own pages. Change one, change
-both.
+`netlify.toml`'s headers are only promised for static files, so the edge
+functions set the same CSP and security headers on the pages they return.
+Theirs live in one place, `netlify/edge-functions/lib/headers.js`, which both
+import. Change `netlify.toml`, change that file.
 
 ### Checking it once deployed
 
@@ -490,8 +499,117 @@ not:
   the app, tells iOS to prefer Safari** for this domain from then on. Long-press
   a link and choose *Open in LOGR* to switch it back.
 
-To try the page locally, `netlify dev` runs the edge function. `serve.py`
-does not.
+To try the page locally, `netlify dev` runs the edge functions. `serve.py`
+does not. For the invite page to name a team there, it needs the two
+variables in a local `.env` (see *The running total*, *Seeing it locally*).
+
+## The running total
+
+Under the hero the home page says how much has been lifted on LOGR and how
+many workouts have been logged: *TOTAL VOLUME LIFTED ON LOGR*, the figure, and
+a line with the workout count. **Both numbers are read from the database as
+the page is requested.** Nobody types them in, and nothing rebuilds the site
+to update them.
+
+No page here runs JavaScript, so the browser cannot fetch the number. It is
+written into the HTML on Netlify's servers instead:
+
+- `index.html` carries the band inside `<template id="live-totals">`, with
+  `{volume}` and `{workouts}` where the numbers go. A browser never draws a
+  `<template>`, so the file on its own is the home page without the band.
+- `netlify/edge-functions/live-totals.js` runs on every request for `/`. It
+  asks the database for the two numbers, writes them over the placeholders,
+  and puts the template's contents in the template's place.
+- The words and the markup are in `index.html`, the look is `.tally` in
+  `style.css`, and only the numbers come from the function. To change the
+  copy, edit the template.
+
+**A number that cannot be read is not shown.** No variables in Netlify, a
+lookup slower than 1.5 seconds, a database error, or an answer that is not two
+positive numbers: the page goes out as the file is, and a visitor sees the
+home page without the band. It never shows a zero. **Never put a number in
+`index.html` as a fallback.** A typed number is stale the day after, and the
+band's own line says it was counted as the page loaded.
+
+One answer serves every visitor a server sees for a minute, so a busy hour is
+one lookup a minute. If a lookup fails after that, the last answer stands for
+up to an hour before the band is dropped.
+
+### What is counted
+
+`site_totals()` in the app repo (`supabase/site_totals.sql`) answers
+`{ "volume_lbs": ..., "workouts": ... }`, the same for everyone, and nothing
+else: no name, no account, no single workout. It is one of the few functions
+the public key may call. Volume is the app's own figure for a workout, weight
+on the bar plus priced bodyweight work. Left out, so that "lifted on LOGR" is
+true:
+
+- LOGR's own accounts (the demo account and the test accounts)
+- workouts in Recently Deleted
+- workouts imported from another app, which were lifted and logged elsewhere
+
+Workouts from private accounts are in the sum, as part of a number. The total
+can go **down**, when a workout is deleted or an account is. It is a count of
+what LOGR holds now, not an odometer.
+
+It is exact and current, which is the point, and it means that someone calling
+the function over and over could see the size of a workout as it is saved,
+though never whose. If that ever matters, the fix is in the SQL (round it, or
+answer from a row refreshed on a schedule) and the site needs no change.
+
+### It needs the same two variables as the invite page
+
+`SUPABASE_URL` and `SUPABASE_ANON_KEY`, in Netlify under *Site configuration,
+Environment variables* (the table under *The invite page reads the database*).
+If the invite page already names teams, they are there.
+
+### Seeing it locally
+
+`serve.py` serves the file, so it shows the page **without** the band. To see
+the band, run the edge function:
+
+```bash
+npx netlify-cli dev
+```
+
+`netlify dev` reads a `.env` file in this folder, which is in `.gitignore`.
+Put the two variables in it, with the values from the app repo's `.env`
+(`EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY`):
+
+```
+SUPABASE_URL=...
+SUPABASE_ANON_KEY=...
+```
+
+Then http://localhost:8888 has the band, and deleting `.env` shows the page
+the way it goes out when the number cannot be read.
+
+### Checking it once deployed
+
+```sh
+# the band, with today's numbers in it
+curl -s https://getlogr.com/ | grep -A2 'class="tally-figure"'
+# no placeholder reached the browser (the one in the comment does not count)
+curl -s https://getlogr.com/ | grep -c 'tally-figure">{volume}'    # must print 0
+# still no script, and the CSP is still on the page
+curl -s https://getlogr.com/ | grep -c '<script'                    # must print 0
+curl -sI https://getlogr.com/ | grep -i content-security-policy
+# what the database says, asked the way the page asks
+curl -s -X POST "$SUPABASE_URL/rest/v1/rpc/site_totals" \
+  -H "apikey: $SUPABASE_ANON_KEY" -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+  -H "Content-Type: application/json" -d '{}'
+```
+
+If the band is missing on the live site, the last command says why: an answer
+there means the variables are missing in Netlify, and no answer means the
+database side is.
+
+### The privacy policy describes it
+
+Section 3 of `privacy.html` says the site shows these two totals and that a
+total names nobody, and the Netlify entry there says what Netlify handles to
+draw them. If the band ever shows anything else (a count of people, a
+leaderboard, a name), that section changes first.
 
 ## Who the page is written for
 
@@ -531,7 +649,7 @@ site is deliberately built away from theirs. Theirs, as of August 2026:
 | Buttons | 100px pills | 14px radius, the app's own |
 | Type | Arial | system stack, tabular numerals |
 | Cookies | consent banner, tracking | none, and the site says so |
-| Proof | "More than 15 million athletes" | nothing, because we have no users yet |
+| Proof | "More than 15 million athletes" | the running total: pounds lifted and workouts logged, counted as the page loads. Never a user count |
 
 Two things changed specifically to widen that gap:
 

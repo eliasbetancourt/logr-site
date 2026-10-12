@@ -23,13 +23,16 @@
 // The four paths are written in FOUR places that must agree: ROUTES below,
 // `config.path` at the bottom, the association file, and the app's parser.
 //
-// A /join/ link is the one page that reads the database: it asks
-// invite_link_card() (the app repo's supabase/space_invite_links.sql, the one
-// function anon may call) for the team's real name and size, so a link dropped
+// A /join/ link is the one page drawn here that reads the database: it asks
+// invite_link_card() (the app repo's supabase/space_invite_links.sql, callable
+// with the public key) for the team's real name and size, so a link dropped
 // in a team's group chat previews as "Join Harvard M Soccer on LOGR" rather
 // than as a generic invite. It needs SUPABASE_URL and SUPABASE_ANON_KEY in the
 // site's Netlify environment variables; without them, or if the lookup is slow
-// or fails, the page is drawn generic and still works.
+// or fails, the page is drawn generic and still works. (The home page reads
+// the database too, through live-totals.js, with the same two variables.)
+
+import { SECURITY_HEADERS } from './lib/headers.js';
 
 const SITE = 'https://getlogr.com';
 const APP_STORE_ID = '6795712216';
@@ -69,17 +72,6 @@ const PREVIEWS = {
 // A crowd only helps once it is a crowd. The app's lib/shareCopy.js uses the
 // same number.
 const SOCIAL_PROOF_MIN = 3;
-
-// Copied from the [[headers]] block in netlify.toml, which is only promised
-// for static files. Keep the two in step.
-const SECURITY_HEADERS = {
-  'X-Frame-Options': 'DENY',
-  'X-Content-Type-Options': 'nosniff',
-  'Referrer-Policy': 'strict-origin-when-cross-origin',
-  'Permissions-Policy': 'geolocation=(), camera=(), microphone=(), interest-cohort=()',
-  'Content-Security-Policy':
-    "default-src 'self'; style-src 'self'; img-src 'self' data:; script-src 'none'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'",
-};
 
 // " on LOGR", unless the name already says it ("Join LOGR on LOGR").
 function onLogr(name) {
