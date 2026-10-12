@@ -10,11 +10,11 @@
   publish = "."
   command = ""
 
-# No page on this site runs JavaScript, so script-src stays 'none'. The waitlist
-# posts to Netlify Forms on this same origin, which is what form-action allows.
-# The edge functions set these same headers on the pages they return, since
-# these are only promised for static files: netlify/edge-functions/lib/
-# headers.js. Change one, change both.
+# Every page but the home page runs no JavaScript, so script-src stays 'none'.
+# The waitlist posts to Netlify Forms on this same origin, which is what
+# form-action allows. The edge functions set these same headers on the pages
+# they return, since these are only promised for static files:
+# netlify/edge-functions/lib/headers.js. Change one, change both.
 [[headers]]
   for = "/*"
   [headers.values]
@@ -23,6 +23,25 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "geolocation=(), camera=(), microphone=(), interest-cohort=()"
     Content-Security-Policy = "default-src 'self'; style-src 'self'; img-src 'self' data:; script-src 'none'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'"
+
+# The home page is the ONE page with a script: /tally.js, which keeps the
+# running total moving without a reload. This has to be stated HERE and not
+# only in the edge function, because a [[headers]] rule overrides what an edge
+# function sets, so a page-specific rule is the only way to widen it. It must
+# match HOME_HEADERS in netlify/edge-functions/lib/headers.js.
+#
+# It allows a script from this origin and a fetch to this origin, and nothing
+# else: no 'unsafe-inline', so an injected <script> or onclick still does
+# nothing, no third-party script, and no connection off this domain.
+[[headers]]
+  for = "/"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; style-src 'self'; img-src 'self' data:; script-src 'self'; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; style-src 'self'; img-src 'self' data:; script-src 'self'; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'"
 
 # Tells iOS which links open the app instead of Safari. Apple reads it as
 # JSON, and the file has no extension to say so. It must answer 200 at exactly

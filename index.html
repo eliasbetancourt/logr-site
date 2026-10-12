@@ -109,13 +109,15 @@
        database as the page is requested, writes them over {volume} and
        {workouts}, and puts what is inside the template in its place. When it
        cannot read them the template is left alone and the page goes out
-       without the band. Never type a number in here: the only honest one is
+       without the band. /tally.js then keeps the two numbers moving without a
+       reload, which is why they carry data-tally-volume and
+       data-tally-workouts. Never type a number in here: the only honest one is
        the one counted as the page loads. -->
     <template id="live-totals">
       <section class="tally" aria-labelledby="tally-label">
         <div class="eyebrow" id="tally-label"><i aria-hidden="true"></i>TOTAL VOLUME LIFTED ON LOGR</div>
-        <p class="tally-figure">{volume} <span>lbs</span></p>
-        <p class="tally-note"><b>{workouts}</b> workouts logged. Counted live, as this page loaded.</p>
+        <p class="tally-figure"><span data-tally-volume>{volume}</span> <span class="unit">lbs</span></p>
+        <p class="tally-note"><b data-tally-workouts>{workouts}</b> workouts logged. Counted live.</p>
       </section>
     </template>
 
@@ -411,6 +413,14 @@
       <a href="https://instagram.com/getlogr" rel="me noopener">Instagram</a>
     </div>
   </footer>
+
+  <!-- The only script on this site, and only on this page. The band above is
+       already correct without it; this moves the numbers when they change,
+       so nobody has to reload to watch the total climb. The home page's CSP
+       (netlify/edge-functions/lib/headers.js) allows exactly this: a script
+       from this origin and a fetch to this origin, nothing inline and nothing
+       third party. -->
+  <script src="/tally.js" defer></script>
 
 </body>
 

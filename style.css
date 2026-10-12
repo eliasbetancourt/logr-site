@@ -430,12 +430,19 @@ img { max-width: 100%; display: block; }
   letter-spacing: -0.03em;
 }
 
-.tally-figure span {
+/* The unit only. The figure itself is now a span too (/tally.js moves it), so
+   this cannot be `.tally-figure span` or the number would render at 0.3em. */
+.tally-figure .unit {
   font-size: 0.3em;
   font-weight: 800;
   letter-spacing: 0;
   color: var(--muted);
 }
+
+/* The figure changes width as it counts, and digits of different widths would
+   make it jitter. The page sets tabular-nums on body, this pins it here too so
+   the band is never the thing that reflows. */
+.tally-figure [data-tally-volume] { font-variant-numeric: tabular-nums; }
 
 .tally-note { margin: 18px 0 0; color: var(--body); font-size: 16px; line-height: 1.6; }
 .tally-note b { color: var(--text); font-weight: 700; }

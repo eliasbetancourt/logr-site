@@ -1,3 +1,7 @@
+# Local Claude Code settings, including the launch config serve.py and
+# `netlify dev` are started from.
+.claude
+
 # Local Netlify folder
 .netlify
 

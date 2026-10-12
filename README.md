@@ -1,13 +1,18 @@
 # logr-site
 
 The marketing and legal site for the LOGR iOS app. Plain static HTML and CSS,
-no build step, no dependencies, and **no JavaScript in any page**. Deployed on
-Netlify.
+no build step and no dependencies. Deployed on Netlify.
 
-The only code is two edge functions that run on Netlify's servers. One draws
-the page behind a link shared from the app (*Links shared from the app*). The
-other writes the running total into the home page (*The running total*).
-Neither sends a script to the browser.
+**There is no third-party JavaScript anywhere on this site, and nothing that
+watches anyone.** The home page is the one page that runs a script at all:
+`/tally.js`, ours, 4 KB, which keeps the running total moving without a reload
+(*The running total*). Every other page keeps `script-src 'none'`, and the
+cookie policy says all of this in plain words.
+
+The rest of the code is three edge functions that run on Netlify's servers:
+one draws the page behind a link shared from the app (*Links shared from the
+app*), one writes the running total into the home page, and one answers the
+two numbers as JSON for the script to poll.
 
 ## Copy rules
 
@@ -511,8 +516,8 @@ a line with the workout count. **Both numbers are read from the database as
 the page is requested.** Nobody types them in, and nothing rebuilds the site
 to update them.
 
-No page here runs JavaScript, so the browser cannot fetch the number. It is
-written into the HTML on Netlify's servers instead:
+The number is written into the HTML on Netlify's servers, and then kept moving
+in the browser:
 
 - `index.html` carries the band inside `<template id="live-totals">`, with
   `{volume}` and `{workouts}` where the numbers go. A browser never draws a
@@ -523,13 +528,54 @@ written into the HTML on Netlify's servers instead:
 - The words and the markup are in `index.html`, the look is `.tally` in
   `style.css`, and only the numbers come from the function. To change the
   copy, edit the template.
+- `/tally.js` then keeps the two numbers moving **without a reload**: it polls
+  `/api/totals` (`netlify/edge-functions/totals-json.js`) every 15 seconds and
+  counts the figure up to its new value when it changes.
+
+### The one script on the site
+
+`tally.js` is the only JavaScript getlogr.com serves, it runs on the home page
+alone, and it is an **enhancement, never the source**. The page arrives with
+the real figures already in it, so with the script blocked, failed or switched
+off the band is still correct and still current. The script only ever moves a
+number the page already had a correct one for.
+
+That is why the figure carries `data-tally-volume` and the count carries
+`data-tally-workouts`. They are the script's only two handles.
+
+What it will not do, and what each guard is for:
+
+- **No band on the page** (the database could not be read when it was served):
+  it returns immediately. There is no correct number to move, and inventing
+  one is the single thing it must never do.
+- **A failed poll** (503, a network error, an answer that is not two positive
+  numbers): the numbers stay exactly where they are and the gap doubles, up to
+  two minutes, so a database that is down is not also being asked four times a
+  minute by every tab anyone left open.
+- **A hidden tab**: it stops asking altogether, and asks once immediately when
+  the tab comes back.
+- **`prefers-reduced-motion`**: the number changes without counting up.
+
+It sets no cookie, reads and writes no storage, and connects to no origin but
+this one. It is not a tracker and it watches nobody, so every privacy claim on
+the site stays true as written.
+
+**The home page's CSP is wider than every other page's, and it is written in
+two places.** `script-src 'self'; connect-src 'self'` has to be in BOTH
+`netlify.toml` (the `for = "/"` and `for = "/index.html"` blocks) and
+`HOME_HEADERS` in `netlify/edge-functions/lib/headers.js`. A `[[headers]]`
+rule overrides what an edge function sets, so the `netlify.toml` half is what
+actually reaches the browser; the edge-function half keeps the two from
+drifting. **Everything else, static pages and `app-link.js` alike, keeps
+`script-src 'none'`.** Neither half allows `'unsafe-inline'`, so an injected
+`<script>` or `onclick` still does nothing.
 
 **A number that cannot be read is not shown.** No variables in Netlify, a
 lookup slower than 1.5 seconds, a database error, or an answer that is not two
 positive numbers: the page goes out as the file is, and a visitor sees the
 home page without the band. It never shows a zero. **Never put a number in
 `index.html` as a fallback.** A typed number is stale the day after, and the
-band's own line says it was counted as the page loaded.
+band's own line says it is counted live.
 
 One answer serves every visitor a server sees for a minute, so a busy hour is
 one lookup a minute. If a lookup fails after that, the last answer stands for
@@ -591,9 +637,14 @@ the way it goes out when the number cannot be read.
 curl -s https://getlogr.com/ | grep -A2 'class="tally-figure"'
 # no placeholder reached the browser (the one in the comment does not count)
 curl -s https://getlogr.com/ | grep -c 'tally-figure">{volume}'    # must print 0
-# still no script, and the CSP is still on the page
-curl -s https://getlogr.com/ | grep -c '<script'                    # must print 0
-curl -sI https://getlogr.com/ | grep -i content-security-policy
+# exactly one script, ours, and the home page's wider CSP is on the page
+curl -s https://getlogr.com/ | grep -c '<script'                    # must print 1
+curl -s https://getlogr.com/ | grep -o 'src="/tally.js"'            # must be ours
+curl -sI https://getlogr.com/ | grep -i content-security-policy     # script-src 'self'
+# and every OTHER page still refuses scripts outright
+curl -sI https://getlogr.com/privacy | grep -o "script-src 'none'"  # must print it
+# the numbers the script polls
+curl -s https://getlogr.com/api/totals
 # what the database says, asked the way the page asks
 curl -s -X POST "$SUPABASE_URL/rest/v1/rpc/site_totals" \
   -H "apikey: $SUPABASE_ANON_KEY" -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
