@@ -1093,6 +1093,27 @@ details[open] > summary .plus::before { transform: rotate(45deg); }
 
 /* ── Responsive ───────────────────────────────────────────────────────── */
 
+/* The two phones are wider than the column they sit in, between the point the
+   hero becomes two columns (901px) and about 1260px, so the back one used to
+   land on top of the headline. Measured at 1000px: the copy column ended at
+   521 and the back phone started at 472, 49px over the words.
+ 
+   They are absolutely positioned from the column's centre, so nothing pushes
+   them back and `overflow: hidden` on .hero clips at the hero's edge, not
+   between the columns. The fix is to size them to the column: the pair
+   reaches about 1.03 times --front to the left of centre once the rotation is
+   counted, against a half column of 20.4vw, and 17.5vw leaves 2.4vw of air
+   between the phone and the words, which is 22px at 910 and 30px at 1259.
+ 
+   min() rather than a second breakpoint: it IS 246px once the viewport passes
+   1406px, so it meets the fixed size above with no jump to find later.
+ 
+   NOT applied below 901px: the hero is one column there, the phones have the
+   whole page width, and shrinking them would be a loss for no reason. */
+@media (min-width: 901px) {
+  .hero-phones { --front: min(246px, 17.5vw); }
+}
+
 /* Four audience cards need more room than three did. They go 2x2 well before
    the rest of the page breaks. */
 @media (max-width: 1100px) {
