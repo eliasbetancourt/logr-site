@@ -706,6 +706,8 @@ details[open] > summary .plus::before { transform: rotate(45deg); }
 
 .waitlist { padding: 100px 6vw; background: var(--surface); text-align: center; }
 .waitlist p { color: var(--body); font-size: 17px; }
+/* Where it IS available, which is the part a reader is scanning for. */
+.waitlist p strong { color: var(--text); font-weight: 700; }
 
 /* Email and button on row one, the optional question on row two. Placement is
    explicit because auto-placement would put the question beside the email
