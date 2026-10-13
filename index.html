@@ -73,6 +73,14 @@
           </a>
           <a class="text-link" href="#who">See who it's for &darr;</a>
         </div>
+
+        <!-- The same count as the band below, said in one line. Filled by the
+             same edge function from the same data-totals hook, so
+             with the database unreadable this line disappears exactly as the
+             band does, and neither ever shows a number typed in by hand. -->
+        <template data-totals>
+          <p class="hero-live"><i class="live-dot" aria-hidden="true"></i><b data-tally-volume>{volume}</b>&nbsp;lbs lifted on LOGR</p>
+        </template>
       </div>
 
       <!-- Real screenshots, straight out of the app, and the only two on the
@@ -103,7 +111,11 @@
     </section>
 
     <!-- ── Running total ─────────────────────────────────────────────────
-       Not drawn as it stands: a <template> is inert, so opened as a file, or
+       NEVER write an opening template tag with data-totals inside a comment
+       here: live-totals.js matches that text too, and the replacement then
+       starts in the comment and swallows the real one. It has happened.
+
+       Not drawn as it stands: a template element is inert, so opened as a file, or
        under serve.py, the page has no such band. On Netlify,
        netlify/edge-functions/live-totals.js reads the two numbers from the
        database as the page is requested, writes them over {volume} and
@@ -113,9 +125,9 @@
        reload, which is why they carry data-tally-volume and
        data-tally-workouts. Never type a number in here: the only honest one is
        the one counted as the page loads. -->
-    <template id="live-totals">
+    <template data-totals id="live-totals">
       <section class="tally" aria-labelledby="tally-label">
-        <div class="eyebrow" id="tally-label"><i aria-hidden="true"></i>TOTAL VOLUME LIFTED ON LOGR</div>
+        <div class="eyebrow" id="tally-label"><i class="live-dot" aria-hidden="true"></i>TOTAL VOLUME LIFTED ON LOGR</div>
         <p class="tally-figure"><span data-tally-volume>{volume}</span> <span class="unit">lbs</span></p>
         <p class="tally-note"><b data-tally-workouts>{workouts}</b> workouts logged. Counted live.</p>
       </section>

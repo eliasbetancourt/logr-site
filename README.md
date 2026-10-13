@@ -550,9 +550,18 @@ to update them.
 The number is written into the HTML on Netlify's servers, and then kept moving
 in the browser:
 
-- `index.html` carries the band inside `<template id="live-totals">`, with
-  `{volume}` and `{workouts}` where the numbers go. A browser never draws a
-  `<template>`, so the file on its own is the home page without the band.
+- `index.html` carries **two** places the numbers appear, each inside a
+  template element marked `data-totals`, with `{volume}` and `{workouts}`
+  where the numbers go. A browser never draws a template element, so the file
+  on its own is the home page without either. The two are the hero's one line
+  (`.hero-live`) and the band below it (`.tally`), and both are filled from
+  the same answer, so they cannot disagree.
+- **The hero says it too because almost nobody reaches the band.** Measured on
+  the live site at 375x812: the band starts 1,086px down, which is 1.34
+  screens, further than most people scroll. The hero's line sits at 443px,
+  comfortably above the fold. The band is not moved above the hero on purpose:
+  a seven-digit number means nothing to someone who does not yet know what
+  LOGR is.
 - `netlify/edge-functions/live-totals.js` runs on every request for `/`. It
   asks the database for the two numbers, writes them over the placeholders,
   and puts the template's contents in the template's place.
@@ -590,6 +599,16 @@ What it will not do, and what each guard is for:
 It sets no cookie, reads and writes no storage, and connects to no origin but
 this one. It is not a tracker and it watches nobody, so every privacy claim on
 the site stays true as written.
+
+**The template regex is anchored to the start of a line, and must stay that
+way.** Unanchored, it matched the words inside an HTML *comment* in
+`index.html` that described the tag. The replacement then began mid-comment
+and ran to the real template's closing tag: the comment was mangled, the
+opening tag was orphaned, and the hero's line ended up sealed inside an
+unclosed template element, where a browser draws nothing. `curl` still showed
+the filled markup, so it looked fine from the shell and was invisible in the
+browser. **Never write an opening template tag carrying `data-totals` inside a
+comment in `index.html`**, and keep the `^[ \t]*` on the pattern.
 
 **The home page's CSP is wider than every other page's, and it is written in
 two places.** `script-src 'self'; connect-src 'self'` has to be in BOTH

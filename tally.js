@@ -16,13 +16,16 @@
 (function () {
   'use strict';
 
-  var volumeEl = document.querySelector('[data-tally-volume]');
-  var workoutsEl = document.querySelector('[data-tally-workouts]');
+  // Every place the page says either number: the hero's one line, and the
+  // band below it. The hero line says only the volume, so the two lists are
+  // read and moved separately rather than in pairs.
+  var volumeEls = [].slice.call(document.querySelectorAll('[data-tally-volume]'));
+  var workoutsEls = [].slice.call(document.querySelectorAll('[data-tally-workouts]'));
 
-  // No band on the page: the database could not be read when it was served.
-  // There is no correct number to move, and inventing one is the one thing
-  // this must never do.
-  if (!volumeEl || !workoutsEl) return;
+  // Neither is on the page: the database could not be read when it was
+  // served, so every template was left alone. There is no correct number to
+  // move, and inventing one is the one thing this must never do.
+  if (!volumeEls.length && !workoutsEls.length) return;
 
   var EVERY_MS = 15000;      // how often to ask while the tab is in front
   var BACKOFF_MAX_MS = 120000; // how far the gap grows while asking keeps failing
@@ -38,9 +41,13 @@
     return isFinite(n) ? n : null;
   }
 
-  var volume = read(volumeEl);
-  var workouts = read(workoutsEl);
+  var volume = volumeEls.length ? read(volumeEls[0]) : 0;
+  var workouts = workoutsEls.length ? read(workoutsEls[0]) : 0;
   if (volume === null || workouts === null) return;
+
+  function write(els, text) {
+    for (var i = 0; i < els.length; i++) els[i].textContent = text;
+  }
 
   var frame = null;
 
@@ -48,8 +55,8 @@
     if (frame) cancelAnimationFrame(frame);
 
     if (!smooth || (fromV === toV && fromW === toW)) {
-      volumeEl.textContent = nf.format(toV);
-      workoutsEl.textContent = nf.format(toW);
+      write(volumeEls, nf.format(toV));
+      write(workoutsEls, nf.format(toW));
       return;
     }
 
@@ -57,8 +64,8 @@
     (function step(now) {
       var t = Math.min(1, (now - start) / COUNT_MS);
       var e = 1 - Math.pow(1 - t, 3); // ease out, so it settles rather than stops
-      volumeEl.textContent = nf.format(Math.round(fromV + (toV - fromV) * e));
-      workoutsEl.textContent = nf.format(Math.round(fromW + (toW - fromW) * e));
+      write(volumeEls, nf.format(Math.round(fromV + (toV - fromV) * e)));
+      write(workoutsEls, nf.format(Math.round(fromW + (toW - fromW) * e)));
       frame = t < 1 ? requestAnimationFrame(step) : null;
     })(start);
   }

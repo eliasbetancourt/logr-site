@@ -398,9 +398,10 @@ img { max-width: 100%; display: block; }
   margin-bottom: 14px;
 }
 
-/* The dot that says the count is live: the same black as the text, with a
-   ring that fades outward. Monochrome like everything else here. */
-.tally .eyebrow i {
+/* The dot that says a number is live: the same black as the text, with a ring
+   that fades outward. Monochrome like everything else here. Two places wear
+   it, the hero's line and the band's label, so it lives here once. */
+.live-dot {
   position: relative;
   flex: 0 0 8px;
   height: 8px;
@@ -408,13 +409,33 @@ img { max-width: 100%; display: block; }
   background: var(--text);
 }
 
-.tally .eyebrow i::after {
+.live-dot::after {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: 50%;
   background: var(--text);
   animation: tally-pulse 2.2s ease-out infinite;
+}
+
+/* The same count, said small, in the hero. The band below is a screen and a
+   third down on a phone, which is further than most people scroll, so the
+   number that makes the case is also said where it is seen. Here it is one
+   line under the buttons; there it is the headline. */
+.hero-live {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 22px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.hero-live b {
+  color: var(--text);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
 }
 
 @keyframes tally-pulse {
@@ -1276,5 +1297,5 @@ details[open] > summary .plus::before { transform: rotate(45deg); }
   }
   /* The one animation that repeats. Shortened like the rest it would only
      flicker, so the ring is taken away and the dot stays. */
-  .tally .eyebrow i::after { animation: none; opacity: 0; }
+  .live-dot::after { animation: none; opacity: 0; }
 }
