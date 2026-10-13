@@ -796,16 +796,158 @@ details[open] > summary .plus::before { transform: rotate(45deg); }
 .prose a.button { color: var(--surface); border-bottom: 0; }
 .prose a.button:hover { border-bottom: 0; }
 
-/* The same carve-out for the App Store badge, which sits inside .prose on
-   the page behind a shared link (netlify/edge-functions/app-link.js). */
+/* The same carve-out for the App Store badge, which the legal pages carry in
+   their footer run. */
 .prose a.app-badge,
 .prose a.app-badge:hover { border-bottom: 0; }
-.prose .app-link-store { margin: 0 0 26px; }
-/* Open in LOGR leads: a link pasted into Safari lands here with the app
-   installed, and this is the one tap that opens it. */
-.prose .app-link-primary { margin: 0 0 14px; }
-.prose .app-link-primary .button { display: inline-block; }
-.prose .app-link-code { color: var(--muted); font-size: 14px; margin-top: 18px; }
+
+/* ── The page behind a link shared from the app ───────────────────────── */
+
+/* These pages are the app's front door, not an article, so they are built
+   like the app rather than like the rest of this site. Someone who taps a
+   teammate's link in a group chat should recognise where they have landed
+   before they read a word: the page's own grey behind one white card, the
+   app's radius and hairline, a round avatar the way every avatar in the app
+   is round, and the black button it uses for the action that matters.
+   It replaces a .prose page that was an h1, a paragraph and a link.
+   Markup: netlify/edge-functions/app-link.js, render(). */
+.applink {
+  display: grid;
+  place-items: center;
+  padding: clamp(26px, 6vw, 60px) var(--gutter) clamp(44px, 9vw, 86px);
+}
+
+.applink-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 34px 26px 26px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  text-align: center;
+}
+
+/* Round, because every avatar in the app is round (components/Avatar.js
+   draws borderRadius: size / 2 and has no square variant). A letter when we
+   know whose it is, a line glyph when we only know what kind of thing it
+   is. */
+.applink-mark {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  background: var(--text);
+  color: var(--surface);
+  border-radius: 50%;
+  font-size: 27px;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.applink-mark svg {
+  width: 27px;
+  height: 27px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.applink-title {
+  margin: 0 0 6px;
+  font-size: clamp(21px, 5.2vw, 26px);
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.applink-handle {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.applink-sub {
+  margin: 0 0 24px;
+  color: var(--body);
+  font-size: 15.5px;
+  line-height: 1.6;
+}
+
+/* The app's stat tiles, the row a workout and a space both carry. Only ever
+   drawn from a number the database actually gave us. */
+.applink-stats {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 8px;
+  margin: 0 0 24px;
+}
+
+.applink-stats div {
+  min-width: 0;
+  padding: 14px 6px;
+  background: var(--bg);
+  border-radius: 12px;
+}
+
+/* Every value here is a count or a single word, but a tile is only a third of
+   a narrow card, so nothing is left to chance: it wraps rather than running
+   over the edge. */
+.applink-stats b {
+  display: block;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
+}
+
+.applink-stats span {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* Open in LOGR leads and is full width: a link pasted into Safari lands here
+   with the app already installed, and this is the one tap that opens it. */
+.applink-open {
+  display: flex;
+  width: 100%;
+  margin-bottom: 22px;
+  font-size: 15px;
+}
+
+.applink-alt {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.applink-store { display: flex; justify-content: center; }
+
+.applink-code {
+  margin: 24px 0 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 13.5px;
+  line-height: 1.65;
+}
+
+.applink-code strong {
+  color: var(--text);
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
 
 .updated { margin: 0 0 36px !important; color: var(--muted); font-size: 14px; }
 

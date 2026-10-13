@@ -449,6 +449,37 @@ when the app is installed and passes the link along.
 A path that is not one of the four shapes, or a handle the app would never
 have allowed, falls through to the 404 page.
 
+### These pages are built like the app, not like the rest of the site
+
+Someone lands here because a teammate dropped a link in a group chat. **The
+page is the app's front door, so it is drawn like the app and not like an
+article.** It used to be a `.prose` page: an `h1`, a paragraph and a link,
+which looked like the privacy policy.
+
+It is now one centred card on the page's own grey (`.applink` in `style.css`),
+with the app's radius, hairline and black button, and a **round** mark at the
+top. Round because `components/Avatar.js` in the app draws every avatar at
+`borderRadius: size / 2` and has no square variant, spaces included. Do not
+give spaces a rounded square here; the app does not.
+
+The mark is an initial when the link tells us a name (a profile's handle, a
+space's name), and a Feather line glyph when it only tells us a kind. Feather
+is the icon set the app itself draws with.
+
+**Only `/join/` draws stat tiles, because it is the only one of the four that
+reads the database.** A post or routine link carries a uuid and nothing else,
+so there is no number to show, and a made-up one would be worse than none.
+
+**Nothing variable-length goes in a tile.** A tile is a third of a 420px card.
+The inviter's handle was tried there and spilled straight over the card's
+edge: usernames run to 30 characters. The two tiles hold a count and one word,
+short by construction, and the handle gets its own line under the name where
+it can wrap. Verified at 375px with a 30-character handle and a 39-character
+space name: nothing overflows.
+
+A space's own `description` is used as the card's text when it has written
+one, which says more than any copy in this file could.
+
 ### The invite page reads the database, and needs two variables
 
 `/join/<code>` is the one page that looks something up: it calls

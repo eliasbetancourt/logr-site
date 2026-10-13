@@ -113,8 +113,9 @@ function joinCopy(code, card) {
   if (card && card.ok === false) {
     return {
       title: 'This invite has expired',
-      heading: 'This invite link no longer works',
-      lede: 'Ask whoever sent it for a new one. LOGR is free on the App Store in the meantime.',
+      heading: 'This invite no longer works',
+      glyph: 'expired',
+      lede: 'Ask whoever sent it for a new link. LOGR is free on the App Store in the meantime.',
       appPath,
       openLabel: 'Open LOGR',
       preview: PREVIEWS.site,
@@ -122,24 +123,46 @@ function joinCopy(code, card) {
   }
   const name = card?.ok ? String(card.name || '').trim() : '';
   const type = card?.ok ? card.type : null;
+  const about = card?.ok ? String(card.description || '').trim() : '';
   const n = Number(card?.member_count) || 0;
   const noun = type === 'team' ? 'team' : type === 'community' ? 'community' : 'group';
-  const inviter = card?.inviter_username ? `@${card.inviter_username} invited you. ` : '';
-  const crowd = n >= SOCIAL_PROOF_MIN
-    ? `${n} ${type === 'team' ? 'teammates' : 'athletes'} are already logging their training in there. `
-    : '';
+  const inviter = card?.inviter_username ? String(card.inviter_username) : '';
+
+  // The only tiles on any of these pages that come from the database, so the
+  // only ones drawn at all. Both values are short BY CONSTRUCTION: a count and
+  // one word. The inviter's handle deliberately does NOT go in a tile. It is
+  // up to 30 characters, a third of this card is nowhere near wide enough, and
+  // it spilled over the edge when it was tried.
+  const tiles = [];
+  if (n >= SOCIAL_PROOF_MIN) {
+    tiles.push({ value: String(n), label: type === 'team' ? 'TEAMMATES' : 'MEMBERS' });
+  }
+  if (type) tiles.push({ value: noun[0].toUpperCase() + noun.slice(1), label: 'ON LOGR' });
+
   const next = card?.grants === 'request'
-    ? 'Get LOGR free on the App Store, then tap this link again to ask to join.'
-    : 'Get LOGR free on the App Store, then tap this link again to jump straight in.';
+    ? 'Open it in LOGR to ask to join.'
+    : 'Open it in LOGR to jump straight in.';
+
+  // The space's own description when it has written one, because that says
+  // more than anything this file could put there.
+  const blurb = about
+    || (name ? `They train together on LOGR, logging sessions where the rest of the ${noun} can see them.` : '');
+
   return {
     title: name ? `Join ${name}${onLogr(name)}` : `You're invited to a ${type ? noun : 'team'} on LOGR`,
     heading: name
       ? (type === 'team' ? `Join the rest of ${name}` : `Join ${name}${onLogr(name)}`)
       : "You're invited on LOGR",
-    lede: `${inviter}${crowd}${next}`,
+    // Where the inviter goes: its own line under the name, which can wrap, the
+    // way a handle does everywhere else.
+    handle: inviter ? `@${inviter} invited you` : '',
+    letter: name ? name[0] : '',
+    glyph: 'join',
+    lede: blurb ? `${blurb} ${next}` : `You have been invited to a ${type ? noun : 'group'} on LOGR. ${next}`,
     appPath,
-    openLabel: name ? `Open ${name} in the app` : 'Open the invite in the app',
+    openLabel: name ? `Open ${name}` : 'Open the invite',
     preview: PREVIEWS.join,
+    tiles,
     // Typed by hand in the app (Messages, Browse, Have a code) if the link
     // does not make it through the install.
     code,
@@ -152,29 +175,36 @@ function copyFor(kind, key) {
   if (kind === 'profile') {
     return {
       title: `@${key} on LOGR`,
-      heading: `@${key} is on LOGR`,
-      lede: 'Get LOGR free on the App Store to follow them and see their training.',
+      // The handle is the one real thing a profile link carries, so the card
+      // leads with it the way the app's own profile header does: the avatar,
+      // then the name, then the handle under it.
+      heading: `@${key}`,
+      handle: 'is training on LOGR',
+      letter: key[0],
+      lede: 'Follow them to see their workouts, records, and streak in your feed.',
       appPath: `@${key}`,
-      openLabel: 'Open their profile in the app',
+      openLabel: 'Open their profile',
       preview: PREVIEWS.profile,
     };
   }
   if (kind === 'routine') {
     return {
       title: 'A routine on LOGR',
-      heading: 'A routine on LOGR',
-      lede: 'Get LOGR free on the App Store to see every exercise and start it as a workout.',
+      heading: 'Someone shared a routine',
+      glyph: 'routine',
+      lede: 'Open it in LOGR to see every exercise and set, then start it as your own workout.',
       appPath: `routine/${key}`,
-      openLabel: 'Open this routine in the app',
+      openLabel: 'Open this routine',
       preview: PREVIEWS.routine,
     };
   }
   return {
     title: 'A workout on LOGR',
-    heading: 'A workout on LOGR',
-    lede: 'Get LOGR free on the App Store to see the whole session.',
+    heading: 'Someone shared a workout',
+    glyph: 'post',
+    lede: 'Open it in LOGR to see the whole session, every set, and what it added up to.',
     appPath: `post/${key}`,
-    openLabel: 'Open this workout in the app',
+    openLabel: 'Open this workout',
     preview: PREVIEWS.post,
   };
 }
@@ -193,6 +223,38 @@ function esc(value) {
 const APPLE_ICON =
   'M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z';
 
+// Feather line icons, the set the app itself draws with. A link only tells us
+// what KIND of thing was shared, so when there is no name to make an initial
+// from, the mark says that much and no more.
+const GLYPHS = {
+  // activity: a workout
+  post: '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>',
+  // list: a routine
+  routine: '<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>',
+  // users: a team or community
+  join: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  // link-2 broken: an invite that has run out
+  expired: '<path d="M15 7h2a5 5 0 0 1 0 10h-2"/><path d="M9 17H7A5 5 0 0 1 7 7h2"/><line x1="8" y1="12" x2="16" y2="12"/>',
+};
+
+/**
+ * The round mark at the top of the card: an initial when we know a name, and
+ * the kind's glyph when we do not. Matches components/Avatar.js in the app,
+ * which draws every avatar round and has no square variant.
+ */
+function mark({ letter, glyph }) {
+  if (letter) return `<div class="applink-mark" aria-hidden="true">${esc(letter)}</div>`;
+  return `<div class="applink-mark" aria-hidden="true"><svg viewBox="0 0 24 24">${GLYPHS[glyph] || GLYPHS.post}</svg></div>`;
+}
+
+/** The app's stat tiles. Only ever called with numbers the database gave us. */
+function stats(tiles) {
+  if (!tiles || !tiles.length) return '';
+  return `<div class="applink-stats">${tiles
+    .map((t) => `<div><b>${esc(t.value)}</b><span>${esc(t.label)}</span></div>`)
+    .join('')}</div>`;
+}
+
 function badge(small) {
   return `<a class="app-badge${small ? ' small header-cta' : ''}" href="${APP_STORE}" aria-label="Download LOGR on the App Store">
     <svg class="app-badge-icon" viewBox="0 0 384 512" aria-hidden="true" focusable="false">
@@ -207,7 +269,7 @@ function badge(small) {
 
 // Header and footer are the same markup every other page on the site carries
 // (see 404.html). A change to either there belongs here too.
-function render({ url, title, heading, lede, appUrl, openLabel, code, preview }) {
+function render({ url, title, heading, handle, lede, appUrl, openLabel, code, preview, letter, glyph, tiles }) {
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -247,13 +309,18 @@ function render({ url, title, heading, lede, appUrl, openLabel, code, preview })
   ${badge(true)}
 </header>
 
-<main class="prose app-link">
-  <h1>${esc(heading)}</h1>
-  <p class="lede">${esc(lede)}</p>
-  <p class="app-link-primary"><a class="button" href="${esc(appUrl)}">${esc(openLabel)}</a></p>
-  <p class="app-link-open">Don't have LOGR yet?</p>
-  <p class="app-link-store">${badge(false)}</p>
-  ${code ? `<p class="app-link-code">Invite code <strong>${esc(code)}</strong>. In the app, open Messages, tap Browse, then Have a code.</p>` : ''}
+<main class="applink">
+  <div class="applink-card">
+    ${mark({ letter, glyph })}
+    <h1 class="applink-title">${esc(heading)}</h1>
+    ${handle ? `<p class="applink-handle">${esc(handle)}</p>` : ''}
+    <p class="applink-sub">${esc(lede)}</p>
+    ${stats(tiles)}
+    <a class="button applink-open" href="${esc(appUrl)}">${esc(openLabel)}</a>
+    <p class="applink-alt">Don't have LOGR yet?</p>
+    <div class="applink-store">${badge(false)}</div>
+    ${code ? `<p class="applink-code">Invite code <strong>${esc(code)}</strong><br>In the app, open Messages, tap Browse, then Have a code.</p>` : ''}
+  </div>
 </main>
 
 <footer class="site-footer" id="footer">
