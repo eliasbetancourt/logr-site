@@ -173,44 +173,27 @@ img { max-width: 100%; display: block; }
 .button.small { padding: 11px 18px; font-size: 13px; }
 
 /* ── App Store badge ──────────────────────────────────────────────────────
-   The classic black "Download on the App Store" badge, built from real markup
-   instead of an image so it stays crisp and themeable without breaking the
-   no-JS, self-hosted CSP. Two sizes: default (hero) and .small (header). */
+   Apple's own "Download on the App Store" artwork (/app-store-badge.svg, from
+   Apple's marketing tools, tools.applemediaservices.com), never redrawn in
+   markup: Apple's badge rules forbid recreating, recoloring, cropping or
+   animating it, so the link around it has no hover or press effect, and no
+   size drops below Apple's 40px minimum. Clear space of a quarter of its
+   height comes from the layouts around it. Two sizes: default (hero) and
+   .small (header). */
 
 .app-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 11px 18px 11px 14px;
-  background: #000000;
-  border-radius: var(--radius-btn);
-  transition: transform 0.15s var(--ease), opacity 0.15s ease;
-}
-
-.app-badge:hover { opacity: 0.88; }
-.app-badge:active { transform: scale(0.97); }
-
-.app-badge-icon {
-  width: 26px;
-  height: 26px;
+  display: inline-block;
   flex-shrink: 0;
-  fill: #ffffff;
+  line-height: 0;
 }
 
-.app-badge-text {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.15;
-  color: #ffffff;
+.app-badge-art {
+  display: block;
+  width: auto;
+  height: 54px;
 }
 
-.app-badge-eyebrow { font-size: 10px; font-weight: 500; letter-spacing: 0.02em; }
-.app-badge-store { margin-top: 1px; font-size: 19px; font-weight: 600; letter-spacing: -0.01em; }
-
-.app-badge.small { padding: 7px 14px 7px 10px; gap: 8px; border-radius: 10px; }
-.app-badge.small .app-badge-icon { width: 18px; height: 18px; }
-.app-badge.small .app-badge-eyebrow { font-size: 8px; }
-.app-badge.small .app-badge-store { font-size: 14px; }
+.app-badge.small .app-badge-art { height: 40px; }
 
 .text-link {
   font-size: 14px;
@@ -1179,16 +1162,12 @@ details[open] > summary .plus::before { transform: rotate(45deg); }
 
 /* The phone. */
 @media (max-width: 760px) {
-  /* One row: the logo and a compact App Store button. The section links are
+  /* One row: the logo and the App Store badge. The section links are
      in the footer, one scroll away, and a second row of grey links under the
      logo cost an eighth of the screen on every page. */
   .site-header { grid-template-columns: 1fr auto; }
   .site-nav { display: none; }
   .logo { font-size: 20px; }
-  .header-cta.app-badge { padding: 8px 13px 8px 11px; gap: 6px; border-radius: 11px; }
-  .header-cta .app-badge-eyebrow { display: none; }
-  .header-cta .app-badge-store { margin-top: 0; font-size: 14px; }
-  .header-cta .app-badge-icon { width: 15px; height: 15px; }
   .header-cta.button { padding: 10px 14px; font-size: 13px; }
 
   .hero { padding: 34px var(--gutter) 44px; }

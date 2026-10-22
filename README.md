@@ -789,8 +789,10 @@ view is the first impression and is designed as one, not as the desktop
 squeezed. Check every change at 375px and 320px wide as well as on desktop.
 Below 760px:
 
-- **The header is one row**: the logo and a compact App Store button. The
-  section links are hidden there (they are all in the footer), because a
+- **The header is one row**: the logo and the App Store badge at Apple's
+  40px minimum (`/app-store-badge.svg`, Apple's own artwork from
+  tools.applemediaservices.com; never redraw, recolor, crop or animate it,
+  or drop "Download on the" to save room). The section links are hidden there (they are all in the footer), because a
   second row of links cost an eighth of the screen on every page. Above
   760px it is the three-part header it always was. It is frosted
   (`backdrop-filter`), with a nearly opaque fallback where blur is missing.
