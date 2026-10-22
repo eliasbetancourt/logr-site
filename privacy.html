@@ -84,9 +84,13 @@
     <tbody>
       <tr>
         <td><strong>Account</strong></td>
-        <td data-label="What it includes">Email address, password, username, display name.</td>
+        <td data-label="What it includes">Email address, password, username, display name. If you sign
+        in with Apple or Google instead of a password: the email address that account gives LOGR
+        (Apple's can be a private relay address), and the first time, the name on it, which you can
+        change before it is saved.</td>
         <td data-label="Why">To create and secure your account. Passwords are stored hashed by
-        our authentication provider and are never visible to us.</td>
+        our authentication provider and are never visible to us. An Apple or Google sign-in gives
+        LOGR no password at all.</td>
       </tr>
       <tr>
         <td><strong>Profile</strong></td>
@@ -192,9 +196,19 @@
     show ads and does not read your device's advertising ID.</li>
     <li><strong>No location.</strong> The app never requests location
     permission.</li>
-    <li><strong>No Apple Health or HealthKit data.</strong> LOGR does not
-    connect to Health, and does not read heart rate, steps, sleep or body
-    measurements.</li>
+    <li><strong>Apple Health only if you connect it.</strong> In Settings,
+    Apps and Devices, you can let LOGR read your workouts, heart rate, resting
+    heart rate, heart rate variability, steps and sleep from Apple Health. LOGR
+    only reads: it never writes to Health and does not read in the background.
+    Those numbers stay on your phone, in a cache that is not backed up to
+    iCloud, and are shown only to you, on your own calendar. One thing leaves
+    the phone, and only if you turn on <em>Add workouts</em>: a workout Health
+    holds becomes an activity in your LOGR account (its kind, day, time,
+    length and distance), on your calendar like any you log, for whoever can
+    see your profile, and it counts toward your streak. Heart rate never
+    leaves the phone. Health data is never used for advertising or marketing,
+    sold, or shared with data brokers. Stop it in the same place, and remove
+    LOGR's access in the Health app.</li>
     <li><strong>No stored contacts.</strong> The app reads your address book
     only when you tap to find friends or to invite people. Finding friends sends
     the phone numbers and email addresses in your contacts to our server for a
@@ -205,11 +219,12 @@
     shared with data brokers.</li>
   </ul>
 
-  <p>The app asks for four device permissions, each only when you use the thing
+  <p>The app asks for five device permissions, each only when you use the thing
   it is for: your photo library, when you choose a profile picture or attach
   photos to a post; your camera, when you take a photo instead; your contacts,
-  when you find friends or invite people; and notifications, when you turn them
-  on. Declining any of them leaves the rest of the app fully usable.</p>
+  when you find friends or invite people; notifications, when you turn them
+  on; and Apple Health, when you connect it. Declining any of them leaves the
+  rest of the app fully usable.</p>
 
   <h2 id="who-can-see">3. Who can see your information</h2>
 
@@ -259,7 +274,12 @@
     and then through Apple's Push Notification service.</li>
     <li><strong>Apple</strong> distributes the app through the App Store and
     TestFlight and provides push delivery. Where the law requires an age check,
-    Apple also provides the age range your Apple Account holds.</li>
+    Apple also provides the age range your Apple Account holds. If you use Sign
+    in with Apple, Apple confirms who you are and gives LOGR your email address
+    (or a private relay address) and, the first time, your name.</li>
+    <li><strong>Google</strong>, only if you sign in with Google: Google
+    confirms who you are and gives LOGR your email address and name. LOGR asks
+    for nothing else from your Google account.</li>
     <li><strong>Netlify</strong> hosts this website and stores waitlist
     signups. From inside the app it handles only what its own pages show: the
     two totals on the home page, and, on the page behind an invite link, that
@@ -329,8 +349,9 @@
   attached to it, including your workouts, routines, personal records, posts,
   photos, playlists, messages, likes and follows. Nothing is kept in reserve
   and there is no waiting period. Your email address is released, so you are
-  free to sign up again with it later. This cannot be undone, and we cannot
-  restore an account afterwards.</p>
+  free to sign up again with it later. If you signed in with Apple, deleting
+  also revokes LOGR's access to your Apple ID. This cannot be undone, and we
+  cannot restore an account afterwards.</p>
 
   <p>If an account turns out to belong to someone under 13, we delete it and
   everything in it, including its photos. A parent or guardian can ask us to, as
@@ -362,8 +383,9 @@
 
   <p>LOGR is not directed to children under 13, and we do not knowingly collect
   information from them. The app asks for a birthday before anything else at
-  sign-up and turns away anyone under 13, and an existing account found to be
-  under 13 is deleted, including its photos.</p>
+  sign-up (with Apple or Google, straight after that sign-in, before a name or
+  username is chosen) and turns away anyone under 13, and an existing account
+  found to be under 13 is deleted, including its photos.</p>
 
   <p>If you are a parent or guardian and believe your child under 13 has an
   account, email <a href="mailto:support@getlogr.com">support@getlogr.com</a>
