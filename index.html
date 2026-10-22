@@ -4,26 +4,84 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>LOGR - Train With Friends</title>
+  <!-- Brand first, then the words people actually search for. "LOGR" alone
+       is shared with several other 2026 workout apps, so the title has to say
+       what this one is. See README.md, Search. -->
+  <title>LOGR: Social Workout Log for Lifting With Friends and Teams</title>
   <meta name="description"
-    content="LOGR is a social workout app. Log your own sessions, team training, and anything a coach gives you in one place, then share the work with the people you train with.">
+    content="LOGR is a free workout log for iPhone. Log your lifting and gym sessions, track PRs and streaks, and train with friends, your team, and your coach.">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/favicon-32.png" sizes="32x32">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <link rel="canonical" href="https://getlogr.com">
+  <!-- With the trailing slash, the same URL sitemap.xml lists. -->
+  <link rel="canonical" href="https://getlogr.com/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="LOGR">
-  <meta property="og:url" content="https://getlogr.com">
+  <meta property="og:url" content="https://getlogr.com/">
   <meta property="og:title" content="LOGR - Train With Friends">
   <meta property="og:description"
-    content="LOGR is a social workout app. Log your own sessions, team training, and anything a coach gives you in one place, then share the work with the people you train with.">
+    content="LOGR is a free workout log for iPhone. Log your lifting and gym sessions, track PRs and streaks, and train with friends, your team, and your coach.">
   <meta property="og:image" content="https://getlogr.com/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="LOGR. Create routines, log workouts, share with friends.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#f9f9f9">
+  <!-- Safari's Smart App Banner, the same one the pages behind shared links
+       carry. affiliate-data is left out until the App Store provider ID is
+       known: then add affiliate-data="pt=PROVIDER_ID&amp;ct=web-home" to this
+       tag, so installs from the banner show up as a campaign in App Store
+       Connect. -->
+  <meta name="apple-itunes-app" content="app-id=6795712216">
   <link rel="stylesheet" href="/style.css">
+
+  <!-- Structured data: tells Google the site's name is LOGR (it shows
+       "getlogr.com" without this), who runs it, and that it is an iPhone app.
+       A JSON-LD block is data and never runs, so the CSP's script-src does
+       not touch it. No aggregateRating: Google needs ratings collected on
+       this site and forbids borrowing the App Store's. Check it with Google's
+       Rich Results Test after a deploy. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://getlogr.com/#website",
+        "name": "LOGR",
+        "alternateName": "LOGR - Train With Friends",
+        "url": "https://getlogr.com/",
+        "publisher": { "@id": "https://getlogr.com/#organization" }
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://getlogr.com/#organization",
+        "name": "LOGR",
+        "url": "https://getlogr.com/",
+        "logo": "https://getlogr.com/apple-touch-icon.png",
+        "email": "support@getlogr.com",
+        "sameAs": [
+          "https://www.instagram.com/getlogr/",
+          "https://apps.apple.com/app/id6795712216"
+        ]
+      },
+      {
+        "@type": "MobileApplication",
+        "@id": "https://getlogr.com/#app",
+        "name": "LOGR - Train With Friends",
+        "alternateName": "LOGR",
+        "description": "A social workout log for iPhone: log lifting and gym sessions, track PRs and streaks, and train with friends, teams, and coaches.",
+        "operatingSystem": "iOS",
+        "applicationCategory": "HealthApplication",
+        "url": "https://getlogr.com/",
+        "installUrl": "https://apps.apple.com/app/id6795712216",
+        "screenshot": "https://getlogr.com/screens/pair-3a-feed.jpg",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "publisher": { "@id": "https://getlogr.com/#organization" }
+      }
+    ]
+  }
+  </script>
 </head>
 
 <body>
@@ -50,9 +108,9 @@
       <div class="hero-copy">
         <div class="eyebrow">BUILT BY ATHLETES</div>
         <h1>Create routines.<br>Log workouts.<br>Share with <em>friends.</em></h1>
-        <p>LOGR is a social workout app. Log your own sessions, team training,
-          and anything a coach gives you in one place, then share the work with the
-          people you train with.</p>
+        <p>LOGR is a social workout log for iPhone. Log your lifting and gym
+          sessions, your team's training, and anything a coach plans for you in
+          one place, then share the work with the people you train with.</p>
         <div class="hero-actions">
           <a class="app-badge" href="https://apps.apple.com/app/id6795712216" aria-label="Download LOGR on the App Store">
             <img class="app-badge-art" src="/app-store-badge.svg" alt="" width="120" height="40">
@@ -210,14 +268,15 @@
         <article>
           <span>04</span>
           <h3>For coaches and creators</h3>
-          <p>Run a team chat, build a following, and share the routines you
-            actually use.</p>
-          <p class="next">Later: training plans your athletes follow and log in
-            the app.</p>
-          <small>PLANNED, NOT BUILT YET</small>
+          <p>Plan the team's training on a Team Calendar that lands on every
+            athlete's own calendar, run the team chat, and share the routines
+            you actually use.</p>
         </article>
       </div>
-      <p class="teams-foot">Most people are more than one of these.</p>
+      <p class="teams-foot">Most people are more than one of these. More on LOGR
+        for <a href="/teams">teams</a>, <a href="/coaches">coaches</a>,
+        <a href="/college">college athletes</a>, and
+        <a href="/friends">training with friends</a>.</p>
     </section>
 
     <!-- ── Story ─────────────────────────────────────────────────────── -->
@@ -262,10 +321,14 @@
         </details>
         <details>
           <summary>Can I use LOGR with my team? <span class="plus">&plus;</span></summary>
-          <p>Yes. LOGR has group, team, and community chats today, so a squad can
-            share sessions and routines in one place. A coach can run the team chat.
-            Coach tools, like assigning routines, are part of LOGR's direction
-            rather than something you can use right now.</p>
+          <p>Yes. A team in LOGR has its own chat, colors, and page, with Coach,
+            Captain, and Vice Captain roles, and teammates join from an invite
+            link. Coaches plan the team's training on a Team Calendar: each plan
+            lands on every athlete's own calendar with its routine, and
+            the coach sees who has trained. A board at the top of the team chat
+            shows who trained today. LOGR confirms each coach before the coach
+            tools switch on. <a href="/teams">LOGR for teams</a> has the
+            rest.</p>
         </details>
         <details>
           <summary>Is LOGR safe for teens? <span class="plus">&plus;</span></summary>
@@ -300,7 +363,7 @@
         </details>
         <details>
           <summary>Can I post videos? <span class="plus">&plus;</span></summary>
-          <p>Not yet. Today you can attach photos to a post, up to 20 of them.
+          <p>Not yet. Today you can attach photos to a post, up to 10 of them.
             Video is something we want to add, and it is not in the app right
             now.</p>
         </details>
@@ -315,9 +378,9 @@
             text, and community names. No setting in the app turns that off, and
             a modified app cannot get unfiltered text through. Ordinary profanity
             is stored as written and masked when it is shown to you, by a
-            Family-Friendly Language filter that is on by default for every
-            account, always on for accounts under 18, and that adults can switch
-            off for themselves in Settings.</p>
+            Family-Friendly Language filter that is always on for accounts under
+            18 and that adults can switch on or off for themselves in
+            Settings.</p>
           <p>You can report any post, comment, message, or account, with a
             reason. You can block any account from its profile, which removes the
             follow in both directions and hides content both ways; blocks are
@@ -329,14 +392,16 @@
         </details>
         <details>
           <summary>Does LOGR track me or sell my data? <span class="plus">&plus;</span></summary>
-          <p>No. Worth separating two things that share a word: LOGR works out
-            your volume, your records and your streak, and that analysis is the
-            whole point of the app. What it does not do is measure <em>you</em>.
-            There is no analytics SDK, no advertising, and no third-party trackers
-            in the app, we do not record which screens you open, and we do not sell
-            your data. You can delete your account and everything in it from
-            Settings. See the <a href="/privacy">Privacy Policy</a> for the
-            detail.</p>
+          <p>It does not sell your data or track you for ads. Worth separating
+            two things that share a word: LOGR works out your volume, your
+            records and your streak, and that analysis is the whole point of the
+            app. Apart from that, LOGR keeps a short record of how the app itself
+            is used, such as which screens open and whether a workout was
+            finished, in its own database and with your account, to find what is
+            broken or confusing. Never anything you typed. There is no analytics
+            SDK, no advertising, and no third-party trackers in the app. You can
+            delete your account and everything in it from Settings. See the
+            <a href="/privacy">Privacy Policy</a> for the detail.</p>
         </details>
       </div>
     </section>

@@ -602,6 +602,10 @@ img { max-width: 100%; display: block; }
   line-height: 1.7;
 }
 
+/* The way into the four audience pages (/teams, /coaches, /college,
+   /friends), underlined like the FAQ's support link. */
+.teams-foot a { border-bottom: 1.5px solid var(--text); font-weight: 700; color: var(--text); }
+
 /* ── Story ────────────────────────────────────────────────────────────── */
 
 .story {
@@ -691,6 +695,9 @@ details[open] > summary .plus::before { transform: rotate(45deg); }
 .waitlist p { color: var(--body); font-size: 17px; }
 /* Where it IS available, which is the part a reader is scanning for. */
 .waitlist p strong { color: var(--text); font-weight: 700; }
+/* The audience pages end on this same section with the App Store badge in
+   place of the form. */
+.waitlist > .app-badge { margin-top: 18px; }
 
 /* Email and button on row one, the optional question on row two. Placement is
    explicit because auto-placement would put the question beside the email

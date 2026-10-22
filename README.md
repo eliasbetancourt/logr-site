@@ -44,10 +44,13 @@ and let people recognise their own case:
 | "follow people a few steps ahead of you" | "follow people whose training you like" |
 | "you do not need a program or a plan to begin" | "no plan needed" |
 
-**Anything not built yet says so, in the sentence and in a label.** The coaches
-card carries `PLANNED, NOT BUILT YET` and says "Later:" in the sentence itself.
-Same for coach tools and video in the FAQ. The site has no users to disappoint
-yet, and this is why it can be trusted when it does.
+**Anything not built yet says so, in the sentence and in a label.** Video in
+the FAQ says "Not yet". The coaches card carried `PLANNED, NOT BUILT YET` until
+the Team Calendar shipped (1.3.1), and now says only what the app does. "Built"
+means **in the App Store build**: a feature marked in testing or HELD in the app
+repo (`CLAUDE.md`'s feature index, `docs/release/STATUS.md`) is not on this
+site yet, however finished it looks on a development phone. The site has no
+users to disappoint yet, and this is why it can be trusted when it does.
 
 **Never write "analytics" unqualified.** On a workout app it reads as the
 training analysis, which is the thing the app is for. See *Staying unlike Hevy*
@@ -235,6 +238,39 @@ new field is captured from the next deploy onward, not retroactively.** Early
 submissions will simply have no `role`. That is expected and is not worth
 chasing.
 
+## Search
+
+Written from the app repo's `docs/SEARCH_VISIBILITY_RESEARCH.md` (2026-10-22).
+"LOGR" alone is the name of several other 2026 workout products, so the site
+has to say what this one is, in words people search, and tie the brand, the
+site and the app together.
+
+- **The home page's title and first paragraph carry the category words**
+  (workout log, lifting, gym, team, coach), brand first.
+- **One JSON-LD block on the home page**: `WebSite` (the site's name is LOGR,
+  not "getlogr.com"), `Organization` (logo, Instagram, the App Store page) and
+  `MobileApplication`. Never an `aggregateRating`: Google only takes ratings
+  collected on this site, and forbids borrowing the App Store's. It is data,
+  never run, so the CSP's `script-src` does not apply to it. After a change,
+  run the live page through Google's Rich Results Test.
+- **Four audience pages**: `/teams`, `/coaches`, `/college`, `/friends`. Each
+  has its own title, description, canonical and FAQ, the same header and
+  footer as every page, and is in `sitemap.xml`. They are the only pages that
+  can ever rank for a search that is not the brand. They say only what the App
+  Store build does (*Copy rules*), and never name another app: no comparison
+  and no "alternative to" pages. `/college` has a marked spot for a real quote
+  from the Fordham strength coach; never fill it with an invented one.
+- **The canonical and the sitemap name the home page the same way**,
+  `https://getlogr.com/` with the slash.
+- **Smart App Banner** (`apple-itunes-app`) on the home page and the audience
+  pages, as on the pages behind shared links. It has no `affiliate-data` yet:
+  once the App Store provider ID (`pt`) is known, each page's comment says what
+  to add, with its own `ct` (`web-home`, `web-teams` and so on), so installs
+  from the banner show up as campaigns in App Store Connect.
+
+What only a person can do, after each deploy that adds a page: Search Console's
+URL Inspection, then Request Indexing, on the new URL.
+
 ## Local preview
 
 ```bash
@@ -324,6 +360,10 @@ privacy.html              -> App Store Connect "Privacy Policy URL"
 terms.html                -> App Store Connect EULA, if you use a custom one
 support.html              -> App Store Connect "Support URL"
 account-deletion.html     Apple looks for this; linked from the footer
+teams.html                the four audience pages: each its own title, FAQ
+coaches.html              and screenshots, linked from the home page's who
+college.html              it's for section and in the sitemap; see Search
+friends.html
 teens.html                Teen accounts: the age rules in plain words, for
                           teens and parents. Terms section 1 is the binding
                           version, and the two change together
@@ -688,7 +728,8 @@ curl -s https://getlogr.com/ | grep -A2 'class="tally-figure"'
 # no placeholder reached the browser (the one in the comment does not count)
 curl -s https://getlogr.com/ | grep -c 'tally-figure">{volume}'    # must print 0
 # exactly one script, ours, and the home page's wider CSP is on the page
-curl -s https://getlogr.com/ | grep -c '<script'                    # must print 1
+curl -s https://getlogr.com/ | grep -c '<script src'                # must print 1
+curl -s https://getlogr.com/ | grep -c 'application/ld+json'        # 1: data, never run
 curl -s https://getlogr.com/ | grep -o 'src="/tally.js"'            # must be ours
 curl -sI https://getlogr.com/ | grep -i content-security-policy     # script-src 'self'
 # and every OTHER page still refuses scripts outright
@@ -726,9 +767,9 @@ coach hands you, plus the people you do it with.
   problem.
 - The **who it's for section** (`#who`) is four short cards, and each audience
   has to be able to see itself: athletes, teams, anyone starting out, coaches
-  and creators. The first three describe the app today. The fourth splits what
-  exists now (team chat, a following, sharing routines) from what does not
-  (training plans athletes follow and log in the app), and labels it.
+  and creators. All four describe the app today; the coaches card names the
+  Team Calendar, which shipped in 1.3.1. The line under them links the four
+  audience pages (*Search*).
 - Beginners are a real audience, not a footnote, and the argument for them is a
   feature that already exists: follow whoever you like, save a routine from a
   post, run it.
