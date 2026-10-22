@@ -812,8 +812,9 @@ Two things changed specifically to widen that gap:
   line said we do not do the thing the app is for. The bar then said
   **"The only thing LOGR tracks is your training"**, true until 2.5.1, whose
   app events note which screens open. It now says **"No ads. Your data is
-  never sold."**, and the trust rows say `No ads, no data sold`: never claim
-  the app records nothing about use. Everywhere else the word carries a
+  never sold."**, and the trust rows say `Free, no ads` (Elias, 2026-10-22: "no
+  data sold" in a checklist read as sketchy): never claim the app records
+  nothing about use. "Free" means today; never "free forever". Everywhere else the word carries a
   qualifier: `analytics SDK`, `product analytics`, or `web analytics` on the
   site-only claims. The FAQ names what the app notes and what it never does.
 - **The consistency grid** is the page's signature and has no counterpart on
