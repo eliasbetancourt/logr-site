@@ -28,11 +28,11 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#f9f9f9">
   <!-- Safari's Smart App Banner, the same one the pages behind shared links
-       carry. affiliate-data is left out until the App Store provider ID is
-       known: then add affiliate-data="pt=PROVIDER_ID&amp;ct=web-home" to this
-       tag, so installs from the banner show up as a campaign in App Store
-       Connect. -->
-  <meta name="apple-itunes-app" content="app-id=6795712216">
+       carry. affiliate-data names the campaign, so installs from the banner
+       show up as web-home in App Store Connect (Analytics, Campaigns). It goes
+       INSIDE content, after a comma, never as an attribute of its own. pt is
+       the provider ID, the same on every page; ct is this page's campaign. -->
+  <meta name="apple-itunes-app" content="app-id=6795712216, affiliate-data=pt=129234909&amp;ct=web-home">
   <link rel="stylesheet" href="/style.css">
 
   <!-- Structured data: tells Google the site's name is LOGR (it shows
@@ -150,7 +150,7 @@
       <ul class="trust-row">
         <li><span aria-hidden="true">&check;</span> Built by Division I athletes</li>
         <li><span aria-hidden="true">&check;</span> Solo, team, or coached</li>
-        <li><span aria-hidden="true">&check;</span> No ads, no trackers</li>
+        <li><span aria-hidden="true">&check;</span> No ads, no data sold</li>
       </ul>
     </section>
 
@@ -171,7 +171,7 @@
        the one counted as the page loads. -->
     <template data-totals id="live-totals">
       <section class="tally" aria-labelledby="tally-label">
-        <div class="eyebrow" id="tally-label"><i class="live-dot" aria-hidden="true"></i>TOTAL VOLUME LIFTED ON LOGR</div>
+        <div class="eyebrow" id="tally-label"><i class="live-dot" aria-hidden="true"></i>TOTAL LIFTED ON LOGR</div>
         <p class="tally-figure"><span data-tally-volume>{volume}</span> <span class="unit">lbs</span></p>
         <p class="tally-note"><b data-tally-workouts>{workouts}</b> workouts logged. Counted live.</p>
       </section>
@@ -180,7 +180,7 @@
     <!-- ── Proof bar ─────────────────────────────────────────────────── -->
     <section class="proof-bar" aria-label="How LOGR treats your data">
       <span>PRIVACY BY DEFAULT</span>
-      <strong>The only thing LOGR tracks is your training.</strong>
+      <strong>No ads. Your data is never sold.</strong>
       <a class="text-link light" href="/privacy">Read the policy</a>
     </section>
 
@@ -391,17 +391,14 @@
             rules and what we do about them.</p>
         </details>
         <details>
-          <summary>Does LOGR track me or sell my data? <span class="plus">&plus;</span></summary>
-          <p>It does not sell your data or track you for ads. Worth separating
-            two things that share a word: LOGR works out your volume, your
-            records and your streak, and that analysis is the whole point of the
-            app. Apart from that, LOGR keeps a short record of how the app itself
-            is used, such as which screens open and whether a workout was
-            finished, in its own database and with your account, to find what is
-            broken or confusing. Never anything you typed. There is no analytics
-            SDK, no advertising, and no third-party trackers in the app. You can
-            delete your account and everything in it from Settings. See the
-            <a href="/privacy">Privacy Policy</a> for the detail.</p>
+          <summary>Does LOGR sell my data or show ads? <span class="plus">&plus;</span></summary>
+          <p>No. There are no ads, no third-party trackers, and no analytics SDK
+            in the app, and your data is never sold. To find what is broken or
+            confusing, LOGR notes a few things about how the app is used, like
+            which screens open and whether a workout was finished, in its own
+            database. Never anything you type. You can delete your account and
+            everything in it from Settings. The
+            <a href="/privacy">Privacy Policy</a> has the detail.</p>
         </details>
       </div>
     </section>

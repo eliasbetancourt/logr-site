@@ -263,10 +263,14 @@ site and the app together.
 - **The canonical and the sitemap name the home page the same way**,
   `https://getlogr.com/` with the slash.
 - **Smart App Banner** (`apple-itunes-app`) on the home page and the audience
-  pages, as on the pages behind shared links. It has no `affiliate-data` yet:
-  once the App Store provider ID (`pt`) is known, each page's comment says what
-  to add, with its own `ct` (`web-home`, `web-teams` and so on), so installs
-  from the banner show up as campaigns in App Store Connect.
+  pages, as on the pages behind shared links. Each carries `affiliate-data`
+  with the provider ID (`pt=129234909`, the same everywhere) and its own campaign
+  (`ct`: `web-home`, `web-teams`, `web-coaches`, `web-college`,
+  `web-friends`), so installs from the banner show up as campaigns in App
+  Store Connect (Analytics, Campaigns; a campaign is listed only after 5
+  first-time downloads). It goes inside `content` after a comma, never as an
+  attribute of its own, which Safari would ignore. A new page gets its own
+  `ct`.
 
 What only a person can do, after each deploy that adds a page: Search Console's
 URL Inspection, then Request Indexing, on the new URL.
@@ -805,11 +809,13 @@ Two things changed specifically to widen that gap:
   that bar said `No ads. No analytics. No trackers of any kind.`, three
   sentences above a feature section promising personal records and a training
   calendar. On a workout app "analytics" reads as the training analysis, so the
-  line said we do not do the thing the app is for. The bar now says
-  **"The only thing LOGR tracks is your training"**, which turns the collision
-  into the message. Everywhere else the word carries a qualifier: `analytics
-  SDK`, `product analytics`, or `web analytics` on the site-only claims. The
-  privacy policy and the FAQ both name the two meanings and separate them.
+  line said we do not do the thing the app is for. The bar then said
+  **"The only thing LOGR tracks is your training"**, true until 2.5.1, whose
+  app events note which screens open. It now says **"No ads. Your data is
+  never sold."**, and the trust rows say `No ads, no data sold`: never claim
+  the app records nothing about use. Everywhere else the word carries a
+  qualifier: `analytics SDK`, `product analytics`, or `web analytics` on the
+  site-only claims. The FAQ names what the app notes and what it never does.
 - **The consistency grid** is the page's signature and has no counterpart on
   their site. It is drawn from what the app actually records, `streak_days`
   crossed with workouts, so it advertises a real feature rather than decorating.
