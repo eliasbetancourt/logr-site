@@ -382,8 +382,7 @@ img { max-width: 100%; display: block; }
 }
 
 /* The dot that says a number is live: the same black as the text, with a ring
-   that fades outward. Monochrome like everything else here. Two places wear
-   it, the hero's line and the band's label, so it lives here once. */
+   that fades outward. Monochrome like everything else here. */
 .live-dot {
   position: relative;
   flex: 0 0 8px;
@@ -399,30 +398,6 @@ img { max-width: 100%; display: block; }
   border-radius: 50%;
   background: var(--text);
   animation: tally-pulse 2.2s ease-out infinite;
-}
-
-/* The same count, said small, in the hero. The band below is a screen and a
-   third down on a phone, which is further than most people scroll, so the
-   number that makes the case is also said where it is seen. Here it is one
-   line under the buttons; there it is the headline.
-
-   `.hero-copy > .hero-live`, not `.hero-live`: it is a <p> in .hero-copy, so
-   `.hero-copy > p` (the lede's rule, margin 0 on a phone) outranked it and
-   sat the line flush under the badge at the lede's size. */
-.hero-copy > .hero-live {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 22px 0 0;
-  color: var(--muted);
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.hero-copy > .hero-live b {
-  color: var(--text);
-  font-weight: 800;
-  font-variant-numeric: tabular-nums;
 }
 
 @keyframes tally-pulse {
@@ -1108,13 +1083,6 @@ details[open] > summary .plus::before { transform: rotate(45deg); }
    whole page width, and shrinking them would be a loss for no reason. */
 @media (min-width: 901px) {
   .hero-phones { --front: min(246px, 17.5vw); }
-
-  /* On a wide screen the trust row sits straight under the copy (its own
-     grid row, no margin), so the running total's line, the last thing in the
-     copy, keeps the same air below it that the buttons get without it. A
-     grid item contains its children's margins, so this stays inside. Not on
-     a phone: the phones come next there, with their own gap. */
-  .hero-copy > .hero-live { margin-bottom: 30px; }
 }
 
 /* Four audience cards need more room than three did. They go 2x2 well before

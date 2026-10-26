@@ -594,16 +594,13 @@ to update them.
 The number is written into the HTML on Netlify's servers, and then kept moving
 in the browser:
 
-- `index.html` carries **two** places the numbers appear, each inside a
-  template element marked `data-totals`, with `{volume}` and `{workouts}`
-  where the numbers go. A browser never draws a template element, so the file
-  on its own is the home page without either. The two are the hero's one line
-  (`.hero-live`) and the band below it (`.tally`), and both are filled from
-  the same answer, so they cannot disagree.
-- **The hero says it too because almost nobody reaches the band.** Measured on
-  the live site at 375x812: the band starts 1,086px down, which is 1.34
-  screens, further than most people scroll. The hero's line sits at 443px,
-  comfortably above the fold. The band is not moved above the hero on purpose:
+- `index.html` carries the band (`.tally`) inside a template element marked
+  `data-totals`, with `{volume}` and `{workouts}` where the numbers go. A
+  browser never draws a template element, so the file on its own is the home
+  page without the band.
+- **There is no second, smaller line in the hero.** There used to be one
+  (`.hero-live`, the volume in one line under the buttons); it was removed as
+  redundant with the band. The band is not moved above the hero on purpose:
   a seven-digit number means nothing to someone who does not yet know what
   LOGR is.
 - `netlify/edge-functions/live-totals.js` runs on every request for `/`. It

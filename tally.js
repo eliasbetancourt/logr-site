@@ -16,9 +16,8 @@
 (function () {
   'use strict';
 
-  // Every place the page says either number: the hero's one line, and the
-  // band below it. The hero line says only the volume, so the two lists are
-  // read and moved separately rather than in pairs.
+  // Every place the page says either number. The two lists are read and
+  // moved separately rather than in pairs.
   var volumeEls = [].slice.call(document.querySelectorAll('[data-tally-volume]'));
   var workoutsEls = [].slice.call(document.querySelectorAll('[data-tally-workouts]'));
 
