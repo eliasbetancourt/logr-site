@@ -248,8 +248,13 @@ site and the app together.
 - **The home page's title and first paragraph carry the category words**
   (workout log, lifting, gym, team, coach), brand first.
 - **One JSON-LD block on the home page**: `WebSite` (the site's name is LOGR,
-  not "getlogr.com"), `Organization` (logo, Instagram, the App Store page) and
-  `MobileApplication`. Never an `aggregateRating`: Google only takes ratings
+  not "getlogr.com"), `Organization` (logo, Instagram, TikTok, the App Store
+  page), `MobileApplication`, and `FAQPage`. The `FAQPage` node is the home
+  page FAQ word for word, links dropped: Google ignores markup that says more
+  than the page, so a question changed in one place is changed in both. The
+  `sameAs` profiles are the ones the app's About screen links
+  (`LINKS` in the app's `lib/appInfo.js`); a new official profile goes in
+  both. Never an `aggregateRating`: Google only takes ratings
   collected on this site, and forbids borrowing the App Store's. It is data,
   never run, so the CSP's `script-src` does not apply to it. After a change,
   run the live page through Google's Rich Results Test.
@@ -271,6 +276,12 @@ site and the app together.
   first-time downloads). It goes inside `content` after a comma, never as an
   attribute of its own, which Safari would ignore. A new page gets its own
   `ct`.
+
+- **`llms.txt`** at the root (the llmstxt.org format): what LOGR is, what the
+  App Store build does, and links to the audience and policy pages, so an AI
+  assistant asked about LOGR reads this site and not one of the other Logr
+  apps. It follows *Copy rules* like any page: only what is built, and it
+  changes when the FAQ or an audience page does.
 
 What only a person can do, after each deploy that adds a page: Search Console's
 URL Inspection, then Request Indexing, on the new URL.
@@ -393,6 +404,7 @@ netlify/edge-functions/lib/headers.js
                           which links iOS opens in the app, see below
 serve.py                  local preview with Netlify's clean URLs
 robots.txt / sitemap.xml  crawling. Both name the domain
+llms.txt                  the site in plain text for AI assistants, see Search
 favicon.svg               PLACEHOLDER mark, see below
 favicon-32.png            rendered from favicon.svg
 apple-touch-icon.png      rendered from favicon.svg

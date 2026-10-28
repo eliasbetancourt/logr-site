@@ -1,0 +1,36 @@
+# LOGR - Train With Friends
+
+> LOGR is a free social workout log for iPhone. Log lifting and gym sessions, track PRs and streaks, and train with friends, your team, and your coach. Every feature is free, with no subscription and no ads. On the App Store in the United States and Canada, for iPhone on iOS 15.1 or later, for people 13 and older.
+
+LOGR is not the other workout apps that share the name Logr. This one is [LOGR - Train With Friends on the App Store](https://apps.apple.com/app/id6795712216), and its site is [getlogr.com](https://getlogr.com/).
+
+What the app does today:
+
+- Build routines, or save one from someone else's post, and log workouts against them. A workout can also start empty, with exercises added as you go.
+- A feed of friends' workouts, a monthly leaderboard, streaks, PRs, and pokes.
+- Teams with their own chat, colors, and page, Coach, Captain, and Vice Captain roles, and invite links.
+- A Team Calendar where a confirmed coach plans training. Each plan lands on every athlete's own calendar with its routine, and the coach sees who trained.
+- Photos on posts, up to 10. Video is not in the app yet.
+- Accounts under 18 have stricter defaults. See the teen accounts page.
+
+## Who it is for
+
+- [LOGR for training with friends](https://getlogr.com/friends): feed, leaderboard, streaks, and PRs
+- [LOGR for teams](https://getlogr.com/teams): team chat, Team Calendar, and a daily board of who trained
+- [LOGR for coaches](https://getlogr.com/coaches): plan team training that athletes log in the app
+- [LOGR for college athletes](https://getlogr.com/college): team lifts and your own sessions, built by Division I athletes
+
+## Policies and help
+
+- [Home page and FAQ](https://getlogr.com/#faq)
+- [Teen accounts](https://getlogr.com/teens)
+- [Community guidelines](https://getlogr.com/community-guidelines)
+- [Privacy policy](https://getlogr.com/privacy)
+- [Support](https://getlogr.com/support)
+
+## Optional
+
+- [Terms of service](https://getlogr.com/terms)
+- [Account deletion](https://getlogr.com/account-deletion)
+- [Instagram](https://www.instagram.com/getlogr/)
+- [TikTok](https://www.tiktok.com/@getlograpp)

@@ -39,8 +39,9 @@
        "getlogr.com" without this), who runs it, and that it is an iPhone app.
        A JSON-LD block is data and never runs, so the CSP's script-src does
        not touch it. No aggregateRating: Google needs ratings collected on
-       this site and forbids borrowing the App Store's. Check it with Google's
-       Rich Results Test after a deploy. -->
+       this site and forbids borrowing the App Store's. The FAQPage node is
+       the FAQ below, word for word: change a question there, change it here.
+       Check it with Google's Rich Results Test after a deploy. -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -62,6 +63,7 @@
         "email": "support@getlogr.com",
         "sameAs": [
           "https://www.instagram.com/getlogr/",
+          "https://www.tiktok.com/@getlograpp",
           "https://apps.apple.com/app/id6795712216"
         ]
       },
@@ -78,6 +80,62 @@
         "screenshot": "https://getlogr.com/screens/pair-3a-feed.jpg",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
         "publisher": { "@id": "https://getlogr.com/#organization" }
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://getlogr.com/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is LOGR?",
+            "acceptedAnswer": { "@type": "Answer", "text": "LOGR is a social workout app for building routines, logging training, tracking progress, and sharing the work with friends and teammates. Whatever the session was, it goes in the same log." }
+          },
+          {
+            "@type": "Question",
+            "name": "Who is LOGR for?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Athletes, gym-goers, teams, coaches, and anyone who wants a better way to record and share their training. You do not need a team or a coach to use it. You do need to be 13 or older." }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I use LOGR with my team?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes. A team in LOGR has its own chat, colors, and page, with Coach, Captain, and Vice Captain roles, and teammates join from an invite link. Coaches plan the team's training on a Team Calendar: each plan lands on every athlete's own calendar with its routine, and the coach sees who has trained. A board at the top of the team chat shows who trained today. LOGR confirms each coach before the coach tools switch on. LOGR for teams has the rest." }
+          },
+          {
+            "@type": "Question",
+            "name": "Is LOGR safe for teens?",
+            "acceptedAnswer": { "@type": "Answer", "text": "LOGR is for people 13 and older, and every account gives a birthday when it signs up. Accounts for people under 18 keep Family-Friendly Language and photo blurring on, and cannot join group chats or communities. From 13 to 15 the account is private, has no direct messages, and is not suggested to people who do not already follow it. At 16 and 17, messages are only between people who follow each other. Teams work at every age. Teen accounts has the details, including what parents can do." }
+          },
+          {
+            "@type": "Question",
+            "name": "I am just getting started. Is LOGR too much?",
+            "acceptedAnswer": { "@type": "Answer", "text": "No. There is nothing to set up and no plan to buy. Start a workout with nothing in it and add exercises as you go, or save a routine from a post and run that instead." }
+          },
+          {
+            "@type": "Question",
+            "name": "Is LOGR free?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes. Every feature is unlocked, with no subscription, no ads, and none of your history behind a paywall. Any future paid features will be clearly explained before they are introduced." }
+          },
+          {
+            "@type": "Question",
+            "name": "Is LOGR available yet?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes. LOGR is on the App Store now in the United States and Canada, for iPhone on iOS 15.1 or later. We are still rolling out region by region, so if it is not showing up for you yet, use the regional notify list below and we will email you the moment it reaches you." }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I post videos?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Not yet. Today you can attach photos to a post, up to 10 of them. Video is something we want to add, and it is not in the app right now." }
+          },
+          {
+            "@type": "Question",
+            "name": "What if someone posts something offensive?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Everything on LOGR is posted by other users and none of it is reviewed before it appears, so you may still run into something explicit or offensive even though it is not allowed. Two filters run, and they work differently. Slurs, harassment, and threats are censored at the database before the text is stored at all, on every surface people write on: posts, captions, comments, messages, profile text, and community names. No setting in the app turns that off, and a modified app cannot get unfiltered text through. Ordinary profanity is stored as written and masked when it is shown to you, by a Family-Friendly Language filter that is always on for accounts under 18 and that adults can switch on or off for themselves in Settings. You can report any post, comment, message, or account, with a reason. You can block any account from its profile, which removes the follow in both directions and hides content both ways; blocks are undone in Settings. Reports go into a moderation queue we review daily, and reported content, along with the accounts behind it, is acted on within 24 hours. The community guidelines spell out the rules and what we do about them." }
+          },
+          {
+            "@type": "Question",
+            "name": "Does LOGR sell my data or show ads?",
+            "acceptedAnswer": { "@type": "Answer", "text": "No. There are no ads, no third-party trackers, and no analytics SDK in the app, and your data is never sold. To find what is broken or confusing, LOGR notes a few things about how the app is used, like which screens open and whether a workout was finished, in its own database. Never anything you type. You can delete your account and everything in it from Settings. The Privacy Policy has the detail." }
+          }
+        ]
       }
     ]
   }
