@@ -56,6 +56,17 @@ users to disappoint yet, and this is why it can be trusted when it does.
 training analysis, which is the thing the app is for. See *Staying unlike Hevy*
 for the full story.
 
+**LOGR is free, so the site just says free** (Elias, 2026-11-04: Pro has not
+started). No sentence hedging about paid features to come. Revisit the wording
+when Pro gets close.
+
+**Nothing here reads like a template.** All cut on 2026-11-04 because the site
+felt AI sloppy, and none of them comes back: a small letter-spaced label over a
+heading, numbers on cards that have no order, checkmark rows (one plain line
+instead), a greyed word in a headline, a dot grid, a fade-in on load, a slogan
+for a heading ("Questions, answered."), and the "not X, the honest Y" sentence.
+A heading says what the section is.
+
 ## Before this goes live
 
 Settled: governing law is **Pennsylvania** (terms section 12), and the domain
@@ -123,7 +134,7 @@ Two commitments in that text are real and operational, not boilerplate:
 
 ## Form detection has to be switched on, and it is not code
 
-**Symptom:** submitting the waitlist form lands on
+**Symptom:** submitting the region form lands on
 `404 - No webpage was found for https://getlogr.com/thanks`.
 
 **It is not `thanks.html`.** Measured against the live site:
@@ -164,7 +175,7 @@ the thing users actually do:
 ```sh
 # a registered form answers 200, an unknown name answers 404
 curl -s -o /dev/null -w '%{http_code}\n' -X POST https://getlogr.com/thanks \
-  --data-urlencode 'form-name=waitlist' --data-urlencode 'email=t@getlogr.com'
+  --data-urlencode 'form-name=region-notify' --data-urlencode 'email=t@getlogr.com'
 curl -s -o /dev/null -w '%{http_code}\n' -X POST https://getlogr.com/thanks \
   --data-urlencode 'form-name=does-not-exist' --data-urlencode 'email=t@getlogr.com'
 ```
@@ -186,11 +197,14 @@ provider. The tell is always the same: every layer looks healthy and the
 feature delivers nothing. When something here does not work, check whether the
 service is enabled before reading the code.
 
-## The waitlist form
+## The region form
 
-`index.html` carries a Netlify Forms signup (`name="waitlist"`). Netlify's
-build bot finds the form in the deployed HTML and registers it, so nothing else
-is needed. Submissions land under **Forms** in the Netlify dashboard.
+`index.html` carries a Netlify Forms signup (`name="region-notify"`) for people
+outside the US and Canada, inside the FAQ's "Is LOGR in my country?" since
+2026-11-04: as its own section it was the last thing on the page, a form for
+people who cannot download the app. Netlify's build bot finds the form in the
+deployed HTML and registers it, closed `<details>` or not, so nothing else is
+needed. Submissions land under **Forms** in the Netlify dashboard.
 
 - It posts to `/thanks`, which is `thanks.html`.
 - `bot-field` is a honeypot, hidden with `.sr-only`.
@@ -206,11 +220,11 @@ deployed page do not match, and that mismatch is the good outcome.
 
 ```html
 <!-- what is in index.html -->
-<form name="waitlist" method="POST" action="/thanks"
+<form class="region-form" name="region-notify" method="POST" action="/thanks"
       netlify data-netlify="true" data-netlify-honeypot="bot-field">
 
-<!-- what https://getlogr.com/ served on 2026-08-27, opt-in attributes gone -->
-<form action='/thanks' method='POST' name='waitlist'>
+<!-- what a deploy serves, opt-in attributes gone -->
+<form class='region-form' action='/thanks' method='POST' name='region-notify'>
 ```
 
 Seeing the second form means the build bot found and processed the form on that
@@ -226,16 +240,15 @@ lines in that section are still the only test of what a real submitter gets,
 and they file a real submission, so run them with an obviously fake address and
 delete it from the dashboard afterwards.
 
-### The `role` field
+### The `region` field
 
-The form also carries an optional `<select name="role">`, so the four audiences
-on the page can be told apart on the list: `solo`, `team`, `coached`,
-`starting`, `coach`. It is optional on purpose. The email is the conversion and
+The form also carries an optional text field, `region`, to say which countries
+to prioritize. It is optional on purpose. The email is the conversion and
 nothing should stand between it and the button.
 
 **Netlify learns a form's fields when it scans the deployed HTML, which means a
 new field is captured from the next deploy onward, not retroactively.** Early
-submissions will simply have no `role`. That is expected and is not worth
+submissions will simply have no `region`. That is expected and is not worth
 chasing.
 
 ## Search
@@ -274,8 +287,15 @@ site and the app together.
   `web-friends`), so installs from the banner show up as campaigns in App
   Store Connect (Analytics, Campaigns; a campaign is listed only after 5
   first-time downloads). It goes inside `content` after a comma, never as an
-  attribute of its own, which Safari would ignore. A new page gets its own
-  `ct`.
+  attribute of its own, which Safari would ignore. A new marketing page gets
+  its own `ct`.
+- **Every App Store button carries the same token** since 2026-11-04, in
+  Apple's link form:
+  `https://apps.apple.com/app/apple-store/id6795712216?pt=129234909&amp;ct=web-home&amp;mt=8`.
+  The help and legal pages share `web-site`; the pages behind shared links and
+  invites use `web-share`, on their banner too (`CAMPAIGN` in `app-link.js`).
+  The structured data's `installUrl` and `sameAs` stay plain, since nobody taps
+  them.
 
 - **`llms.txt`** at the root (the llmstxt.org format): what LOGR is, what the
   App Store build does, and links to the audience and policy pages, so an AI
@@ -346,7 +366,7 @@ links have no `.html` in them.
 3. Deploy. The site is live on a `*.netlify.app` name straight away.
 4. **Domain settings** → add `getlogr.com`, and point DNS at Netlify. HTTPS is
    automatic once DNS resolves.
-5. **Forms** → the `waitlist` form appears after the first deploy. Add an email
+5. **Forms** → the `region-notify` form appears after the first deploy. Add an email
    notification there, or signups accumulate with nobody being told.
 
 ### The domain is written into four files
@@ -370,14 +390,14 @@ public, since it is what a shared link and a search result both read.
 
 ```
 index.html                landing page: hero, the running total, who it's
-                          for, story, FAQ, waitlist
+                          for, story, FAQ, the download ask
 privacy.html              -> App Store Connect "Privacy Policy URL"
 terms.html                -> App Store Connect EULA, if you use a custom one
 support.html              -> App Store Connect "Support URL"
 account-deletion.html     Apple looks for this; linked from the footer
 teams.html                the four audience pages: each its own title, FAQ
-coaches.html              and screenshots, linked from the home page's who
-college.html              it's for section and in the sitemap; see Search
+coaches.html              and screenshots, linked from every page's header
+college.html              and footer and in the sitemap; see Search
 friends.html
 teens.html                Teen accounts: the age rules in plain words, for
                           teens and parents. Terms section 1 is the binding
@@ -597,19 +617,20 @@ variables in a local `.env` (see *The running total*, *Seeing it locally*).
 
 ## The running total
 
-Under the hero the home page says how much has been lifted on LOGR and how
-many workouts have been logged: *TOTAL VOLUME LIFTED ON LOGR*, the figure, and
-a line with the workout count. **Both numbers are read from the database as
-the page is requested.** Nobody types them in, and nothing rebuilds the site
-to update them.
+Under the hero the home page says how much has been lifted on LOGR: the figure,
+and *lifted on LOGR so far. Counted live.* The workout count came off the page
+on 2026-11-04, since 1,030 workouts undercut 12.6 million pounds right above it;
+the function, `/api/totals` and `tally.js` still carry it, and it comes back by
+putting an element with `data-tally-workouts` in the template. **The number is
+read from the database as the page is requested.** Nobody types it in, and
+nothing rebuilds the site to update it.
 
 The number is written into the HTML on Netlify's servers, and then kept moving
 in the browser:
 
 - `index.html` carries the band (`.tally`) inside a template element marked
-  `data-totals`, with `{volume}` and `{workouts}` where the numbers go. A
-  browser never draws a template element, so the file on its own is the home
-  page without the band.
+  `data-totals`, with `{volume}` where the number goes. A browser never draws a
+  template element, so the file on its own is the home page without the band.
 - **There is no second, smaller line in the hero.** There used to be one
   (`.hero-live`, the volume in one line under the buttons); it was removed as
   redundant with the band. The band is not moved above the hero on purpose:
@@ -633,8 +654,8 @@ the real figures already in it, so with the script blocked, failed or switched
 off the band is still correct and still current. The script only ever moves a
 number the page already had a correct one for.
 
-That is why the figure carries `data-tally-volume` and the count carries
-`data-tally-workouts`. They are the script's only two handles.
+That is why the figure carries `data-tally-volume`, the script's handle.
+`data-tally-workouts` is the second, with nothing on the page using it today.
 
 What it will not do, and what each guard is for:
 
@@ -773,16 +794,16 @@ log, whoever it came from.** Personal sessions, team training, and whatever a
 coach hands you, plus the people you do it with.
 
 - The hero states it in two sentences, and that is the only place it is stated
-  outright. There was briefly a "one place" section under the proof bar as
-  well, listing what fits in the log. It said the same thing as the who it's
-  for section directly below it, so it went. **The page makes this argument
-  once.** If a new section needs the same sentence to work, the section is the
-  problem.
+  outright. There was briefly a "one place" section as well, listing what fits
+  in the log. It said the same thing as the who it's for section, so it went.
+  **The page makes this argument once.** If a new section needs the same
+  sentence to work, the section is the problem.
 - The **who it's for section** (`#who`) is four short cards, and each audience
   has to be able to see itself: athletes, teams, anyone starting out, coaches
   and creators. All four describe the app today; the coaches card names the
   Team Calendar, which shipped in 1.3.1. The line under them links the four
-  audience pages (*Search*).
+  audience pages (*Search*). No age line and no "lifters 15 to 30" here (Elias,
+  2026-11-04: keep what we have).
 - Beginners are a real audience, not a footnote, and the argument for them is a
   feature that already exists: follow whoever you like, save a routine from a
   post, run it.
@@ -804,34 +825,33 @@ site is deliberately built away from theirs. Theirs, as of August 2026:
 | Buttons | 100px pills | 14px radius, the app's own |
 | Type | Arial | system stack, tabular numerals |
 | Cookies | consent banner, tracking | none, and the site says so |
-| Proof | "More than 15 million athletes" | the running total: pounds lifted and workouts logged, counted as the page loads. Never a user count |
+| Proof | "More than 15 million athletes" | the running total: pounds lifted, counted as the page loads. Never a user count |
 
-Two things changed specifically to widen that gap:
+**Never write "no analytics" unqualified on this site.** A first draft of the
+old privacy bar said `No ads. No analytics. No trackers of any kind.`, three
+sentences above a section promising personal records and a training calendar.
+On a workout app "analytics" reads as the training analysis, so the line said
+we do not do the thing the app is for. The bar then said **"The only thing LOGR
+tracks is your training"**, true until 2.5.1, whose app events note which
+screens open. Never claim the app records nothing about use. "No data sold" in
+a checklist read as sketchy (Elias, 2026-10-22), so the short version is `Free,
+no ads`. "Free" means today; never "free forever". Everywhere else the word
+carries a qualifier: `analytics SDK`, `product analytics`, or `web analytics` on
+the site-only claims. The FAQ names what the app notes and what it never does.
 
-- **The proof bar was three imperatives** (`Log the work. / See the progress. /
-  Share the journey.`) which echoed Hevy's hero, a stack of three two-word
-  imperatives. It is now a privacy claim, which is both further from them and a
-  real difference: they run a consent banner, LOGR has no analytics SDK at all.
-  The tagline still lives in the footer, where it belongs to us.
+**Cut on 2026-11-04, and why they stay cut** (Elias: "it feels pretty AI sloppy"):
 
-  **Never write "no analytics" unqualified on this site.** The first draft of
-  that bar said `No ads. No analytics. No trackers of any kind.`, three
-  sentences above a feature section promising personal records and a training
-  calendar. On a workout app "analytics" reads as the training analysis, so the
-  line said we do not do the thing the app is for. The bar then said
-  **"The only thing LOGR tracks is your training"**, true until 2.5.1, whose
-  app events note which screens open. It now says **"No ads. Your data is
-  never sold."**, and the trust rows say `Free, no ads` (Elias, 2026-10-22: "no
-  data sold" in a checklist read as sketchy): never claim the app records
-  nothing about use. "Free" means today; never "free forever". Everywhere else the word carries a
-  qualifier: `analytics SDK`, `product analytics`, or `web analytics` on the
-  site-only claims. The FAQ names what the app notes and what it never does.
-- **The consistency grid** is the page's signature and has no counterpart on
-  their site. It is drawn from what the app actually records, `streak_days`
-  crossed with workouts, so it advertises a real feature rather than decorating.
-  It is **monochrome on purpose**: the app tints these black, blue and green,
-  but blue is Hevy's entire identity and a density ramp reads better at 24px
-  anyway.
+- **The consistency grid.** It was called the page's signature, but it was a
+  hand-typed grid of made-up data with made-up numbers in its label, and a
+  visitor could not tell what it was for.
+- **The privacy bar** (`No ads. Your data is never sold.`, a band of its own). It
+  said what the FAQ says, and nobody comes to a workout app's page for it.
+- **The footer tagline** (`Log the work. Share the journey.`).
+
+**The home page's headline is still three commands**, the shape of Hevy's hero
+and the reason the old proof bar was changed. Its replacement waits on the
+founders' answers about the name and the words (log or tracker); the draft is
+"The workout log with your friends in it."
 
 Do not copy their copy, their section order, or their screenshots. The
 resemblance that is unavoidable is a phone mockup in the hero, which is the
@@ -853,16 +873,9 @@ Below 760px:
   second row of links cost an eighth of the screen on every page. Above
   760px it is the three-part header it always was. It is frosted
   (`backdrop-filter`), with a nearly opaque fallback where blur is missing.
-- **The hero is one column in reading order**: copy, phones, trust row. The
-  trust row is AFTER the phones in the markup for that reason, and the grid
-  areas put it back under the copy on a wide screen. The phones are sized from
-  one number, `--front`, so the pair keeps its shape and stays inside the
-  screen edge at any width, and they start on the first screen. The dot grid
-  behind them is `.hero-phones::before`.
-- **The trust row is one grouped card** with three rows, the shape of the app's
-  own Settings lists.
-- **The consistency grid shrinks to fit** (about 10px a cell) instead of
-  scrolling sideways.
+- **The hero is one column in reading order**: copy, then phones. The phones
+  are sized from one number, `--front`, so the pair keeps its shape and stays
+  inside the screen edge at any width, and they start on the first screen.
 - **The four audience cards swipe sideways** (`scroll-snap`), the next one
   peeking at the edge, instead of a column four screens tall.
 - **Legal pages**: a table with `class="stack"` and a `data-label` on each
@@ -874,8 +887,7 @@ Below 760px:
   footer pad by `env(safe-area-inset-*)`, so nothing sits under a notch in
   landscape or the home indicator.
 - Fields are 16px, because iOS zooms into a field with smaller text.
-- The hero rises in once on load, and every animation and transition is off
-  for anyone who asks for reduced motion.
+- Every animation and transition is off for anyone who asks for reduced motion.
 
 None of it needs JavaScript, and none of it is an inline style.
 
@@ -900,9 +912,9 @@ buttons are `#1a1a1a` at radius 14, and the wordmark is 800 weight with
 **positive** 2px tracking, copied from `wordmark` in the app's FeedScreen. Keep
 these in step with `CLAUDE.md` in the app repo if the app's tokens ever move.
 
-The page STRUCTURE came from the wireframe (hero, proof bar, three feature
-sections, teams, story, FAQ, waitlist). Its warm-paper palette and square
-corners did not.
+The page started from a wireframe's structure, and none of its warm-paper
+palette or square corners. Today it is hero, running total, who it's for, story,
+FAQ, the download ask.
 
 ## The screenshots
 
