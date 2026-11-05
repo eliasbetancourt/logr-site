@@ -1,6 +1,6 @@
 # LOGR - Train With Friends
 
-> LOGR is a free social workout log for iPhone. Log lifting and gym sessions, track PRs and streaks, and train with friends, your team, and your coach. Every feature is free, with no subscription and no ads. On the App Store in the United States and Canada, for iPhone on iOS 15.1 or later, for people 13 and older.
+> LOGR is a free social workout log for iPhone. Log lifting and gym sessions, track PRs and streaks, and train with friends, your team, and your coach. It is free, with no subscription and no ads. On the App Store in the United States and Canada, for iPhone on iOS 15.1 or later, for people 13 and older.
 
 LOGR is not the other workout apps that share the name Logr. This one is [LOGR - Train With Friends on the App Store](https://apps.apple.com/app/id6795712216), and its site is [getlogr.com](https://getlogr.com/).
 
@@ -11,6 +11,7 @@ What the app does today:
 - Teams with their own chat, colors, and page, Coach, Captain, and Vice Captain roles, and invite links.
 - A Team Calendar where a confirmed coach plans training. Each plan lands on every athlete's own calendar with its routine, and the coach sees who trained.
 - Photos on posts, up to 10. Video is not in the app yet.
+- Import lifts from another app or a spreadsheet, and export every lift as a CSV file.
 - Accounts under 18 have stricter defaults. See the teen accounts page.
 
 ## Who it is for
