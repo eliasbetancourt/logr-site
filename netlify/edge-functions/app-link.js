@@ -36,7 +36,11 @@ import { SECURITY_HEADERS } from './lib/headers.js';
 
 const SITE = 'https://getlogr.com';
 const APP_STORE_ID = '6795712216';
-const APP_STORE = `https://apps.apple.com/app/id${APP_STORE_ID}`;
+// Installs from a shared link or an invite show up as this campaign in App
+// Store Connect (Analytics, Campaigns). pt is the provider ID, the same on
+// every page. The banner and the buttons carry it the same way.
+const CAMPAIGN = 'pt=129234909&amp;ct=web-share';
+const APP_STORE = `https://apps.apple.com/app/apple-store/id${APP_STORE_ID}?${CAMPAIGN}&amp;mt=8`;
 
 // Post and routine ids are uuids. A handle follows the app's username rule
 // (lib/validation.js): letters, numbers, periods and underscores, 30 at most,
@@ -270,7 +274,7 @@ function render({ url, title, heading, handle, lede, appUrl, openLabel, code, pr
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(lede)}">
 <meta name="robots" content="noindex">
-<meta name="apple-itunes-app" content="app-id=${APP_STORE_ID}, app-argument=${esc(url)}">
+<meta name="apple-itunes-app" content="app-id=${APP_STORE_ID}, affiliate-data=${CAMPAIGN}, app-argument=${esc(url)}">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
