@@ -293,10 +293,11 @@ function render({ url, title, heading, handle, lede, appUrl, openLabel, code, pr
 <header class="site-header">
   <a class="logo" href="/" aria-label="LOGR home">LOGR</a>
   <nav class="site-nav">
-    <a href="/#who">Who it's for</a>
-    <a href="/#story">Our Story</a>
+    <a href="/friends">Friends</a>
+    <a href="/teams">Teams</a>
+    <a href="/coaches">Coaches</a>
+    <a href="/college">College</a>
     <a href="/#faq">FAQ</a>
-    <a href="/support">Support</a>
   </nav>
   ${badge(true)}
 </header>
@@ -318,12 +319,14 @@ function render({ url, title, heading, handle, lede, appUrl, openLabel, code, pr
 <footer class="site-footer" id="footer">
   <div>
     <a class="logo footer-logo" href="/">LOGR</a>
-    <p>Log the work. Share the journey.</p>
     <small>&copy; 2026 LOGR. All rights reserved.</small>
   </div>
   <div>
     <b>Product</b>
-    <a href="/#who">Who it's for</a>
+    <a href="/friends">Friends</a>
+    <a href="/teams">Teams</a>
+    <a href="/coaches">Coaches</a>
+    <a href="/college">College</a>
     <a href="/#story">Our Story</a>
     <a href="/#faq">FAQ</a>
   </div>
@@ -343,6 +346,7 @@ function render({ url, title, heading, handle, lede, appUrl, openLabel, code, pr
   <div>
     <b>Follow</b>
     <a href="https://instagram.com/getlogr" rel="me noopener">Instagram</a>
+    <a href="https://tiktok.com/@getlograpp" rel="me noopener">TikTok</a>
   </div>
 </footer>
 
