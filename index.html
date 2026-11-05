@@ -117,8 +117,8 @@
           },
           {
             "@type": "Question",
-            "name": "Is LOGR available yet?",
-            "acceptedAnswer": { "@type": "Answer", "text": "Yes. LOGR is on the App Store now in the United States and Canada, for iPhone on iOS 15.1 or later. We are still rolling out region by region, so if it is not showing up for you yet, use the regional notify list below and we will email you the moment it reaches you." }
+            "name": "Is LOGR in my country?",
+            "acceptedAnswer": { "@type": "Answer", "text": "LOGR is on the App Store in the United States and Canada, and more countries are coming. If it is not available where you are, leave your email and we will tell you the moment it is." }
           },
           {
             "@type": "Question",
@@ -211,83 +211,19 @@
 
        Not drawn as it stands: a template element is inert, so opened as a file, or
        under serve.py, the page has no such band. On Netlify,
-       netlify/edge-functions/live-totals.js reads the two numbers from the
-       database as the page is requested, writes them over {volume} and
-       {workouts}, and puts what is inside the template in its place. When it
-       cannot read them the template is left alone and the page goes out
-       without the band. /tally.js then keeps the two numbers moving without a
-       reload, which is why they carry data-tally-volume and
-       data-tally-workouts. Never type a number in here: the only honest one is
-       the one counted as the page loads. -->
+       netlify/edge-functions/live-totals.js reads the total from the database as
+       the page is requested, writes it over the volume placeholder, and puts what
+       is inside the template in its place. When it cannot read it the template is
+       left alone and the page goes out without the band. /tally.js then keeps the
+       number moving without a reload, which is why it carries data-tally-volume.
+       Never type a number in here: the only honest one is the one counted as the
+       page loads. -->
     <template data-totals id="live-totals">
-      <section class="tally" aria-labelledby="tally-label">
-        <div class="eyebrow" id="tally-label"><i class="live-dot" aria-hidden="true"></i>TOTAL LIFTED ON LOGR</div>
+      <section class="tally" aria-label="Total weight lifted on LOGR">
         <p class="tally-figure"><span data-tally-volume>{volume}</span> <span class="unit">lbs</span></p>
-        <p class="tally-note"><b data-tally-workouts>{workouts}</b> workouts logged. Counted live.</p>
+        <p class="tally-note"><i class="live-dot" aria-hidden="true"></i>lifted on LOGR so far. Counted live.</p>
       </section>
     </template>
-
-    <!-- ── Proof bar ─────────────────────────────────────────────────── -->
-    <section class="proof-bar" aria-label="How LOGR treats your data">
-      <span>PRIVACY BY DEFAULT</span>
-      <strong>No ads. Your data is never sold.</strong>
-      <a class="text-link light" href="/privacy">Read the policy</a>
-    </section>
-
-    <!-- ── Consistency ───────────────────────────────────────────────── -->
-    <section class="streak">
-      <div class="streak-head">
-        <div>
-          <div class="eyebrow">THE LONG VIEW</div>
-          <h2>Consistency is the whole game.</h2>
-        </div>
-        <p>Every session, every rest day, and everything you trained outside the
-          app lands on one grid. Not a vanity number, the honest shape of a
-          season, gaps and all.</p>
-      </div>
-
-      <div class="streak-scroll">
-        <div class="streak-grid" role="img"
-          aria-label="Half a year of training: 109 sessions, 12 of them setting a record, and 21 logged rest days.">
-          <i class="w"></i><i></i><i></i><i class="w"></i><i></i><i class="w"></i><i class="w"></i>
-          <i class="r"></i><i></i><i></i><i class="p"></i><i class="r"></i><i class="w"></i><i class="w"></i>
-          <i class="w"></i><i></i><i class="w"></i><i class="w"></i><i></i><i></i><i class="w"></i>
-          <i class="w"></i><i class="r"></i><i class="r"></i><i></i><i class="w"></i><i></i><i class="r"></i>
-          <i class="w"></i><i class="r"></i><i class="w"></i><i></i><i class="w"></i><i class="w"></i><i class="r"></i>
-          <i class="w"></i><i class="w"></i><i class="w"></i><i class="w"></i><i class="w"></i><i></i><i class="w"></i>
-          <i class="w"></i><i></i><i class="w"></i><i class="w"></i><i class="r"></i><i class="p"></i><i class="w"></i>
-          <i></i><i></i><i></i><i></i><i class="r"></i><i></i><i class="r"></i>
-          <i></i><i></i><i></i><i class="r"></i><i class="w"></i><i></i><i></i>
-          <i class="w"></i><i class="w"></i><i class="w"></i><i class="w"></i><i class="w"></i><i class="r"></i><i
-            class="w"></i>
-          <i class="p"></i><i class="w"></i><i class="w"></i><i class="w"></i><i></i><i></i><i class="p"></i>
-          <i class="w"></i><i></i><i class="w"></i><i class="w"></i><i class="w"></i><i class="w"></i><i></i>
-          <i></i><i></i><i class="w"></i><i></i><i class="w"></i><i></i><i class="w"></i>
-          <i class="w"></i><i class="w"></i><i></i><i class="r"></i><i></i><i class="w"></i><i class="w"></i>
-          <i class="w"></i><i class="w"></i><i></i><i class="w"></i><i class="p"></i><i class="w"></i><i class="w"></i>
-          <i></i><i class="w"></i><i class="w"></i><i class="w"></i><i></i><i class="r"></i><i class="w"></i>
-          <i class="w"></i><i></i><i></i><i class="w"></i><i class="w"></i><i class="w"></i><i class="w"></i>
-          <i class="w"></i><i></i><i class="p"></i><i class="r"></i><i></i><i class="w"></i><i class="w"></i>
-          <i class="p"></i><i class="r"></i><i class="p"></i><i class="w"></i><i class="w"></i><i></i><i class="r"></i>
-          <i class="w"></i><i class="w"></i><i class="r"></i><i class="w"></i><i></i><i class="w"></i><i class="w"></i>
-          <i class="r"></i><i></i><i class="w"></i><i class="w"></i><i class="w"></i><i></i><i></i>
-          <i class="w"></i><i class="w"></i><i class="w"></i><i class="w"></i><i></i><i class="w"></i><i class="w"></i>
-          <i class="r"></i><i class="w"></i><i class="w"></i><i class="p"></i><i class="p"></i><i class="w"></i><i
-            class="w"></i>
-          <i class="w"></i><i class="w"></i><i></i><i></i><i class="r"></i><i class="w"></i><i class="w"></i>
-          <i class="w"></i><i></i><i class="w"></i><i></i><i class="w"></i><i></i><i class="w"></i>
-          <i class="w"></i><i class="p"></i><i></i><i class="w"></i><i class="w"></i><i class="p"></i><i class="w"></i>
-        </div>
-      </div>
-
-      <div class="streak-legend">
-        <span><i></i>Nothing logged</span>
-        <span><i class="r"></i>Rest day</span>
-        <span><i class="w"></i>Workout</span>
-        <span><i class="p"></i>Personal record</span>
-        <b>26 WEEKS</b>
-      </div>
-    </section>
 
     <!-- ── Who it's for ──────────────────────────────────────────────────
        Four audiences, and each one has to be able to see itself here. Short
@@ -404,12 +340,33 @@
             will be clearly explained before they are introduced.</p>
         </details>
         <details>
-          <summary>Is LOGR available yet? <span class="plus">&plus;</span></summary>
-          <p>Yes. LOGR is on the App Store now in the United States and Canada,
-            for iPhone on iOS 15.1 or later. We are still rolling out region by
-            region, so if it is not showing up for you yet, use the
-            <a href="#waitlist">regional notify list</a> below and we will email
-            you the moment it reaches you.</p>
+          <summary>Is LOGR in my country? <span class="plus">&plus;</span></summary>
+          <p>LOGR is on the App Store in the United States and Canada, and more countries are coming. If it is not available where you are, leave your email and we will tell you the moment it is.</p>
+          <!-- Both spellings of the opt-in are present on purpose. Netlify's HTML
+             docs show a bare `netlify` attribute, their framework docs show
+             `data-netlify="true"`, and the parser accepts either. Carrying both
+             costs nothing and removes it as a suspect. -->
+          <form class="region-form" name="region-notify" method="POST" action="/thanks" netlify data-netlify="true"
+            data-netlify-honeypot="bot-field">
+            <input type="hidden" name="form-name" value="region-notify">
+            <div class="sr-only">
+              <label>Leave this field empty: <input name="bot-field"></label>
+            </div>
+            <label class="sr-only" for="email">Email address</label>
+            <input id="email" name="email" type="email" placeholder="Email address" autocomplete="email" required>
+
+            <!-- Optional on purpose: the email is the conversion, this is only
+               there to tell us which regions to prioritize. -->
+            <div class="field">
+              <label for="region">Which country are you in? <span>Optional</span></label>
+              <input id="region" name="region" type="text" placeholder="e.g. United Kingdom" autocomplete="country-name">
+            </div>
+
+            <button class="button" type="submit">Notify Me</button>
+          </form>
+          <small class="region-form-note">We will only email you when LOGR is available
+            in your region, and you can unsubscribe at any time. Your address is handled
+            as described in our <a href="/privacy">Privacy Policy</a>.</small>
         </details>
         <details>
           <summary>Can I post videos? <span class="plus">&plus;</span></summary>
@@ -453,42 +410,16 @@
       </div>
     </section>
 
-    <!-- ── Not in your region yet ───────────────────────────────────────── -->
-    <section class="waitlist" id="waitlist">
-      <div class="eyebrow">ROLLING OUT BY REGION</div>
-      <h2>Not in your region yet?</h2>
-      <p>LOGR is on the App Store in the <strong>United States and Canada</strong>
-        today, and more countries are coming. If it is not available where you
-        are, leave your email and we will tell you the moment it is.</p>
-
-      <!-- Both spellings of the opt-in are present on purpose. Netlify's HTML
-         docs show a bare `netlify` attribute, their framework docs show
-         `data-netlify="true"`, and the parser accepts either. Carrying both
-         costs nothing and removes it as a suspect. -->
-      <form name="region-notify" method="POST" action="/thanks" netlify data-netlify="true"
-        data-netlify-honeypot="bot-field">
-        <input type="hidden" name="form-name" value="region-notify">
-        <p class="sr-only">
-          <label>Leave this field empty: <input name="bot-field"></label>
-        </p>
-        <label class="sr-only" for="email">Email address</label>
-        <input id="email" name="email" type="email" placeholder="Email address" autocomplete="email" required>
-
-        <!-- Optional on purpose: the email is the conversion, this is only there
-           to tell us which regions to prioritize. Netlify registers new fields
-           when it scans the deployed HTML, so this one starts being captured on
-           the deploy after it was added, not before. -->
-        <p class="field">
-          <label for="region">Which country are you in? <span>Optional</span></label>
-          <input id="region" name="region" type="text" placeholder="e.g. United Kingdom" autocomplete="country-name">
-        </p>
-
-        <button class="button" type="submit">Notify Me</button>
-      </form>
-
-      <small>We will only email you when LOGR is available in your region, and
-        you can unsubscribe at any time. Your address is handled as described in
-        our <a href="/privacy">Privacy Policy</a>.</small>
+    <!-- ── Get it ────────────────────────────────────────────────────────
+       The last section, light, so it does not run into the dark footer. -->
+    <section class="get-logr">
+      <div class="eyebrow">GET LOGR</div>
+      <h2>Free on the App Store.</h2>
+      <p>For iPhone on iOS 15.1 or later, in the <strong>United States and
+        Canada</strong>. No ads, and nothing to set up first.</p>
+      <a class="app-badge" href="https://apps.apple.com/app/id6795712216" aria-label="Download LOGR on the App Store">
+        <img class="app-badge-art" src="/app-store-badge.svg" alt="" width="120" height="40">
+      </a>
     </section>
 
   </main>

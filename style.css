@@ -11,8 +11,8 @@
    Written phone first in spirit: most people meet LOGR on a phone, from a link
    or a search, so the phone view is the first impression. Below 760px the
    header is one row, the hero's phones show on the first screen, the
-   audience cards swipe sideways, the consistency grid fits without scrolling,
-   and tables on the legal pages turn into stacked cards. See README.md,
+   audience cards swipe sideways, and tables on the legal pages turn into
+   stacked cards. See README.md,
    Design. */
 
 :root {
@@ -362,7 +362,7 @@ img { max-width: 100%; display: block; }
 
 /* ── Running total ────────────────────────────────────────────────────────
    One figure, the size of a scoreboard, and the line that says what it is.
-   The numbers are written in on the server (netlify/edge-functions/
+   The number is written in on the server (netlify/edge-functions/
    live-totals.js) from a <template> in index.html, so this band is on the
    page only when there is a real number to put in it. The figure scales with
    the screen and is sized so nine digits still fit a 320px phone. */
@@ -372,13 +372,6 @@ img { max-width: 100%; display: block; }
   background: var(--surface);
   border-top: 1px solid var(--border);
   text-align: center;
-}
-
-.tally .eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
 }
 
 /* The dot that says a number is live: the same black as the text, with a ring
@@ -427,96 +420,20 @@ img { max-width: 100%; display: block; }
    the band is never the thing that reflows. */
 .tally-figure [data-tally-volume] { font-variant-numeric: tabular-nums; }
 
-.tally-note { margin: 18px 0 0; color: var(--body); font-size: 16px; line-height: 1.6; }
-.tally-note b { color: var(--text); font-weight: 700; }
-
-/* ── Proof bar ────────────────────────────────────────────────────────── */
-
-.proof-bar {
+.tally-note {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 14px 32px;
-  min-height: 84px;
-  padding: 24px 6vw;
-  background: var(--text);
-  color: #ffffff;
-  font-size: 15px;
-  font-weight: 700;
+  gap: 10px;
+  margin: 18px 0 0;
+  color: var(--body);
+  font-size: 16px;
+  line-height: 1.6;
 }
-
-.proof-bar span {
-  color: var(--muted);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1.6px;
-}
-
-.proof-bar .text-link { margin-top: 0; font-size: 13px; }
-
-/* ── Consistency grid ─────────────────────────────────────────────────── */
-
-.streak { padding: 100px 8vw; background: var(--text); color: #ffffff; }
-
-.streak-head {
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  align-items: end;
-  gap: 8vw;
-  margin-bottom: 54px;
-}
-
-.streak-head h2 { color: #ffffff; }
-.streak-head p { margin: 0; color: #d1d5db; font-size: 17px; line-height: 1.7; }
-
-.streak-scroll { overflow-x: auto; padding-bottom: 6px; }
-
-/* 26 columns of 7. On a phone they shrink to fit the width (about 10px a
-   cell), which reads as the shape of a season at a glance, so nothing has to
-   scroll sideways. */
-.streak-grid {
-  display: grid;
-  grid-auto-flow: column;
-  grid-template-rows: repeat(7, 1fr);
-  grid-auto-columns: minmax(0, 1fr);
-  gap: 5px;
-  min-width: 760px;
-}
-
-.streak-grid i, .streak-legend i {
-  display: block;
-  aspect-ratio: 1;
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.08);
-}
-
-/* Deliberately monochrome. The app tints these black, blue and green, but
-   blue is the competition's whole identity and a density ramp reads better
-   at this size anyway. */
-.streak-grid i.r, .streak-legend i.r { background: rgba(255, 255, 255, 0.3); }
-.streak-grid i.w, .streak-legend i.w { background: rgba(255, 255, 255, 0.66); }
-.streak-grid i.p, .streak-legend i.p { background: #ffffff; }
-
-.streak-legend {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 22px;
-  margin-top: 34px;
-  padding-top: 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  font-size: 13px;
-  color: var(--muted);
-}
-
-.streak-legend span { display: flex; align-items: center; gap: 8px; }
-.streak-legend i { width: 12px; }
-.streak-legend b { margin-left: auto; font-size: 11px; letter-spacing: 1.6px; }
 
 /* ── Section headings ────────────────────────────────────────────────── */
 
-.teams h2, .story h2, .faq h2, .waitlist h2, .streak-head h2 {
+.teams h2, .story h2, .faq h2, .get-logr h2 {
   margin: 0;
   font-size: clamp(32px, 4vw, 52px);
   line-height: 1.08;
@@ -665,38 +582,23 @@ img { max-width: 100%; display: block; }
 
 details[open] > summary .plus::before { transform: rotate(45deg); }
 
-/* ── Waitlist / regional availability ────────────────────────────────────
-   Class name kept as "waitlist" even though the copy now covers regions the
-   App Store rollout hasn't reached yet, since the layout is identical and
-   nothing else on the site still links to #waitlist as a signup. */
+/* ── The region form ──────────────────────────────────────────────────────
+   Inside the FAQ's "Is LOGR in my country?". Email and button on row one, the
+   optional question on row two. Placement is explicit because auto-placement
+   would put the question beside the email instead of under it, and because the
+   DOM order is the tab order we want: fill both fields, then submit. */
 
-.waitlist { padding: 100px 6vw; background: var(--surface); text-align: center; }
-.waitlist p { color: var(--body); font-size: 17px; }
-/* Where it IS available, which is the part a reader is scanning for. */
-.waitlist p strong { color: var(--text); font-weight: 700; }
-/* The audience pages end on this same section with the App Store badge in
-   place of the form. */
-.waitlist > .app-badge { margin-top: 18px; }
-
-/* Email and button on row one, the optional question on row two. Placement is
-   explicit because auto-placement would put the question beside the email
-   instead of under it, and because the DOM order is the tab order we want:
-   fill both fields, then submit. */
-.waitlist form {
+.region-form {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 10px;
-  max-width: 540px;
-  margin: 30px auto 14px;
-  text-align: left;
+  margin: 0 20px 12px 0;
 }
 
-.waitlist input[type="email"] { grid-area: 1 / 1; }
-.waitlist form .button { grid-area: 1 / 2; }
-.waitlist .field { grid-area: 2 / 1 / 3 / 3; }
+.region-form input[type="email"] { grid-area: 1 / 1; }
+.region-form .button { grid-area: 1 / 2; }
 
-.waitlist input,
-.waitlist select {
+.region-form input {
   min-width: 0;
   padding: 15px 16px;
   background: var(--bg);
@@ -708,31 +610,46 @@ details[open] > summary .plus::before { transform: rotate(45deg); }
   color: var(--text);
 }
 
-.waitlist input::placeholder { color: var(--muted); }
-
-.waitlist input:focus,
-.waitlist select:focus { outline: 2px solid var(--text); outline-offset: -2px; }
+.region-form input::placeholder { color: var(--muted); }
+.region-form input:focus { outline: 2px solid var(--text); outline-offset: -2px; }
 
 /* Secondary to the email by design: smaller, quieter, and skippable. */
-.waitlist .field {
+.region-form .field {
+  grid-area: 2 / 1 / 3 / 3;
   display: flex;
   align-items: center;
   gap: 12px;
-  margin: 0;
 }
 
-.waitlist .field label {
+.region-form .field label {
   font-size: 13px;
   font-weight: 700;
   color: var(--body);
   white-space: nowrap;
 }
 
-.waitlist .field label span { color: var(--muted); font-weight: 600; }
-.waitlist .field select,
-.waitlist .field input[type="text"] { flex: 1; padding: 11px 12px; font-size: 16px; }
-.waitlist small { color: var(--muted); font-size: 13px; }
-.waitlist small a { text-decoration: underline; }
+.region-form .field label span { color: var(--muted); font-weight: 600; }
+.region-form .field input { flex: 1; padding: 11px 12px; }
+
+.region-form-note {
+  display: block;
+  padding: 0 20px 20px 0;
+  color: var(--body);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.region-form-note a { text-decoration: underline; }
+
+/* ── The download ask ─────────────────────────────────────────────────────
+   Every marketing page ends here, light, so it does not run into the dark
+   footer. */
+
+.get-logr { padding: 100px 6vw; background: var(--surface); text-align: center; }
+.get-logr p { color: var(--body); font-size: 17px; }
+/* Where it IS available, which is the part a reader is scanning for. */
+.get-logr p strong { color: var(--text); font-weight: 700; }
+.get-logr > .app-badge { margin-top: 18px; }
 
 /* ── Footer ───────────────────────────────────────────────────────────── */
 
@@ -1138,9 +1055,7 @@ details[open] > summary .plus::before { transform: rotate(45deg); }
     font-size: 12px;
   }
 
-  .proof-bar { flex-wrap: wrap; gap: 20px; }
-  .story, .faq, .streak-head { grid-template-columns: 1fr; }
-  .streak-head { gap: 24px; margin-bottom: 40px; }
+  .story, .faq { grid-template-columns: 1fr; }
   .site-footer { grid-template-columns: 2fr 1fr 1fr; }
   .story { gap: 36px; }
   .faq { gap: 40px; }
@@ -1169,21 +1084,7 @@ details[open] > summary .plus::before { transform: rotate(45deg); }
   .shot-frame { padding: 5px; border-radius: 22px; }
   .shot img { border-radius: 18px; }
 
-  .proof-bar {
-    flex-direction: column;
-    gap: 8px;
-    padding: 30px var(--gutter);
-    text-align: center;
-    font-size: 15px;
-  }
-
-  .teams, .story, .streak, .faq, .waitlist { padding: 64px var(--gutter); }
-
-  .streak-scroll { overflow: visible; padding-bottom: 0; }
-  .streak-grid { min-width: 0; gap: 3px; }
-  .streak-grid i { border-radius: 2px; }
-  .streak-legend { gap: 12px 18px; font-size: 12px; }
-  .streak-legend b { margin-left: 0; }
+  .teams, .story, .faq, .get-logr { padding: 64px var(--gutter); }
 
   /* The four audiences swipe sideways, each card snapping to the gutter with
      the next one showing at the edge, instead of a column four screens tall.
@@ -1215,13 +1116,14 @@ details[open] > summary .plus::before { transform: rotate(45deg); }
 
   /* One column, and the explicit row/column placement goes with it: DOM order
      is already email, question, button. */
-  .waitlist form { grid-template-columns: 1fr; }
-  .waitlist input[type="email"],
-  .waitlist form .button,
-  .waitlist .field { grid-area: auto; }
-  .waitlist form .button { padding: 16px 24px; font-size: 15px; }
-  .waitlist .field { flex-direction: column; align-items: stretch; gap: 7px; }
-  .waitlist .field label { white-space: normal; }
+  .region-form { grid-template-columns: 1fr; margin-right: 4px; }
+  .region-form input[type="email"],
+  .region-form .button,
+  .region-form .field { grid-area: auto; }
+  .region-form .button { padding: 16px 24px; font-size: 15px; }
+  .region-form .field { flex-direction: column; align-items: stretch; gap: 7px; }
+  .region-form .field label { white-space: normal; }
+  .region-form-note { padding-right: 4px; }
 
   .site-footer {
     grid-template-columns: 1fr 1fr;
