@@ -206,36 +206,19 @@ img { max-width: 100%; display: block; }
 .text-link:hover { opacity: 0.7; }
 .text-link.light { display: inline-block; margin-top: 22px; color: #ffffff; border-bottom-color: #ffffff; }
 
-.eyebrow {
-  margin-bottom: 16px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1.6px;
-  color: var(--muted);
-}
-
 /* ── Hero ─────────────────────────────────────────────────────────────── */
 
-/* Copy and trust row on the left, the phones on the right, the left column
-   centred against the phones. On a phone it is one column in reading order:
-   the copy, the phones, then the trust row, so the screenshots start on the
-   first screen instead of after three lines of small print. */
+/* The copy on the left, the phones on the right. On a phone it is one column
+   in reading order, copy then phones, so the screenshots start on the first
+   screen. */
 .hero {
   display: grid;
   grid-template-columns: 1.05fr 0.95fr;
-  grid-template-rows: 1fr auto auto 1fr;
-  grid-template-areas:
-    ".     phones"
-    "copy  phones"
-    "trust phones"
-    ".     phones";
   align-items: center;
   min-height: 660px;
   padding: 80px 7vw 60px;
   overflow: hidden;
 }
-
-.hero-copy { grid-area: copy; }
 
 .hero h1 {
   margin: 0 0 24px;
@@ -245,8 +228,6 @@ img { max-width: 100%; display: block; }
   font-weight: 900;
   letter-spacing: -0.02em;
 }
-
-.hero h1 em { color: var(--muted); font-weight: 800; font-style: normal; }
 
 .hero-copy > p {
   max-width: 560px;
@@ -263,33 +244,13 @@ img { max-width: 100%; display: block; }
   margin: 32px 0;
 }
 
-.trust-row {
-  grid-area: trust;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 24px;
+/* The facts, in one plain line under the badge. */
+.hero-copy > .hero-note {
+  max-width: 460px;
   margin: 0;
-  padding: 0;
-  list-style: none;
-  font-size: 13px;
-  color: var(--muted);
-  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.6;
 }
-
-.trust-row li { display: flex; align-items: center; gap: 6px; }
-
-/* A quiet entrance, once, on load. It moves with `translate`, which adds to
-   the phones' own `transform` instead of replacing it. Off for anyone who
-   asks for less motion (the end of this file). */
-@keyframes rise {
-  from { opacity: 0; translate: 0 18px; }
-  to { opacity: 1; translate: 0 0; }
-}
-
-.hero-copy { animation: rise 0.6s var(--ease) both; }
-.hero-phones .shot { animation: rise 0.8s var(--ease) both; }
-.hero-phones .shot-front { animation-delay: 0.08s; }
-.trust-row { animation: rise 0.6s var(--ease) 0.12s both; }
 
 /* ── Screenshots ──────────────────────────────────────────────────────── */
 
@@ -326,25 +287,8 @@ img { max-width: 100%; display: block; }
    pair, so the offsets, not the edges, set the overlap. */
 .hero-phones {
   --front: 246px;
-  grid-area: phones;
   position: relative;
   height: calc(var(--front) * 2.42);
-}
-
-/* A dot grid behind the phones, fading out from the middle: the consistency
-   grid's own texture, in the page background's grey. */
-.hero-phones::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: calc(var(--front) * 3.2);
-  aspect-ratio: 1;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(rgba(26, 26, 26, 0.16) 1.3px, transparent 1.7px) 0 0 / 18px 18px;
-  -webkit-mask-image: radial-gradient(closest-side, #000000 35%, transparent 100%);
-  mask-image: radial-gradient(closest-side, #000000 35%, transparent 100%);
-  pointer-events: none;
 }
 
 .hero-phones .shot { position: absolute; left: 50%; }
@@ -453,42 +397,15 @@ img { max-width: 100%; display: block; }
   text-align: left;
 }
 
-/* A flex column, so the PLANNED label can sit on the bottom edge of a card
-   whose neighbours are all different lengths. It used to be absolutely
-   positioned against a fixed min-height, which only worked while every card
-   held one short paragraph. */
 .team-grid article {
-  display: flex;
-  flex-direction: column;
-  min-height: 250px;
   padding: 26px;
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-card);
 }
 
-.team-grid > article > span,
-.team-grid small {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1.2px;
-  color: var(--muted);
-}
-
-.team-grid h3 { margin: 36px 0 12px; font-size: 21px; font-weight: 800; letter-spacing: -0.01em; }
+.team-grid h3 { margin: 0 0 12px; font-size: 21px; font-weight: 800; letter-spacing: -0.01em; }
 .team-grid p { margin: 0; color: var(--body); line-height: 1.6; font-size: 15px; }
-
-/* What the card is promising rather than describing. Set apart from the
-   sentence above it, which is the part that exists today. */
-.team-grid .next {
-  margin-top: 14px;
-  padding-top: 14px;
-  border-top: 1px solid var(--border);
-  color: var(--muted);
-  font-size: 14px;
-}
-
-.team-grid small { margin-top: auto; padding-top: 20px; }
 
 .teams-foot {
   max-width: 620px;
@@ -505,16 +422,12 @@ img { max-width: 100%; display: block; }
 /* ── Story ────────────────────────────────────────────────────────────── */
 
 .story {
-  display: grid;
-  grid-template-columns: 0.5fr 1.5fr;
-  gap: 8vw;
   padding: 100px 8vw;
   background: var(--text);
   color: #ffffff;
 }
 
-.story-label { font-size: 11px; font-weight: 700; letter-spacing: 1.6px; color: var(--muted); }
-.story-copy { max-width: 780px; }
+.story-copy { max-width: 720px; margin: 0 auto; }
 .story-copy p { color: #d1d5db; font-size: 17px; line-height: 1.75; }
 
 /* ── FAQ ──────────────────────────────────────────────────────────────── */
@@ -1006,58 +919,21 @@ details[open] > summary .plus::before { transform: rotate(45deg); }
    the rest of the page breaks. */
 @media (max-width: 1100px) {
   .team-grid { grid-template-columns: repeat(2, 1fr); }
-  .team-grid article { min-height: 0; }
 }
 
 @media (max-width: 900px) {
   .site-nav { gap: 20px; font-size: 13px; }
 
-  /* One column in reading order: copy, phones, trust row. */
+  /* One column in reading order: copy, then phones. */
   .hero {
     grid-template-columns: 1fr;
-    grid-template-rows: auto;
-    grid-template-areas: "copy" "phones" "trust";
     min-height: 0;
     padding: 56px var(--gutter) 56px;
   }
   .hero-phones { margin-top: 44px; }
-  /* One grouped card, three rows: the shape of the app's own Settings
-     lists, rather than three loose tags. */
-  .trust-row {
-    flex-direction: column;
-    gap: 0;
-    width: 100%;
-    max-width: 440px;
-    justify-self: center;
-    margin-top: 30px;
-    padding: 2px 18px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-card);
-    box-shadow: var(--shadow-card);
-  }
-  .trust-row li {
-    gap: 12px;
-    padding: 13px 0;
-    border-top: 1px solid var(--border);
-    color: var(--text);
-    font-size: 14.5px;
-  }
-  .trust-row li:first-child { border-top: 0; }
-  .trust-row li span {
-    display: grid;
-    place-items: center;
-    flex: 0 0 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: var(--text);
-    color: #ffffff;
-    font-size: 12px;
-  }
 
-  .story, .faq { grid-template-columns: 1fr; }
+  .faq { grid-template-columns: 1fr; }
   .site-footer { grid-template-columns: 2fr 1fr 1fr; }
-  .story { gap: 36px; }
   .faq { gap: 40px; }
 }
 
@@ -1075,12 +951,11 @@ details[open] > summary .plus::before { transform: rotate(45deg); }
   .hero h1 { margin-bottom: 18px; font-size: clamp(31px, 10.2vw, 44px); letter-spacing: -0.03em; }
   .hero-copy > p { margin: 0; font-size: 16.5px; line-height: 1.6; }
   .hero-actions { margin: 26px 0 0; }
-  .eyebrow { margin-bottom: 12px; }
+  .hero-copy > .hero-note { margin-top: 14px; }
 
   /* The pair at phone size, kept inside the screen edges with room for the
      tilt. */
   .hero-phones { --front: clamp(150px, 45vw, 220px); height: calc(var(--front) * 2.3); margin-top: 38px; }
-  .trust-row { margin-top: 20px; }
   .shot-frame { padding: 5px; border-radius: 22px; }
   .shot img { border-radius: 18px; }
 
@@ -1104,11 +979,10 @@ details[open] > summary .plus::before { transform: rotate(45deg); }
     scrollbar-width: none;
   }
   .team-grid::-webkit-scrollbar { display: none; }
-  .team-grid article { min-height: 236px; padding: 22px; scroll-snap-align: start; }
-  .team-grid h3 { margin-top: 26px; font-size: 20px; }
+  .team-grid article { padding: 22px; scroll-snap-align: start; }
+  .team-grid h3 { font-size: 20px; }
   .teams-foot { margin-top: 28px; font-size: 15px; }
 
-  .story { gap: 20px; }
   .faq { gap: 28px; }
   .faq details { padding: 0 16px; }
   .faq summary { padding: 17px 0; font-size: 15.5px; }
