@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- /thanks and /404 are deliberately absent: one is a form result, the other
      is not a page. Update the domain here and in robots.txt together. The home
-     URL keeps its trailing slash, exactly as index.html's canonical says it. -->
+     URL keeps its trailing slash, exactly as index.html's canonical says it.
+     The comparison pages carry lastmod: the day their facts were checked,
+     which changes whenever a row does. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://getlogr.com/</loc>
@@ -22,6 +24,21 @@
   <url>
     <loc>https://getlogr.com/friends</loc>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://getlogr.com/compare/hevy</loc>
+    <lastmod>2026-11-07</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://getlogr.com/compare/hevy-alternatives</loc>
+    <lastmod>2026-11-07</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://getlogr.com/compare/strava-for-lifting</loc>
+    <lastmod>2026-11-07</lastmod>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://getlogr.com/privacy</loc>

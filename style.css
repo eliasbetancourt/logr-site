@@ -867,6 +867,16 @@ details[open] > summary .plus::before { transform: rotate(45deg); }
 
 .table-scroll { overflow-x: auto; }
 
+/* The comparison pages (compare/), one template: a dated table, what the
+   other app does better, a FAQ, and the sources. The row names keep one
+   narrow column so the apps' cells line up down the table. On a phone the
+   table turns into a card per row, like the legal pages' tables. */
+.compare-table td:first-child { width: 22%; }
+.prose .sources { margin-bottom: 10px; }
+.prose .sources li { font-size: 14px; line-height: 1.6; }
+.prose .sources-note { font-size: 14px; color: var(--muted); }
+.prose .compare-more { margin-top: 34px; padding-top: 22px; border-top: 1px solid var(--border); }
+
 .steps { counter-reset: step; list-style: none; padding-left: 0; }
 
 .steps li {

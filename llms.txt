@@ -21,6 +21,14 @@ What the app does today:
 - [LOGR for coaches](https://getlogr.com/coaches): plan team training that athletes log in the app
 - [LOGR for college athletes](https://getlogr.com/college): team lifts and your own sessions, built by Division I athletes
 
+## Comparisons
+
+Fair side-by-side pages, each with the date its facts were checked and its sources. They say what the other app does better.
+
+- [LOGR vs Hevy](https://getlogr.com/compare/hevy): price, free plan limits, friends, teams, and devices
+- [Hevy alternatives](https://getlogr.com/compare/hevy-alternatives): LOGR, Strong, Strava, and Boostcamp, with what each does best
+- [Is there a Strava for lifting?](https://getlogr.com/compare/strava-for-lifting): Strava's strength log, Hevy, and LOGR for sharing lifts with friends
+
 ## Policies and help
 
 - [Home page and FAQ](https://getlogr.com/#faq)

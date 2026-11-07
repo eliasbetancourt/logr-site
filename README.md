@@ -273,20 +273,47 @@ site and the app together.
   run the live page through Google's Rich Results Test.
 - **Four audience pages**: `/teams`, `/coaches`, `/college`, `/friends`. Each
   has its own title, description, canonical and FAQ, the same header and
-  footer as every page, and is in `sitemap.xml`. They are the only pages that
-  can ever rank for a search that is not the brand. They say only what the App
-  Store build does (*Copy rules*), and never name another app: no comparison
-  and no "alternative to" pages. `/college` has a marked spot for a real quote
-  from the Fordham strength coach; never fill it with an invented one.
+  footer as every page, and is in `sitemap.xml`. They say only what the App
+  Store build does (*Copy rules*), and never name another app.
+  `/college` has a marked spot for a real quote from the Fordham strength
+  coach; never fill it with an invented one.
+- **The comparison pages are the only pages that name another app**
+  (Elias, 2026-11-04: rivals on the website only, on these pages; the app and
+  the App Store copy never name one). Three, on one template in `compare/`:
+  `/compare/hevy`, `/compare/hevy-alternatives`, and
+  `/compare/strava-for-lifting`, built from Drew's comparison list (posts 22
+  and 23, and post 10). The rules:
+  - **Fair.** The table says plainly what the other app does better, and a
+    section says it again in words. Never a table where LOGR wins every row.
+  - **Dated and sourced.** Every fact and price about another app is checked
+    on the day, the page says that day under its heading, and the sources
+    list links where each came from (`rel="nofollow"`). A change to any row
+    re-checks the whole page, moves the date, the `dateModified` in its
+    markup and its `lastmod` in `sitemap.xml`.
+  - **LOGR's side is the App Store build**, as everywhere (*Copy rules*).
+  - **No logos**, theirs or ours, and no screenshots of their app.
+  - **"Strava for lifting" is a question the page answers, never our label**
+    (Cohen, 2026-10-20: as our own tagline it borrows their trademark and
+    sounds like a copy).
+  - **Linked only from the footer**, as "Compare Apps", which opens the
+    alternatives page; the three link to each other. Never from the home
+    page's body, and no rival's name in the footer, so no other page names one.
+  - **Markup:** `FAQPage` (the page's FAQ word for word), plus an `ItemList`
+    of the apps on the alternatives and Strava pages, each pointing at its
+    App Store listing.
+  - Their campaign is `web-compare`, all three.
+  - **Check Search Console at 8 weeks** (early January 2027) and stop adding
+    pages if these get no impressions. The rest of Drew's rival list waits
+    for that check.
 - **The canonical and the sitemap name the home page the same way**,
   `https://getlogr.com/` with the slash.
 - **Smart App Banner** (`apple-itunes-app`) on the home page and the audience
   pages, as on the pages behind shared links. Each carries `affiliate-data`
   with the provider ID (`pt=129234909`, the same everywhere) and its own campaign
   (`ct`: `web-home`, `web-teams`, `web-coaches`, `web-college`,
-  `web-friends`), so installs from the banner show up as campaigns in App
-  Store Connect (Analytics, Campaigns; a campaign is listed only after 5
-  first-time downloads). It goes inside `content` after a comma, never as an
+  `web-friends`, and `web-compare` on the comparison pages), so installs
+  from the banner show up as campaigns in App Store Connect (Analytics,
+  Campaigns; a campaign is listed only after 5 first-time downloads). It goes inside `content` after a comma, never as an
   attribute of its own, which Safari would ignore. A new marketing page gets
   its own `ct`.
 - **Every App Store button carries the same token** since 2026-11-04, in
@@ -399,6 +426,10 @@ teams.html                the four audience pages: each its own title, FAQ
 coaches.html              and screenshots, linked from every page's header
 college.html              and footer and in the sitemap; see Search
 friends.html
+compare/                  the comparison pages on one template: hevy.html,
+                          hevy-alternatives.html, strava-for-lifting.html.
+                          Linked only from the footer, and the only pages
+                          that name another app; see Search
 teens.html                Teen accounts: the age rules in plain words, for
                           teens and parents. Terms section 1 is the binding
                           version, and the two change together
