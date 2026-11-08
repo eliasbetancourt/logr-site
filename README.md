@@ -477,7 +477,7 @@ picture on that card is one of five PNGs, all 1200x630:
 
 | Picture | Under | Headline |
 |---|---|---|
-| `og.png` | every page of the site itself | Create routines. Log workouts. Share with friends. |
+| `og.png` | every page of the site itself | The workout log with your friends in it. |
 | `og/post.png` | `/post/<id>` | See the whole session. |
 | `og/routine.png` | `/routine/<id>` | Save it. Start it. Log it. |
 | `og/profile.png` | `/@<handle>`, badge and Achievements links too | Follow their training. |
@@ -879,10 +879,13 @@ the site-only claims. The FAQ names what the app notes and what it never does.
   said what the FAQ says, and nobody comes to a workout app's page for it.
 - **The footer tagline** (`Log the work. Share the journey.`).
 
-**The home page's headline is still three commands**, the shape of Hevy's hero
-and the reason the old proof bar was changed. Its replacement waits on the
-founders' answers about the name and the words (log or tracker); the draft is
-"The workout log with your friends in it."
+- **The three-command headline** (`Create routines. Log workouts. Share with
+  friends.`), the shape of Hevy's hero. Since 2026-11-07 it is "The workout log
+  with your friends in it." (Elias's pick, a line /friends already used): it
+  carries "workout log" for search and says what is different.
+- **The nameless story** ("a simple frustration"). It is now "Built by two D1
+  soccer players", naming both founders and where they play, never implying the
+  schools back LOGR. A photo of the two goes in when there is one.
 
 Do not copy their copy, their section order, or their screenshots. The
 resemblance that is unavoidable is a phone mockup in the hero, which is the

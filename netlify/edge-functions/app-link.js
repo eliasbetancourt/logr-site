@@ -66,7 +66,7 @@ const CARD_TIMEOUT_MS = 2500;
 // link preview"). An expired invite gets the site's own, since its card would
 // say "You're invited" over a title that says the invite has expired.
 const PREVIEWS = {
-  site: { image: 'og.png', alt: 'LOGR. Create routines, log workouts, share with friends.' },
+  site: { image: 'og.png', alt: 'LOGR. The workout log with your friends in it.' },
   post: { image: 'og/post.png', alt: 'LOGR. See the whole session.' },
   routine: { image: 'og/routine.png', alt: 'LOGR. Save it, start it, log it.' },
   profile: { image: 'og/profile.png', alt: 'LOGR. Follow their training.' },
