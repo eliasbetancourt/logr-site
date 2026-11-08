@@ -324,6 +324,11 @@ function render({ url, title, heading, handle, lede, appUrl, openLabel, code, pr
   <div>
     <a class="logo footer-logo" href="/">LOGR</a>
     <small>&copy; 2026 LOGR. All rights reserved.</small>
+    <div class="footer-social">
+      <a href="https://instagram.com/getlogr" rel="me noopener">Instagram</a>
+      <a href="https://tiktok.com/@getlograpp" rel="me noopener">TikTok</a>
+      <a href="https://www.linkedin.com/company/getlogr" rel="me noopener">LinkedIn</a>
+    </div>
   </div>
   <div>
     <b>Product</b>
@@ -332,26 +337,24 @@ function render({ url, title, heading, handle, lede, appUrl, openLabel, code, pr
     <a href="/coaches">Coaches</a>
     <a href="/college">College</a>
     <a href="/compare/hevy-alternatives">Compare Apps</a>
-    <a href="/#story">Our Story</a>
-    <a href="/#faq">FAQ</a>
   </div>
   <div>
-    <b>Support</b>
+    <b>Company</b>
+    <a href="/#story">Our Story</a>
+    <a href="/#faq">FAQ</a>
     <a href="/support">Contact</a>
-    <a href="/account-deletion">Account Deletion</a>
+  </div>
+  <div>
+    <b>Safety</b>
     <a href="/teens">Teen Accounts</a>
     <a href="/community-guidelines">Community Guidelines</a>
+    <a href="/account-deletion">Account Deletion</a>
   </div>
   <div>
     <b>Legal</b>
     <a href="/privacy">Privacy Policy</a>
     <a href="/terms">Terms of Service</a>
     <a href="/cookies">Cookie Policy</a>
-  </div>
-  <div>
-    <b>Follow</b>
-    <a href="https://instagram.com/getlogr" rel="me noopener">Instagram</a>
-    <a href="https://tiktok.com/@getlograpp" rel="me noopener">TikTok</a>
   </div>
 </footer>
 
