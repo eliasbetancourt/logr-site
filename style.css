@@ -322,8 +322,11 @@ img { max-width: 100%; display: block; }
    that fades outward. Monochrome like everything else here. */
 .live-dot {
   position: relative;
-  flex: 0 0 8px;
+  display: inline-block;
+  width: 8px;
   height: 8px;
+  margin-right: 10px;
+  vertical-align: 0.1em;
   border-radius: 50%;
   background: var(--text);
 }
@@ -364,15 +367,16 @@ img { max-width: 100%; display: block; }
    the band is never the thing that reflows. */
 .tally-figure [data-tally-volume] { font-variant-numeric: tabular-nums; }
 
+/* One line of text with the dot as its first word, so a note that wraps on a
+   narrow phone keeps the dot beside the words it marks (it sat alone at the
+   box's edge as a flex row, 2026-11-07; docs/SCANNING_PATTERNS.md in the app
+   repo: a label sits beside what it marks). */
 .tally-note {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
   margin: 18px 0 0;
   color: var(--body);
   font-size: 16px;
   line-height: 1.6;
+  text-wrap: balance;
 }
 .tally-note b { color: var(--text); font-weight: 700; }
 
@@ -398,14 +402,23 @@ img { max-width: 100%; display: block; }
   text-align: left;
 }
 
+/* Each card takes two rows of the grid (subgrid), so the cards in a row share
+   one title row: a title that wraps to two lines pushes every card's text
+   down with it, and the text starts at one height across the row
+   (2026-11-07; one kind of fact keeps one line, docs/SCANNING_PATTERNS.md). */
 .team-grid article {
+  display: grid;
+  grid-row: span 2;
+  grid-template-rows: subgrid;
+  row-gap: 12px;
+  align-content: start;
   padding: 26px;
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-card);
 }
 
-.team-grid h3 { margin: 0 0 12px; font-size: 21px; font-weight: 800; letter-spacing: -0.01em; }
+.team-grid h3 { margin: 0; font-size: 21px; font-weight: 800; letter-spacing: -0.01em; }
 .team-grid p { margin: 0; color: var(--body); line-height: 1.6; font-size: 15px; }
 
 .teams-foot {
@@ -430,6 +443,9 @@ img { max-width: 100%; display: block; }
 
 .story-copy { max-width: 720px; margin: 0 auto; }
 .story-copy p { color: #d1d5db; font-size: 17px; line-height: 1.75; }
+/* About 75 characters a line at most, the comfortable measure; at 720px the
+   paragraph ran about 93 (docs/SCANNING_PATTERNS.md, On getlogr.com). */
+.story-copy p { max-width: 34em; }
 
 /* ── FAQ ──────────────────────────────────────────────────────────────── */
 
@@ -468,6 +484,9 @@ img { max-width: 100%; display: block; }
 
 .faq summary::-webkit-details-marker { display: none; }
 .faq details p { margin: 0; padding: 0 20px 20px 0; color: var(--body); line-height: 1.7; font-size: 15px; }
+/* About 75 characters a line at most; across the card's full width an answer
+   ran about 88. */
+.faq details p { max-width: 34em; }
 .faq details p + p { margin-top: -6px; }
 .faq details p a { border-bottom: 1px solid var(--line); font-weight: 600; color: var(--text); }
 /* The + in a soft square, so the row reads as tappable on a phone, where
@@ -992,8 +1011,11 @@ details[open] > summary .plus::before { transform: rotate(45deg); }
     scrollbar-width: none;
   }
   .team-grid::-webkit-scrollbar { display: none; }
-  .team-grid article { padding: 22px; scroll-snap-align: start; }
-  .team-grid h3 { font-size: 20px; }
+  /* One card in view at a time, so each stands alone: a shared title row
+     would leave a blank line under a short title for a card nobody sees
+     beside it. */
+  .team-grid article { display: block; grid-row: auto; padding: 22px; scroll-snap-align: start; }
+  .team-grid h3 { margin: 0 0 12px; font-size: 20px; }
   .teams-foot { margin-top: 28px; font-size: 15px; }
 
   .faq { gap: 28px; }
