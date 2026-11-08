@@ -477,7 +477,7 @@ picture on that card is one of five PNGs, all 1200x630:
 
 | Picture | Under | Headline |
 |---|---|---|
-| `og.png` | every page of the site itself | The social workout log. |
+| `og.png` | every page of the site itself | The Social Workout Log. |
 | `og/post.png` | `/post/<id>` | See the whole session. |
 | `og/routine.png` | `/routine/<id>` | Save it. Start it. Log it. |
 | `og/profile.png` | `/@<handle>`, badge and Achievements links too | Follow their training. |
@@ -880,9 +880,10 @@ the site-only claims. The FAQ names what the app notes and what it never does.
 - **The footer tagline** (`Log the work. Share the journey.`).
 
 - **The three-command headline** (`Create routines. Log workouts. Share with
-  friends.`), the shape of Hevy's hero. Since 2026-11-07 (later) it is "The social
-  workout log." (Elias, 2026-11-07, asked how to say "The workout log with your
-  friends in it." better: "the social workout log?", then picked it). It carries
+  friends.`), the shape of Hevy's hero. Since 2026-11-07 (later) it is "The Social
+  Workout Log." (Elias, 2026-11-07, asked how to say "The workout log with your
+  friends in it." better: "the social workout log?", then picked it, and asked
+  the same day to "capitalize the social workout log"). It carries
   "workout log" for search, names the category in the page title's words, and
   leaves the showing to the line under it. /friends keeps the older line in its
   own copy.
