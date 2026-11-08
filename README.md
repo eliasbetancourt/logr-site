@@ -648,20 +648,20 @@ variables in a local `.env` (see *The running total*, *Seeing it locally*).
 
 ## The running total
 
-Under the hero the home page says how much has been lifted on LOGR: the figure,
-and *lifted on LOGR so far. Counted live.* The workout count came off the page
-on 2026-11-04, since 1,030 workouts undercut 12.6 million pounds right above it;
-the function, `/api/totals` and `tally.js` still carry it, and it comes back by
-putting an element with `data-tally-workouts` in the template. **The number is
-read from the database as the page is requested.** Nobody types it in, and
-nothing rebuilds the site to update it.
+Under the hero the home page says how much has been lifted on LOGR and across
+how many workouts: the figure, then *lifted across 1,274 workouts. Counted
+live.* The count was off the page for a day (2026-11-07) and came back the same
+day: without it the pounds had no context (Elias: "we lost number of lifts
+context???"). **Both numbers are read from the database as the page is
+requested.** Nobody types them in, and nothing rebuilds the site to update them.
 
 The number is written into the HTML on Netlify's servers, and then kept moving
 in the browser:
 
 - `index.html` carries the band (`.tally`) inside a template element marked
-  `data-totals`, with `{volume}` where the number goes. A browser never draws a
-  template element, so the file on its own is the home page without the band.
+  `data-totals`, with `{volume}` and `{workouts}` where the numbers go. A
+  browser never draws a template element, so the file on its own is the home
+  page without the band.
 - **There is no second, smaller line in the hero.** There used to be one
   (`.hero-live`, the volume in one line under the buttons); it was removed as
   redundant with the band. The band is not moved above the hero on purpose:
@@ -685,8 +685,8 @@ the real figures already in it, so with the script blocked, failed or switched
 off the band is still correct and still current. The script only ever moves a
 number the page already had a correct one for.
 
-That is why the figure carries `data-tally-volume`, the script's handle.
-`data-tally-workouts` is the second, with nothing on the page using it today.
+That is why the figure carries `data-tally-volume` and the count carries
+`data-tally-workouts`. They are the script's only two handles.
 
 What it will not do, and what each guard is for:
 
@@ -856,7 +856,7 @@ site is deliberately built away from theirs. Theirs, as of August 2026:
 | Buttons | 100px pills | 14px radius, the app's own |
 | Type | Arial | system stack, tabular numerals |
 | Cookies | consent banner, tracking | none, and the site says so |
-| Proof | "More than 15 million athletes" | the running total: pounds lifted, counted as the page loads. Never a user count |
+| Proof | "More than 15 million athletes" | the running total: pounds lifted and workouts logged, counted as the page loads. Never a user count |
 
 **Never write "no analytics" unqualified on this site.** A first draft of the
 old privacy bar said `No ads. No analytics. No trackers of any kind.`, three

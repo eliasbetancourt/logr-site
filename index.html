@@ -201,16 +201,16 @@
        Not drawn as it stands: a template element is inert, so opened as a file, or
        under serve.py, the page has no such band. On Netlify,
        netlify/edge-functions/live-totals.js reads the total from the database as
-       the page is requested, writes it over the volume placeholder, and puts what
+       the page is requested, writes them over the volume and workouts placeholders, and puts what
        is inside the template in its place. When it cannot read it the template is
        left alone and the page goes out without the band. /tally.js then keeps the
-       number moving without a reload, which is why it carries data-tally-volume.
+       number moving without a reload, which is why they carry data-tally-volume and data-tally-workouts.
        Never type a number in here: the only honest one is the one counted as the
        page loads. -->
     <template data-totals id="live-totals">
       <section class="tally" aria-label="Total weight lifted on LOGR">
         <p class="tally-figure"><span data-tally-volume>{volume}</span> <span class="unit">lbs</span></p>
-        <p class="tally-note"><i class="live-dot" aria-hidden="true"></i>lifted on LOGR so far. Counted live.</p>
+        <p class="tally-note"><i class="live-dot" aria-hidden="true"></i><span>lifted across <b data-tally-workouts>{workouts}</b> workouts. Counted live.</span></p>
       </section>
     </template>
 
